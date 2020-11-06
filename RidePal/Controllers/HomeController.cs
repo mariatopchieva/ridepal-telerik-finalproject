@@ -6,21 +6,30 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RidePal.Models;
+using RidePal.Service;
 
 namespace RidePal.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly DatabaseSeedService seedService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, DatabaseSeedService seedService)
         {
             _logger = logger;
+            this.seedService = seedService;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        public async Task<IActionResult> SeedDatabase()
+        {
+            await seedService.DownloadTrackData("randomString");
+            return View("Index");
         }
 
         public IActionResult Privacy()
