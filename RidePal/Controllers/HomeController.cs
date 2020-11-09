@@ -28,7 +28,11 @@ namespace RidePal.Controllers
 
         public async Task<IActionResult> SeedDatabase()
         {
-            await seedService.DownloadTrackData("randomString");
+            await seedService.DownloadTrackData("rock");
+            await seedService.DownloadTrackData("metal");
+            await seedService.DownloadTrackData("pop");
+            await seedService.DownloadTrackData("jazz");
+
             return View("Index");
         }
 

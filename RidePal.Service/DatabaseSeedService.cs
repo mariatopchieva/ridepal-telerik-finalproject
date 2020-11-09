@@ -3,6 +3,7 @@ using RidePal.Data.Models;
 using RidePal.Data.Models.DeezerAPIModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -17,7 +18,7 @@ namespace RidePal.Service
         Dictionary<long, Artist> Artists = new Dictionary<long, Artist>();
         Dictionary<long, Album> Albums = new Dictionary<long, Album>();
         Dictionary<long, Track> Tracks = new Dictionary<long, Track>();
-        Genre genre = new Genre();
+        Dictionary<long, Genre> Genres = new Dictionary<long, Genre>();
 
         public DatabaseSeedService(RidePalDbContext _context)
         {
@@ -26,9 +27,7 @@ namespace RidePal.Service
 
         public async Task DownloadTrackData(string incomingGenre)
         {
-            string startUrl = $"http://api.deezer.com/search/playlist?q=rock";
-
-            genre.Name = "rock";
+            string startUrl = $"http://api.deezer.com/search/playlist?q={incomingGenre}";
 
             var response = await client.GetAsync(startUrl);
 
@@ -38,19 +37,24 @@ namespace RidePal.Service
 
             foreach (var item in deezerPlaylistCollection.DeezerPlaylists)
             {
-                await TraverseTracklist(item.TracklistUrl);
+                await TraverseTracklist(item.TracklistUrl, incomingGenre);
             }
 
             await context.SaveChangesAsync();
         }
 
 
-        public async Task TraverseTracklist(string currentTracklistUrl)
+        public async Task TraverseTracklist(string currentTracklistUrl, string incomingGenre)
         {
+            Genre genre = new Genre();
+            genre.Name = incomingGenre;
+            genre.Id = context.Genres.Count() + 1;
+
+            int trackCountBeforeSeed = context.Tracks.Count();
 
             while(currentTracklistUrl != null)
             {
-                if(Tracks.Count >= 1001)
+                if(Tracks.Count >= trackCountBeforeSeed + 250) //250 tracks with each genre
                 {
                     break;
                 }
@@ -92,16 +96,20 @@ namespace RidePal.Service
 
                     track.Genre = genre;
 
-                    context.Tracks.Add(track);
+                    if (Genres.ContainsKey(track.Genre.Id))
+                    {
+                        track.Genre = Genres[track.Genre.Id];
+                    }
+                    else
+                    {
+                        Genres.Add(track.Genre.Id, track.Genre);
+                    }
 
+                    context.Tracks.Add(track);
                 }
 
                 currentTracklistUrl = deezerTrackCollection.NextPageUrl;
             }
         }
-
     }
-
-
-
 }
