@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RidePal.Models;
 using RidePal.Service;
+using RidePal.Service.Contracts;
 
 namespace RidePal.Controllers
 {
@@ -14,11 +15,13 @@ namespace RidePal.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly DatabaseSeedService seedService;
+        private readonly IGeneratePlaylistService playlistService;
 
-        public HomeController(ILogger<HomeController> logger, DatabaseSeedService seedService)
+        public HomeController(ILogger<HomeController> logger, DatabaseSeedService seedService, IGeneratePlaylistService _playlistService)
         {
             _logger = logger;
             this.seedService = seedService;
+            playlistService = _playlistService;
         }
 
         public IActionResult Index()
@@ -34,6 +37,12 @@ namespace RidePal.Controllers
             await seedService.DownloadTrackData("jazz");
 
             return View("Index");
+        }
+
+        public async Task<IActionResult> GetTravelDuration()
+        {
+            var result = await playlistService.GetTravelDuration("Sofia", "Varna");
+            return new JsonResult(result);
         }
 
         public IActionResult Privacy()

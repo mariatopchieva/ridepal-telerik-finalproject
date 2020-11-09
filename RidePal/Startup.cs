@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using RidePal.Data.Context;
 using RidePal.Data.Models;
 using RidePal.Service;
+using RidePal.Service.Contracts;
 
 namespace RidePal
 {
@@ -30,14 +31,17 @@ namespace RidePal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<DatabaseSeedService, DatabaseSeedService>();
             services.AddDbContext<RidePalDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<RidePalDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
+            services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

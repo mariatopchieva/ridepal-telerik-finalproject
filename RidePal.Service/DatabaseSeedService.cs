@@ -1,6 +1,7 @@
 ﻿using RidePal.Data.Context;
 using RidePal.Data.Models;
 using RidePal.Data.Models.DeezerAPIModels;
+using RidePal.Service.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace RidePal.Service
 {
-    public class DatabaseSeedService
+    public class DatabaseSeedService : IDatabaseSeedService
     {
         private readonly RidePalDbContext context;
         HttpClient client = new HttpClient();
