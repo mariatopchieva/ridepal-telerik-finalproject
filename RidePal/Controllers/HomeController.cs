@@ -14,14 +14,14 @@ namespace RidePal.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly DatabaseSeedService seedService;
-        private readonly IGeneratePlaylistService playlistService;
+        private readonly IDatabaseSeedService _seedService;
+        private readonly IGeneratePlaylistService _playlistService;
 
-        public HomeController(ILogger<HomeController> logger, DatabaseSeedService seedService, IGeneratePlaylistService _playlistService)
+        public HomeController(ILogger<HomeController> logger, IDatabaseSeedService seedService, IGeneratePlaylistService playlistService)
         {
-            _logger = logger;
-            this.seedService = seedService;
-            playlistService = _playlistService;
+            this._logger = logger;
+            this._seedService = seedService;
+            this._playlistService = playlistService;
         }
 
         public IActionResult Index()
@@ -31,17 +31,17 @@ namespace RidePal.Controllers
 
         public async Task<IActionResult> SeedDatabase()
         {
-            await seedService.DownloadTrackData("rock");
-            await seedService.DownloadTrackData("metal");
-            await seedService.DownloadTrackData("pop");
-            await seedService.DownloadTrackData("jazz");
+            await _seedService.DownloadTrackData("rock");
+            await _seedService.DownloadTrackData("metal");
+            await _seedService.DownloadTrackData("pop");
+            await _seedService.DownloadTrackData("jazz");
 
             return View("Index");
         }
 
         public async Task<IActionResult> GetTravelDuration()
         {
-            var result = await playlistService.GetTravelDuration("Sofia", "Varna");
+            var result = await _playlistService.GetTravelDuration("Sofia", "Varna");
             return new JsonResult(result);
         }
 
