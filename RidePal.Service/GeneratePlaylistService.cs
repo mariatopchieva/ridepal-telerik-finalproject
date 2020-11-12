@@ -12,6 +12,7 @@ using System.Linq;
 using RidePal.Service.Contracts;
 using RidePal.Data.Models;
 using RidePal.Service.DTO;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace RidePal.Service
 {
@@ -44,32 +45,59 @@ namespace RidePal.Service
         }
 
 
+        public async Task<IEnumerable<Track>> GetTracksByPreferredGenre(string genre, double travelDuration, 
+            Dictionary<string, int> genrePercentage)
+        {
+
+            double durationPerGenre = (genrePercentage[genre] * travelDuration) / 100;
+
+            double currentSongDuration = 0.0;
+
+            //repeats artists
+            var songs = context.Tracks.Where(x => x.Genre.Name == genre).AsEnumerable();
+
+            var artists = songs.Select(x => x.ArtistId).Distinct().ToList();
+
+            var songsAllUniqueArtists = songs.Where(x => artists.Contains(x.ArtistId));
+
+            //mytest => does not repeat artist
+            var songsUniqueArtistsPerGenre = context.Tracks.Where(x => x.Genre.Name == genre).Where(x => artists.Contains(x.ArtistId));
+
+            Random randomGenerator = new Random();
+            List<Track> playlist = new List<Track>();
+
+            for (double i = 0; i < durationPerGenre; i += currentSongDuration)
+            {
+                int randomNumber = randomGenerator.Next(1, songs.Count());
+                var song = songs.ElementAt(randomNumber);
+                currentSongDuration = song.TrackDuration;
+                playlist.Add(song);
+            }
+
+            return playlist;
+        }
+
+
+
         public async Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO)
         {
             // playlistDTO => Playlist model to RidePalDbContext
-            double travelDuration = await GetTravelDuration(playlistDTO.startLocationName, playlistDTO.destinationName);
+            double travelDuration = await GetTravelDuration(playlistDTO.StartLocationName, playlistDTO.DestinationName);
             double minPlaytime = travelDuration - 300;
             double maxPlaytime = travelDuration + 300;
 
-            double rockDuration = (playlistDTO.genrePercentage["rock"] * travelDuration) / 100;
-            double metalDuration = (playlistDTO.genrePercentage["metal"] * travelDuration) / 100;
-            double popDuration = (playlistDTO.genrePercentage["pop"] * travelDuration) / 100;
-            double jazzDuration = (playlistDTO.genrePercentage["jazz"] * travelDuration) / 100;
+            List<Track> tracks = new List<Track>();
+            tracks.AddRange(GetTracksByPreferredGenre("rock", travelDuration, playlistDTO.GenrePercentage).Result);
+            tracks.AddRange(GetTracksByPreferredGenre("metal", travelDuration, playlistDTO.GenrePercentage).Result);
+            tracks.AddRange(GetTracksByPreferredGenre("pop", travelDuration, playlistDTO.GenrePercentage).Result);
+            tracks.AddRange(GetTracksByPreferredGenre("jazz", travelDuration, playlistDTO.GenrePercentage).Result);
 
-            double currentSongDuration = 0.0;
-            for (double i = 0; i < rockDuration; i += currentSongDuration)
-            {
-                currentSongDuration = context.Tracks.Where(x => x.Genre.Name == "rock").FirstOrDefault().TrackDuration;
-
-            }
-
-            //
-
+            
 
 
             var playlist = new Playlist()
             {
-                Title = playlistDTO.playlistName,
+                Title = playlistDTO.PlaylistName,
                 
             };
 

@@ -7,12 +7,12 @@ namespace RidePal.Service.DTO
 {
     public class GeneratePlaylistDTO
     {
-        public string startLocationName { get; set; }
-        public string destinationName { get; set; }
-        public string playlistName { get; set; }
-        public bool repeatArtist { get; set; }
-        public bool useTopTracks { get; set; }
-        public Dictionary<string, int> genrePercentage { get; set; }
-        public User user { get; set; }
+        public string StartLocationName { get; set; }
+        public string DestinationName { get; set; }
+        public string PlaylistName { get; set; }
+        public bool RepeatArtist { get; set; }
+        public bool UseTopTracks { get; set; }
+        public Dictionary<string, int> GenrePercentage { get; set; }
+        public User User { get; set; }
     }
 }
