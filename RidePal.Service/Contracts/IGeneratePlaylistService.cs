@@ -7,6 +7,6 @@ namespace RidePal.Service.Contracts
 {
     public interface IGeneratePlaylistService
     {
-        Task<int> GetTravelDuration(string startLocationName, string destinationName);
+        Task<double> GetTravelDuration(string startLocationName, string destinationName);
     }
 }

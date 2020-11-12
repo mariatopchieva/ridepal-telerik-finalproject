@@ -35,13 +35,28 @@ namespace RidePal
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    options.Password.RequireDigit = true;
+            //    options.Password.RequiredLength = 6;
+            //    options.Password.RequireLowercase = false;
+            //    options.Password.RequireNonAlphanumeric = false;
+            //    options.Password.RequiredUniqueChars = 0;
+            //    options.Password.RequireUppercase = false;
+            //}).AddIdentity<User, Role>(option => option.SignIn.RequireConfirmedAccount = true)
+            //    .AddEntityFrameworkStores<RidePalDbContext>()
+            //    .AddDefaultTokenProviders();
+
+            services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<RidePalDbContext>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
             services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
             services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
+            services.AddScoped<IPlaylistService, PlaylistService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

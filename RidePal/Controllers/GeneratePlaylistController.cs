@@ -8,11 +8,16 @@ namespace RidePal.Controllers
 {
     [Route("/[controller]")]
 
-    public class GeneratePlaylist : Controller
+    public class GeneratePlaylistController : Controller
     {
+        public GeneratePlaylistController()
+        {
+
+        }
+        
         public IActionResult Index()
         {
-            return View();
+            return View("GeneratePlaylist");
         }
     }
 }
