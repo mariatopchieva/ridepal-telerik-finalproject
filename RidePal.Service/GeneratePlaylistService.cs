@@ -45,33 +45,66 @@ namespace RidePal.Service
         }
 
 
-        public async Task<IEnumerable<Track>> GetTracksByPreferredGenre(string genre, double travelDuration, 
-            Dictionary<string, int> genrePercentage)
+        public async Task<IEnumerable<Track>> GetTracksByPreferredGenre(string genre, double travelDuration, //ADD AWAIT
+            Dictionary<string, int> genrePercentage, bool repeatArtist, bool useTopTracks)
         {
+            List<Track> tracksPerGenre = context.Tracks.Where(x => x.Genre.Name == genre).ToList();
+            List<Track> tracks = new List<Track>();
+            bool useRandomGenerator;
+
+            if(repeatArtist)
+            {
+                if(useTopTracks)
+                {
+                    tracks = tracksPerGenre.OrderByDescending(x => x.TrackRank).ToList();
+                    useRandomGenerator = false;
+                }
+                else
+                {
+                    tracks = tracksPerGenre;
+                    useRandomGenerator = true;
+                }
+            }
+            else
+            {
+                var tracksUniqueArtists = tracksPerGenre.GroupBy(y => y.ArtistId).Select(z => z.First()).ToList();
+
+                if (useTopTracks)
+                {
+                    tracks = tracksUniqueArtists.OrderByDescending(x => x.TrackRank).ToList();
+                    useRandomGenerator = false;
+                }
+                else
+                {
+                    tracks = tracksUniqueArtists;
+                    useRandomGenerator = true;
+                }
+            }
 
             double durationPerGenre = (genrePercentage[genre] * travelDuration) / 100;
 
-            double currentSongDuration = 0.0;
-
-            //repeats artists
-            var songs = context.Tracks.Where(x => x.Genre.Name == genre).AsEnumerable();
-
-            var artists = songs.Select(x => x.ArtistId).Distinct().ToList();
-
-            var songsAllUniqueArtists = songs.Where(x => artists.Contains(x.ArtistId));
-
-            //mytest => does not repeat artist
-            var songsUniqueArtistsPerGenre = context.Tracks.Where(x => x.Genre.Name == genre).Where(x => artists.Contains(x.ArtistId));
+            double currentTrackDuration = 0.0;
 
             Random randomGenerator = new Random();
             List<Track> playlist = new List<Track>();
+            int counter = 1;
+            Track currentTrack;
 
-            for (double i = 0; i < durationPerGenre; i += currentSongDuration)
+            for (double i = 0; i < durationPerGenre; i += currentTrackDuration)
             {
-                int randomNumber = randomGenerator.Next(1, songs.Count());
-                var song = songs.ElementAt(randomNumber);
-                currentSongDuration = song.TrackDuration;
-                playlist.Add(song);
+                if(useRandomGenerator)
+                {
+                    int randomNumber = randomGenerator.Next(1, tracks.Count());
+                    currentTrack = tracks.ElementAt(randomNumber);
+                }
+                else
+                {
+                    currentTrack = tracks.ElementAt(counter);
+                    counter++;
+                }
+
+                currentTrackDuration = currentTrack.TrackDuration;
+                playlist.Add(currentTrack);
             }
 
             return playlist;
@@ -81,20 +114,31 @@ namespace RidePal.Service
 
         public async Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO)
         {
-            // playlistDTO => Playlist model to RidePalDbContext
             double travelDuration = await GetTravelDuration(playlistDTO.StartLocationName, playlistDTO.DestinationName);
             double minPlaytime = travelDuration - 300;
             double maxPlaytime = travelDuration + 300;
 
             List<Track> tracks = new List<Track>();
-            tracks.AddRange(GetTracksByPreferredGenre("rock", travelDuration, playlistDTO.GenrePercentage).Result);
-            tracks.AddRange(GetTracksByPreferredGenre("metal", travelDuration, playlistDTO.GenrePercentage).Result);
-            tracks.AddRange(GetTracksByPreferredGenre("pop", travelDuration, playlistDTO.GenrePercentage).Result);
-            tracks.AddRange(GetTracksByPreferredGenre("jazz", travelDuration, playlistDTO.GenrePercentage).Result);
+            tracks.AddRange(GetTracksByPreferredGenre("rock", travelDuration, playlistDTO.GenrePercentage, 
+                playlistDTO.RepeatArtist, playlistDTO.UseTopTracks).Result);
+            tracks.AddRange(GetTracksByPreferredGenre("metal", travelDuration, playlistDTO.GenrePercentage, 
+                playlistDTO.RepeatArtist, playlistDTO.UseTopTracks).Result);
+            tracks.AddRange(GetTracksByPreferredGenre("pop", travelDuration, playlistDTO.GenrePercentage, 
+                playlistDTO.RepeatArtist, playlistDTO.UseTopTracks).Result);
+            tracks.AddRange(GetTracksByPreferredGenre("jazz", travelDuration, playlistDTO.GenrePercentage, 
+                playlistDTO.RepeatArtist, playlistDTO.UseTopTracks).Result);
 
-            
+            //check playlist duration => if longer than maxPlaytime, remove track с duration между 0 и 5 мин; 
+            //                           if shorter than minPlaytime, add track с duration между 0 и 5 мин; 
+
+            //check if any tracks are repeated!!! and remove them if so
+
+            //save playtist to user's profile
+
+            //add playlist to dbContext
 
 
+            // playlistDTO => Playlist model to RidePalDbContext
             var playlist = new Playlist()
             {
                 Title = playlistDTO.PlaylistName,

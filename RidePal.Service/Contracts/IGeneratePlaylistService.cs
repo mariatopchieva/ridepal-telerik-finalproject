@@ -11,7 +11,7 @@ namespace RidePal.Service.Contracts
     {
         Task<double> GetTravelDuration(string startLocationName, string destinationName);
         Task<IEnumerable<Track>> GetTracksByPreferredGenre(string genre, double travelDuration,
-            Dictionary<string, int> genrePercentage);
+            Dictionary<string, int> genrePercentage, bool repeatArtist, bool useTopTracks);
 
         Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO);
     }
