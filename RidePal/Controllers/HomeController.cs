@@ -37,14 +37,14 @@ namespace RidePal.Controllers
             await _seedService.DownloadTrackData("jazz");
 
             return View("Index");
-        }
+        } //hangfire
 
         public async Task<IActionResult> GetTravelDuration()
         {
             var result = await _playlistService.GetTravelDuration("Sofia", "Varna");
             return new JsonResult(result);
         }
-
+        
         public IActionResult Privacy()
         {
             return View();

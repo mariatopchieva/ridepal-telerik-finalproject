@@ -28,7 +28,7 @@ namespace RidePal.Data.Models
 
         //[Required]
         //[Display(Name = "File")]
-        public byte[] FormFile { get; set; }
+        public string FilePath { get; set; }
 
     }
 }

@@ -219,9 +219,9 @@ namespace RidePal.Data.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     Title = table.Column<string>(maxLength: 50, nullable: false),
-                    PlaylistPlaytime = table.Column<int>(nullable: false),
+                    PlaylistPlaytime = table.Column<double>(nullable: false),
                     Rank = table.Column<double>(nullable: false),
-                    FormFile = table.Column<byte[]>(nullable: true)
+                    FilePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -332,8 +332,8 @@ namespace RidePal.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "2e5d281b-82d4-47a0-95bc-850d795ab16f", "Admin", "ADMIN" },
-                    { 2, "501f5438-1c2e-4d3b-8f11-1af0654e42fe", "User", "USER" }
+                    { 1, "8b991456-faa8-438b-9eae-77976963445a", "Admin", "ADMIN" },
+                    { 2, "306dd2e1-818c-4883-a7b3-a9363aa11385", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -341,8 +341,8 @@ namespace RidePal.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsBanned", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "df0eb64e-e485-4993-85ad-2c62bc907d97", "maria_topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA_TOPCHIEVA@ABV.BG", "MARIA", "AQAAAAEAACcQAAAAEO13WX3cCqmeNuZm+jUAUjphaT5EzRUykl5RWmNY9jmkAkoPqEPLyW6QjHUqdf34Uw==", null, false, "0fd779c6-8b9c-46d4-bbbc-560ec283b1fc", false, "Maria" },
-                    { 2, 0, "d65afda1-6c88-45ff-8f46-04655c40103c", "maria.topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA.TOPCHIEVA@ABV.BG", "MARIATOP", "AQAAAAEAACcQAAAAEFRY3/nfVcA4jAf/HANCyCiB85OGGMq8/F9HHodHPFpIK3YDcP+flc4U4uHWne3LpQ==", null, false, "90095c6c-6599-49ff-8664-0a24042772bc", false, "MariaTop" }
+                    { 1, 0, "bc4aa514-2844-4fa9-8c63-2525429ce9c4", "maria_topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA_TOPCHIEVA@ABV.BG", "MARIA", "AQAAAAEAACcQAAAAEKrSNwMoA6rYa/v9fB9keWQ3YYjKIq+wibKwaifu5luUatNjHIQBLaOEWzxY2ZVyAw==", null, false, "87783e1c-e7c1-465b-bd17-489a26d882af", false, "Maria" },
+                    { 2, 0, "d2377572-a633-46bf-ae4c-eaa3261fa4eb", "maria.topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA.TOPCHIEVA@ABV.BG", "MARIATOP", "AQAAAAEAACcQAAAAEJXVBp0e2D9lJoZRZ3/aJN97ys2q5t86zEgjpa7Jl2KJqJfXEyW5jmzlMjlzRbuEtA==", null, false, "1c93507c-eb51-44e1-bf0b-0e4af195bde1", false, "MariaTop" }
                 });
 
             migrationBuilder.InsertData(

@@ -87,6 +87,7 @@ namespace RidePal.Areas.Identity.Pages.Account
             {
                 var user = new User { /*FirstName = Input.FirstName, LastName = Input.LastName,*/ UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userManager.AddToRoleAsync(user, "User");
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

@@ -103,8 +103,11 @@ namespace RidePal.Service
                     counter++;
                 }
 
-                currentTrackDuration = currentTrack.TrackDuration;
-                playlist.Add(currentTrack);
+                if(!playlist.Contains(currentTrack))
+                {
+                    currentTrackDuration = currentTrack.TrackDuration;
+                    playlist.Add(currentTrack);
+                }
             }
 
             return playlist;
@@ -131,11 +134,9 @@ namespace RidePal.Service
             //                           if shorter than minPlaytime, add track с duration между 0 и 5 мин; 
             //                           set PlaylistPlaytime & other properties
 
-            //check if any tracks are repeated!!! and remove them if so
-
+            //mix the songs
+            
             //save playtist to user's profile
-
-            //add playlist to dbContext
 
 
             // playlistDTO => Playlist model to RidePalDbContext
@@ -145,13 +146,12 @@ namespace RidePal.Service
                 
             };
 
-            
 
 
+            await this.context.Playlists.AddAsync(playlist);
+            await this.context.SaveChangesAsync();
 
-
-
-
+            //map playlist to PlaylistDTO
             return new PlaylistDTO();
         }
 

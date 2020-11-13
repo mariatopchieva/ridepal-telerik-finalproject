@@ -51,8 +51,8 @@ namespace RidePal.Controllers
                 StartLocationName = "Sofia",
                 DestinationName = "Ihtiman",
                 PlaylistName = "To the sea",
-                RepeatArtist = false,
-                UseTopTracks = false,
+                RepeatArtist = true,
+                UseTopTracks = true,
                 GenrePercentage = genrePercentage,
                 User = new Data.Models.User()
             };
