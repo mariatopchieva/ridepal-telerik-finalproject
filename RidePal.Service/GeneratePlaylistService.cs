@@ -111,7 +111,6 @@ namespace RidePal.Service
         }
 
 
-
         public async Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO)
         {
             double travelDuration = await GetTravelDuration(playlistDTO.StartLocationName, playlistDTO.DestinationName);
@@ -130,6 +129,7 @@ namespace RidePal.Service
 
             //check playlist duration => if longer than maxPlaytime, remove track с duration между 0 и 5 мин; 
             //                           if shorter than minPlaytime, add track с duration между 0 и 5 мин; 
+            //                           set PlaylistPlaytime & other properties
 
             //check if any tracks are repeated!!! and remove them if so
 
