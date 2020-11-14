@@ -68,12 +68,10 @@ namespace RidePal.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -101,6 +99,18 @@ namespace RidePal.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 2
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -109,12 +119,10 @@ namespace RidePal.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -199,14 +207,17 @@ namespace RidePal.Data.Migrations
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PlaylistPlaytime")
-                        .HasColumnType("int");
+                    b.Property<double>("PlaylistPlaytime")
+                        .HasColumnType("float");
 
                     b.Property<double>("Rank")
                         .HasColumnType("float");
@@ -297,6 +308,22 @@ namespace RidePal.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "8b991456-faa8-438b-9eae-77976963445a",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "306dd2e1-818c-4883-a7b3-a9363aa11385",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("RidePal.Data.Models.Track", b =>
@@ -372,8 +399,19 @@ namespace RidePal.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -419,6 +457,48 @@ namespace RidePal.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "bc4aa514-2844-4fa9-8c63-2525429ce9c4",
+                            Email = "maria_topchieva@abv.bg",
+                            EmailConfirmed = false,
+                            FirstName = "Maria",
+                            IsBanned = false,
+                            IsDeleted = false,
+                            LastName = "Topchieva",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MARIA_TOPCHIEVA@ABV.BG",
+                            NormalizedUserName = "MARIA",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKrSNwMoA6rYa/v9fB9keWQ3YYjKIq+wibKwaifu5luUatNjHIQBLaOEWzxY2ZVyAw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "87783e1c-e7c1-465b-bd17-489a26d882af",
+                            TwoFactorEnabled = false,
+                            UserName = "Maria"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d2377572-a633-46bf-ae4c-eaa3261fa4eb",
+                            Email = "maria.topchieva@abv.bg",
+                            EmailConfirmed = false,
+                            FirstName = "Maria",
+                            IsBanned = false,
+                            IsDeleted = false,
+                            LastName = "Topchieva",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MARIA.TOPCHIEVA@ABV.BG",
+                            NormalizedUserName = "MARIATOP",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJXVBp0e2D9lJoZRZ3/aJN97ys2q5t86zEgjpa7Jl2KJqJfXEyW5jmzlMjlzRbuEtA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "1c93507c-eb51-44e1-bf0b-0e4af195bde1",
+                            TwoFactorEnabled = false,
+                            UserName = "MariaTop"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

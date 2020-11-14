@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RidePal.Data.Models;
 using System;
@@ -28,22 +29,58 @@ namespace RidePal.Data.Context
         public DbSet<PlaylistTrack> PlaylistTracks { get; set; }
         public DbSet<PlaylistGenre> PlaylistGenres { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //already seeded.
-            //modelBuilder.Seed();
+            modelBuilder. Entity<Role>().HasData(
+                new Role() { Id = 1, Name = "Admin", NormalizedName = "ADMIN" },
+                new Role() { Id = 2, Name = "User", NormalizedName = "USER" }
+                );
+            
+            var hasher = new PasswordHasher<User>();
+
+            var admin = new User
+            {
+                Id = 1,
+                FirstName = "Maria",
+                LastName = "Topchieva",
+                UserName = "Maria",
+                NormalizedUserName = "MARIA",
+                Email = "maria_topchieva@abv.bg",
+                NormalizedEmail = "MARIA_TOPCHIEVA@ABV.BG",
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            admin.PasswordHash = hasher.HashPassword(admin, "Registration87!");
+            modelBuilder.Entity<User>().HasData(admin);
+            modelBuilder.Entity<IdentityUserRole<int>>().HasData(
+                new IdentityUserRole<int>()
+                {
+                    RoleId = 1,
+                    UserId = admin.Id
+                }
+                );
+
+            var user = new User
+            {
+                Id = 2,
+                FirstName = "Maria",
+                LastName = "Topchieva",
+                UserName = "MariaTop",
+                NormalizedUserName = "MARIATOP",
+                Email = "maria.topchieva@abv.bg",
+                NormalizedEmail = "MARIA.TOPCHIEVA@ABV.BG",
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            user.PasswordHash = hasher.HashPassword(user, "Registration87!");
+            modelBuilder.Entity<User>().HasData(user);
+            modelBuilder.Entity<IdentityUserRole<int>>().HasData(
+                new IdentityUserRole<int>()
+                {
+                    RoleId = 2,
+                    UserId = user.Id
+                }
+                );
 
             base.OnModelCreating(modelBuilder);
         }
-
-
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=RidePal3;Trusted_Connection=True;");
-
-        //}
-
     }
 }

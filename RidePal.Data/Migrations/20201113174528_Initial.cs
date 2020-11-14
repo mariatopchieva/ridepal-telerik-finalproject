@@ -56,6 +56,9 @@ namespace RidePal.Data.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(maxLength: 50, nullable: true),
+                    IsBanned = table.Column<bool>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -144,8 +147,8 @@ namespace RidePal.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false)
                 },
@@ -189,8 +192,8 @@ namespace RidePal.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false),
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    Name = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -216,8 +219,9 @@ namespace RidePal.Data.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     Title = table.Column<string>(maxLength: 50, nullable: false),
-                    PlaylistPlaytime = table.Column<int>(nullable: false),
-                    Rank = table.Column<double>(nullable: false)
+                    PlaylistPlaytime = table.Column<double>(nullable: false),
+                    Rank = table.Column<double>(nullable: false),
+                    FilePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -322,6 +326,34 @@ namespace RidePal.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { 1, "8b991456-faa8-438b-9eae-77976963445a", "Admin", "ADMIN" },
+                    { 2, "306dd2e1-818c-4883-a7b3-a9363aa11385", "User", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsBanned", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { 1, 0, "bc4aa514-2844-4fa9-8c63-2525429ce9c4", "maria_topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA_TOPCHIEVA@ABV.BG", "MARIA", "AQAAAAEAACcQAAAAEKrSNwMoA6rYa/v9fB9keWQ3YYjKIq+wibKwaifu5luUatNjHIQBLaOEWzxY2ZVyAw==", null, false, "87783e1c-e7c1-465b-bd17-489a26d882af", false, "Maria" },
+                    { 2, 0, "d2377572-a633-46bf-ae4c-eaa3261fa4eb", "maria.topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA.TOPCHIEVA@ABV.BG", "MARIATOP", "AQAAAAEAACcQAAAAEJXVBp0e2D9lJoZRZ3/aJN97ys2q5t86zEgjpa7Jl2KJqJfXEyW5jmzlMjlzRbuEtA==", null, false, "1c93507c-eb51-44e1-bf0b-0e4af195bde1", false, "MariaTop" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[] { 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[] { 2, 2 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Albums_ArtistId",

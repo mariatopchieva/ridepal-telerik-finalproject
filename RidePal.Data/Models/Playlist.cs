@@ -1,4 +1,5 @@
-﻿using RidePal.Data.Models.Abstract;
+﻿using Microsoft.AspNetCore.Http;
+using RidePal.Data.Models.Abstract;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,7 @@ namespace RidePal.Data.Models
         [Required, MinLength(3), MaxLength(50)]
         public string Title { get; set; }
 
-        public int PlaylistPlaytime { get; set; }
+        public double PlaylistPlaytime { get; set; }
 
         public double Rank { get; set; }
 
@@ -25,7 +26,9 @@ namespace RidePal.Data.Models
 
         public ICollection<PlaylistGenre> Genres { get; set; }
 
-        //image!!!
+        //[Required]
+        //[Display(Name = "File")]
+        public string FilePath { get; set; }
 
     }
 }

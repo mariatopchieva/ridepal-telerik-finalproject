@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using RidePal.Data.Context;
 using RidePal.Data.Models;
 using RidePal.Service;
+using RidePal.Service.Contracts;
 
 namespace RidePal
 {
@@ -30,14 +31,48 @@ namespace RidePal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<DatabaseSeedService, DatabaseSeedService>();
             services.AddDbContext<RidePalDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<RidePalDbContext>();
+
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    options.Password.RequireDigit = true;
+            //    options.Password.RequiredLength = 6;
+            //    options.Password.RequireLowercase = false;
+            //    options.Password.RequireNonAlphanumeric = false;
+            //    options.Password.RequiredUniqueChars = 0;
+            //    options.Password.RequireUppercase = false;
+            //}).AddIdentity<User, Role>(option => option.SignIn.RequireConfirmedAccount = true)
+            //    .AddEntityFrameworkStores<RidePalDbContext>()
+            //    .AddDefaultTokenProviders();
+
+            services.AddIdentity<User, Role>(o => {
+                // configure identity options
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 6;
+            })
+                .AddEntityFrameworkStores<RidePalDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "Identity.Cookie";
+            });
+
+            //services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = false)
+                //.AddEntityFrameworkStores<RidePalDbContext>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
+            services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
+            services.AddScoped<IPlaylistService, PlaylistService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
