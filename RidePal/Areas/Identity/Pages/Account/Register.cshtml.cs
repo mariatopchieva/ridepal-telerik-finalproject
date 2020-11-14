@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -87,7 +88,11 @@ namespace RidePal.Areas.Identity.Pages.Account
             {
                 var user = new User { /*FirstName = Input.FirstName, LastName = Input.LastName,*/ UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
+                //await _userManager.UpdateSecurityStampAsync(user);
+
                 await _userManager.AddToRoleAsync(user, "User");
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
