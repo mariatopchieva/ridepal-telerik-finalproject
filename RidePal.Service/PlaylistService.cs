@@ -8,6 +8,6 @@ namespace RidePal.Service
     public class PlaylistService : IPlaylistService
     {
         //EDIT, DELETE, GET ALL, GET BY ID
-
+        
     }
 }

@@ -47,8 +47,24 @@ namespace RidePal
             //    .AddEntityFrameworkStores<RidePalDbContext>()
             //    .AddDefaultTokenProviders();
 
-            services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<RidePalDbContext>();
+            services.AddIdentity<User, Role>(o => {
+                // configure identity options
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 6;
+            })
+                .AddEntityFrameworkStores<RidePalDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "Identity.Cookie";
+            });
+
+            //services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = false)
+                //.AddEntityFrameworkStores<RidePalDbContext>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -56,6 +72,7 @@ namespace RidePal
             services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
             services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
+            services.AddScoped<IAdminService, AdminService>();
 
         }
 
