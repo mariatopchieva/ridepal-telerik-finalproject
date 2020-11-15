@@ -72,6 +72,7 @@ namespace RidePal
             services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
             services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
+            services.AddScoped<IAdminService, AdminService>();
 
         }
 

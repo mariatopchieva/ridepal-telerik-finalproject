@@ -1,4 +1,50 @@
-﻿
-@{
+﻿@model AdminViewModel
 
+@{
+    ViewData["Title"] = "Users";
 }
+
+<h1>Users</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RegularUsers.Select(x => x.Id))
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegularUsers.Select(x => x.UserName))
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegularUsers.Select(x => x.IsDeleted))
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegularUsers.Select(x => x.IsBanned))
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.RegularUsers)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsDeleted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsBanned)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
