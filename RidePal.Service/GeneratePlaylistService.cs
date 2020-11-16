@@ -14,6 +14,7 @@ using RidePal.Data.Models;
 using RidePal.Service.DTO;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore;
+using RidePal.Service.Providers.Contracts;
 
 namespace RidePal.Service
 {
@@ -21,12 +22,14 @@ namespace RidePal.Service
     {
         static string key = "AjFGSA6G9iqex6iC7TYNxLO8Q4w4u2EccyEZnIR8wP2FUU6Z6npKm9AQfcrDDjbJ";
         private readonly RidePalDbContext context;
+        private readonly IDateTimeProvider dateTimeProvider;
         HttpClient client = new HttpClient();
         ResourceSet bingResourceSet = new ResourceSet();
 
-        public GeneratePlaylistService(RidePalDbContext _context)
+        public GeneratePlaylistService(RidePalDbContext _context, IDateTimeProvider _dateTimeProvider)
         {
             this.context = _context;
+            this.dateTimeProvider = _dateTimeProvider;
         }
 
         public async Task<double> GetTravelDuration(string startLocationName, string destinationName)
@@ -252,7 +255,6 @@ namespace RidePal.Service
 
             List<Track> finalPlaylist = FinetunePlaytime(travelDuration, tracks, playlistDTO.GenrePercentage).ToList();
 
-            // playlistDTO => Playlist model to RidePalDbContext
             var playlist = new Playlist()
             {
                 User = playlistDTO.User,
@@ -260,6 +262,7 @@ namespace RidePal.Service
                 Title = playlistDTO.PlaylistName,
                 PlaylistPlaytime = CalculatePlaytime(finalPlaylist),
                 Rank = CalculateRank(finalPlaylist),
+                CreatedOn = this.dateTimeProvider.GetDateTime()
             };
             
             await this.context.Playlists.AddAsync(playlist);
