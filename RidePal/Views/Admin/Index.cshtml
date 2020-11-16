@@ -1,25 +1,33 @@
 ﻿@model AdminViewModel
 
 @{
+    Layout = "_Layout";
     ViewData["Title"] = "Users";
 }
 
 <h1>Users</h1>
 
+@if (TempData["Msg"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["Msg"].ToString();
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RegularUsers.Select(x => x.Id))
+                <p>Id</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RegularUsers.Select(x => x.UserName))
+                <p>Username</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RegularUsers.Select(x => x.IsDeleted))
+                <p>IsBanned</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RegularUsers.Select(x => x.IsBanned))
+                <p>IsDeleted</p>
             </th>
         </tr>
     </thead>
@@ -34,14 +42,27 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsDeleted)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.IsBanned)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.DisplayFor(modelItem => item.IsDeleted)
+                </td>
+                <td>
+                    @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |*@
+                    @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
+                    <form class="form" method="post" asp-action="BanUser" style="margin-bottom: 30px; margin-left: 20px">
+                        <input type="hidden" name="UserId" value="@item.Id" />
+                        <div class="form__buttons buttons">
+                            <button type="submit">Ban user</button>
+                        </div>
+                    </form>
+                    <form class="form" method="post" asp-action="UnbanUser" style="margin-bottom:30px">
+
+                        <input type="hidden" name="UserId" value="@item.Id" />
+                        <div class="form__buttons buttons">
+                            <button type="submit">Unban user</button>
+                        </div>
+                    </form>
                     @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
                 </td>
             </tr>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RidePal.Models;
@@ -9,6 +10,7 @@ using RidePal.Service.Contracts;
 
 namespace RidePal.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly ILogger<AdminController> _logger;
@@ -27,6 +29,7 @@ namespace RidePal.Controllers
             this.adminService = adminService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
             var users = await this.adminService.GetAllRegularUsers();
@@ -34,6 +37,32 @@ namespace RidePal.Controllers
             var adminView = new AdminViewModel() { RegularUsers = users };
 
             return View(adminView);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BanUser(int userId)
+        {
+            var banned = await this.adminService.BanUserById(userId);
+
+            if (banned == true)
+            {
+                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User banned!" });
+            }
+
+            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User ban failed!" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnbanUser(int userId)
+        {
+            var banned = await this.adminService.UnbanUserById(userId);
+
+            if (banned == true)
+            {
+                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User unbanned!" });
+            }
+
+            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User unban failed!" });
         }
     }
 }
