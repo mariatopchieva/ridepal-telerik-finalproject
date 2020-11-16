@@ -14,5 +14,7 @@ namespace RidePal.Service.DTO
         public bool UseTopTracks { get; set; }
         public Dictionary<string, int> GenrePercentage { get; set; }
         public User User { get; set; }
+        public int UserId { get; set; }
+
     }
 }

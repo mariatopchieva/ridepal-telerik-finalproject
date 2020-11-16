@@ -26,6 +26,9 @@ namespace RidePal.Data.Models
 
         public ICollection<PlaylistGenre> Genres { get; set; }
 
+        public ICollection<PlaylistFavorite> Favorites { get; set; }
+
+
         //[Required]
         //[Display(Name = "File")]
         public string FilePath { get; set; }

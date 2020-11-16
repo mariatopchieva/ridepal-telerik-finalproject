@@ -5,21 +5,30 @@ using System.Text;
 
 namespace RidePal.Data.Models
 {
-    public class PlaylistGenre
+    public class PlaylistFavorite
     {
-        public PlaylistGenre(long genreId, int playlistId)
+        public PlaylistFavorite(int userId, int playlistId, bool isFavorate)
         {
-            this.GenreId = genreId;
+            this.UserId = userId;
             this.PlaylistId = playlistId;
+            this.IsFavorite = isFavorate;
         }
-        
+
+        public PlaylistFavorite()
+        {
+        }
+
         [Key]
         public int Id { get; set; }
         [Required]
-        public long GenreId { get; set; }
-        public Genre Genre { get; set; }
+        public int UserId { get; set; }
+
+        public User User { get; set; }
         [Required]
         public int PlaylistId { get; set; }
+
         public Playlist Playlist { get; set; }
+
+        public bool? IsFavorite { get; set; }
     }
 }

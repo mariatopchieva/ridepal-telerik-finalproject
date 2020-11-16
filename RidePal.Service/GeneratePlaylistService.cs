@@ -13,6 +13,7 @@ using RidePal.Service.Contracts;
 using RidePal.Data.Models;
 using RidePal.Service.DTO;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore;
 
 namespace RidePal.Service
 {
@@ -44,41 +45,74 @@ namespace RidePal.Service
                 .Select(resource => resource.travelDuration).First();
         }
 
-
-        public async Task<IEnumerable<Track>> GetTracksByPreferredGenre(string genre, double travelDuration, //ADD AWAIT
-            Dictionary<string, int> genrePercentage, bool repeatArtist, bool useTopTracks)
+        
+        public async Task<IEnumerable<Track>> GetTopTracks(string genre, double travelDuration,
+            Dictionary<string, int> genrePercentage, bool repeatArtist)
         {
-            List<Track> tracksPerGenre = context.Tracks.Where(x => x.Genre.Name == genre).ToList();
-            List<Track> tracks = new List<Track>();
-            bool useRandomGenerator;
+            List<Track> tracksPerGenre = await context.Tracks.Where(x => x.Genre.Name == genre).ToListAsync();
+            List<Track> allTracksOrdered = new List<Track>();
 
-            if(repeatArtist)
+            if (repeatArtist)
             {
-                if(useTopTracks)
-                {
-                    tracks = tracksPerGenre.OrderByDescending(x => x.TrackRank).ToList();
-                    useRandomGenerator = false;
-                }
-                else
-                {
-                    tracks = tracksPerGenre;
-                    useRandomGenerator = true;
-                }
+                allTracksOrdered = tracksPerGenre.OrderByDescending(x => x.TrackRank).ToList();
             }
             else
             {
                 var tracksUniqueArtists = tracksPerGenre.GroupBy(y => y.ArtistId).Select(z => z.First()).ToList();
+                allTracksOrdered = tracksUniqueArtists.OrderByDescending(x => x.TrackRank).ToList();
+            }
 
-                if (useTopTracks)
+            List<Track> topTracks = new List<Track>();
+            topTracks.AddRange(allTracksOrdered.Take(120));
+            allTracksOrdered.RemoveRange(0, 120);
+
+            List<Track> playlist = new List<Track>();
+
+            double durationPerGenre = (genrePercentage[genre] * travelDuration) / 100;
+
+            double currentTrackDuration = 0.0;
+
+            Random randomGenerator = new Random();
+            Track currentTrack;
+
+            for (double i = 0, j = 1.0; i < durationPerGenre; i += currentTrackDuration, j++)
+            {
+                if (j % 5.0 == 0) //every fifth tracks comes from the non-top tracks collection
                 {
-                    tracks = tracksUniqueArtists.OrderByDescending(x => x.TrackRank).ToList();
-                    useRandomGenerator = false;
+                    int randomNumber = randomGenerator.Next(1, allTracksOrdered.Count());
+                    currentTrack = allTracksOrdered.ElementAt(randomNumber);
+                    currentTrackDuration = currentTrack.TrackDuration;
+                    playlist.Add(currentTrack);
+                    allTracksOrdered.RemoveAt(randomNumber);
                 }
-                else
+                else //4 tracks come from top tracks collection
                 {
-                    tracks = tracksUniqueArtists;
-                    useRandomGenerator = true;
+                    int randomNumber = randomGenerator.Next(1, topTracks.Count());
+                    currentTrack = topTracks.ElementAt(randomNumber);
+                    currentTrackDuration = currentTrack.TrackDuration;
+                    playlist.Add(currentTrack);
+                    topTracks.RemoveAt(randomNumber);
                 }
+            }
+
+            return playlist;
+        }
+
+
+        public async Task<IEnumerable<Track>> GetTracks(string genre, double travelDuration, //ADD AWAIT
+            Dictionary<string, int> genrePercentage, bool repeatArtist)
+        {
+            List<Track> tracksPerGenre = await context.Tracks.Where(x => x.Genre.Name == genre).ToListAsync();
+            List<Track> tracks = new List<Track>();
+
+            if(repeatArtist)
+            {
+                tracks = tracksPerGenre;
+            }
+            else
+            {
+                var tracksUniqueArtists = tracksPerGenre.GroupBy(y => y.ArtistId).Select(z => z.First()).ToList();
+                tracks = tracksUniqueArtists;
             }
 
             double durationPerGenre = (genrePercentage[genre] * travelDuration) / 100;
@@ -87,92 +121,171 @@ namespace RidePal.Service
 
             Random randomGenerator = new Random();
             List<Track> playlist = new List<Track>();
-            int counter = 1;
             Track currentTrack;
 
             for (double i = 0; i < durationPerGenre; i += currentTrackDuration)
             {
-                if(useRandomGenerator)
-                {
-                    int randomNumber = randomGenerator.Next(1, tracks.Count());
-                    currentTrack = tracks.ElementAt(randomNumber);
-                }
-                else
-                {
-                    currentTrack = tracks.ElementAt(counter);
-                    counter++;
-                }
-
-                if(!playlist.Contains(currentTrack))
-                {
-                    currentTrackDuration = currentTrack.TrackDuration;
-                    playlist.Add(currentTrack);
-                }
+                int randomNumber = randomGenerator.Next(1, tracks.Count());
+                currentTrack = tracks.ElementAt(randomNumber);
+                currentTrackDuration = currentTrack.TrackDuration;
+                playlist.Add(currentTrack);
+                tracks.RemoveAt(randomNumber);
             }
 
             return playlist;
+        }
+
+        public double CalculatePlaytime(List<Track> playlist)
+        {
+            double playtime = (double)playlist.Select(track => track.TrackDuration).Sum();
+
+            return playtime;
+        }
+
+        public double CalculateRank(List<Track> playlist)
+        {
+            double rank = playlist.Select(track => track.TrackRank).Average();
+            
+            return rank;
+        }
+
+
+        public IEnumerable<Track> FinetunePlaytime(double travelDuration, List<Track> playlist, 
+            Dictionary<string, int> genrePercentage)
+        {
+            double playtime = CalculatePlaytime(playlist);
+            double minPlaytime = travelDuration - 300;
+            double maxPlaytime = travelDuration + 300;
+
+            //if(playtime < minPlaytime) //add a song with length between lower and upper limit; 
+            //{
+            //    double lowerLimit = minPlaytime - playtime;
+            //    double upperLimit = lowerLimit + 10;
+
+            //    //song must not be repeated; artist not repeated and be within genre preference
+            //    string genre;
+
+            //    if(genrePercentage["jazz"] != 0)
+            //    {
+            //        genre = "jazz";
+            //    }
+            //    else
+            //    {
+            //        if(genrePercentage["pop"] != 0)
+            //        {
+            //            genre = "pop";
+            //        }
+            //        else
+            //        {
+            //            if (genrePercentage["metal"] != 0)
+            //            {
+            //                genre = "metal";
+            //            }
+            //            else
+            //            {
+            //                genre = "rock";
+            //            }
+            //        }
+            //    }
+
+            //    var tracksPerGenre = context.Tracks.Where(x => x.Genre.Name == genre).ToList();
+            //    var tracksUniqueArtists = tracksPerGenre.GroupBy(y => y.ArtistId).Select(z => z.First()).ToList();
+
+            //    for (int i = tracksUniqueArtists.Count - 1; i > 1; i--)
+            //    {
+            //        if (tracksUniqueArtists[i].TrackDuration > lowerLimit && tracksUniqueArtists[i].TrackDuration < upperLimit
+            //            && !playlist.Contains(tracksUniqueArtists[i]))
+            //        {
+            //            playlist.Add(tracksUniqueArtists[i]);
+
+            //            break;
+            //        }
+            //    }
+                
+            //    //ако не намери песен с такава дължина от този жанр, ще върне твърде кратък плейлист => change genre?
+            //    return playlist;
+            //}
+            if(playtime > maxPlaytime) //remove a song with length between lower and upper limit
+            {
+                double upperLimit = playtime - maxPlaytime;
+                double lowerLimit = upperLimit + 10;
+
+                for (int i = playlist.Count - 1; i > 1; i--) //ако съм прескочила с 10 мин //use random
+                {
+                    if(playlist[i].TrackDuration > upperLimit && playlist[i].TrackDuration < lowerLimit)
+                    {
+                        playlist.Remove(playlist[i]);
+                        
+                        break;
+                    }
+                }
+
+                return playlist; 
+            }
+            else
+            {
+                return playlist;
+            }
         }
 
 
         public async Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO)
         {
             double travelDuration = await GetTravelDuration(playlistDTO.StartLocationName, playlistDTO.DestinationName);
-            double minPlaytime = travelDuration - 300;
-            double maxPlaytime = travelDuration + 300;
 
             List<Track> tracks = new List<Track>();
-            tracks.AddRange(GetTracksByPreferredGenre("rock", travelDuration, playlistDTO.GenrePercentage, 
-                playlistDTO.RepeatArtist, playlistDTO.UseTopTracks).Result);
-            tracks.AddRange(GetTracksByPreferredGenre("metal", travelDuration, playlistDTO.GenrePercentage, 
-                playlistDTO.RepeatArtist, playlistDTO.UseTopTracks).Result);
-            tracks.AddRange(GetTracksByPreferredGenre("pop", travelDuration, playlistDTO.GenrePercentage, 
-                playlistDTO.RepeatArtist, playlistDTO.UseTopTracks).Result);
-            tracks.AddRange(GetTracksByPreferredGenre("jazz", travelDuration, playlistDTO.GenrePercentage, 
-                playlistDTO.RepeatArtist, playlistDTO.UseTopTracks).Result);
 
-            //check playlist duration => if longer than maxPlaytime, remove track с duration между 0 и 5 мин; 
-            //                           if shorter than minPlaytime, add track с duration между 0 и 5 мин; 
-            //                           set PlaylistPlaytime & other properties
+            if(playlistDTO.UseTopTracks)
+            {
+                tracks.AddRange(GetTopTracks("rock", travelDuration, playlistDTO.GenrePercentage, playlistDTO.RepeatArtist).Result);
+                tracks.AddRange(GetTopTracks("metal", travelDuration, playlistDTO.GenrePercentage, playlistDTO.RepeatArtist).Result);
+                tracks.AddRange(GetTopTracks("pop", travelDuration, playlistDTO.GenrePercentage, playlistDTO.RepeatArtist).Result);
+                tracks.AddRange(GetTopTracks("jazz", travelDuration, playlistDTO.GenrePercentage, playlistDTO.RepeatArtist).Result);
+            }
+            else
+            {
+                tracks.AddRange(GetTracks("rock", travelDuration, playlistDTO.GenrePercentage, playlistDTO.RepeatArtist).Result);
+                tracks.AddRange(GetTracks("metal", travelDuration, playlistDTO.GenrePercentage, playlistDTO.RepeatArtist).Result);
+                tracks.AddRange(GetTracks("pop", travelDuration, playlistDTO.GenrePercentage, playlistDTO.RepeatArtist).Result);
+                tracks.AddRange(GetTracks("jazz", travelDuration, playlistDTO.GenrePercentage, playlistDTO.RepeatArtist).Result);
+            }
 
-            //mix the songs
-            
-            //save playtist to user's profile
-
+            List<Track> finalPlaylist = FinetunePlaytime(travelDuration, tracks, playlistDTO.GenrePercentage).ToList();
 
             // playlistDTO => Playlist model to RidePalDbContext
             var playlist = new Playlist()
             {
+                User = playlistDTO.User,
+                UserId = playlistDTO.UserId,
                 Title = playlistDTO.PlaylistName,
-                
+                PlaylistPlaytime = CalculatePlaytime(finalPlaylist),
+                Rank = CalculateRank(finalPlaylist),
             };
-
-
-
+            
             await this.context.Playlists.AddAsync(playlist);
             await this.context.SaveChangesAsync();
 
-            //map playlist to PlaylistDTO
-            return new PlaylistDTO();
+            var playlistFromDb = this.context.Playlists.FirstOrDefault(x => x.Title == playlist.Title);
+            if(playlistFromDb == null)
+            {
+                throw new ArgumentNullException("Playlist not found in the database.");
+            }
+
+            List<PlaylistTrack> playlistTracks = finalPlaylist.Select(x => new PlaylistTrack(x.Id, playlistFromDb.Id)).ToList();
+
+            List<string> genresStringList = playlistDTO.GenrePercentage.Where(x => x.Value > 0).Select(y => y.Key).ToList();
+
+            List<Genre> genres = this.context.Genres.Where(x => genresStringList.Contains(x.Name)).ToList();
+
+            List<PlaylistGenre> playlistGenres = genres.Select(x => new PlaylistGenre(x.Id, playlistFromDb.Id)).ToList();
+
+            await this.context.PlaylistTracks.AddRangeAsync(playlistTracks);
+            await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);
+            await this.context.SaveChangesAsync();
+
+            //public string FilePath { get; set; }
+
+            return new PlaylistDTO(playlist);
         }
-
-        //public async Task<BeerDTO> CreateBeerAsync(BeerDTO beerDTO)
-        //{
-        //    var beer = new Beer()
-        //    {
-        //        Name = beerDTO.Name,
-        //        Description = beerDTO.Description,
-        //        BreweryId = beerDTO.BreweryId,
-        //        ABV = beerDTO.ABV,
-        //        StyleId = beerDTO.StyleId,
-        //        CreatedOn = this.dateTimeProvider.GetDateTime()
-        //    };
-
-        //    await this._context.Beers.AddAsync(beer);
-        //    await this._context.SaveChangesAsync();
-
-        //    return beerDTO;
-        //}
-
-
     }
 }

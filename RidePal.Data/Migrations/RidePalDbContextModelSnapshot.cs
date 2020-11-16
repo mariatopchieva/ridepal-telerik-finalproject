@@ -232,9 +232,37 @@ namespace RidePal.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Title")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Playlists");
+                });
+
+            modelBuilder.Entity("RidePal.Data.Models.PlaylistFavorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool?>("IsFavorite")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PlaylistId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaylistId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("RidePal.Data.Models.PlaylistGenre", b =>
@@ -313,14 +341,14 @@ namespace RidePal.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "8b991456-faa8-438b-9eae-77976963445a",
+                            ConcurrencyStamp = "cab460b9-2fd0-4914-be6c-d956ac8aa29a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "306dd2e1-818c-4883-a7b3-a9363aa11385",
+                            ConcurrencyStamp = "dcf7c33c-c937-4bf2-b1fa-215150af61ce",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -463,7 +491,7 @@ namespace RidePal.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bc4aa514-2844-4fa9-8c63-2525429ce9c4",
+                            ConcurrencyStamp = "86f7c91c-5666-46a4-b16a-98cbc60000e4",
                             Email = "maria_topchieva@abv.bg",
                             EmailConfirmed = false,
                             FirstName = "Maria",
@@ -473,9 +501,9 @@ namespace RidePal.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MARIA_TOPCHIEVA@ABV.BG",
                             NormalizedUserName = "MARIA",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKrSNwMoA6rYa/v9fB9keWQ3YYjKIq+wibKwaifu5luUatNjHIQBLaOEWzxY2ZVyAw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELZvhe0T8tomUY+gxYqMX1vhIjxYPfcbXaQApJdWaA4tGoXAjSNhq78AFuh8AcuywQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "87783e1c-e7c1-465b-bd17-489a26d882af",
+                            SecurityStamp = "ad0c5393-ef84-4e22-8d1f-073e4681e605",
                             TwoFactorEnabled = false,
                             UserName = "Maria"
                         },
@@ -483,7 +511,7 @@ namespace RidePal.Data.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d2377572-a633-46bf-ae4c-eaa3261fa4eb",
+                            ConcurrencyStamp = "98e0f532-b99d-40fd-ae4f-cfa6606d2c09",
                             Email = "maria.topchieva@abv.bg",
                             EmailConfirmed = false,
                             FirstName = "Maria",
@@ -493,9 +521,9 @@ namespace RidePal.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MARIA.TOPCHIEVA@ABV.BG",
                             NormalizedUserName = "MARIATOP",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJXVBp0e2D9lJoZRZ3/aJN97ys2q5t86zEgjpa7Jl2KJqJfXEyW5jmzlMjlzRbuEtA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELpHoWtWePXC0C9999JV9V6jnmqpeK/Rll2IFEqd7JQtzznUHAHitGz9q/xqK9u8bw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1c93507c-eb51-44e1-bf0b-0e4af195bde1",
+                            SecurityStamp = "820d406f-0ede-4408-baf1-e9f0634750a0",
                             TwoFactorEnabled = false,
                             UserName = "MariaTop"
                         });
@@ -568,18 +596,33 @@ namespace RidePal.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RidePal.Data.Models.PlaylistFavorite", b =>
+                {
+                    b.HasOne("RidePal.Data.Models.Playlist", "Playlist")
+                        .WithMany("Favorites")
+                        .HasForeignKey("PlaylistId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RidePal.Data.Models.User", "User")
+                        .WithMany("Favorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("RidePal.Data.Models.PlaylistGenre", b =>
                 {
                     b.HasOne("RidePal.Data.Models.Genre", "Genre")
                         .WithMany("Playlists")
                         .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("RidePal.Data.Models.Playlist", "Playlist")
                         .WithMany("Genres")
                         .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -588,13 +631,13 @@ namespace RidePal.Data.Migrations
                     b.HasOne("RidePal.Data.Models.Playlist", "Playlist")
                         .WithMany("Tracks")
                         .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("RidePal.Data.Models.Track", "Track")
                         .WithMany("Playlists")
                         .HasForeignKey("TrackId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

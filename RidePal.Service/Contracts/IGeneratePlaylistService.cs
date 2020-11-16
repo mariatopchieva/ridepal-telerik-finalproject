@@ -10,8 +10,9 @@ namespace RidePal.Service.Contracts
     public interface IGeneratePlaylistService
     {
         Task<double> GetTravelDuration(string startLocationName, string destinationName);
-        Task<IEnumerable<Track>> GetTracksByPreferredGenre(string genre, double travelDuration,
-            Dictionary<string, int> genrePercentage, bool repeatArtist, bool useTopTracks);
+        Task<IEnumerable<Track>> GetTracks(string genre, double travelDuration, Dictionary<string, int> genrePercentage, bool repeatArtist);
+
+        Task<IEnumerable<Track>> GetTopTracks(string genre, double travelDuration, Dictionary<string, int> genrePercentage, bool repeatArtist);
 
         Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO);
     }

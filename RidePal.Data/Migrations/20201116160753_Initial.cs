@@ -276,6 +276,31 @@ namespace RidePal.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Favorites",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(nullable: false),
+                    PlaylistId = table.Column<int>(nullable: false),
+                    IsFavorite = table.Column<bool>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favorites", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Favorites_Playlists_PlaylistId",
+                        column: x => x.PlaylistId,
+                        principalTable: "Playlists",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Favorites_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PlaylistGenres",
                 columns: table => new
                 {
@@ -291,14 +316,12 @@ namespace RidePal.Data.Migrations
                         name: "FK_PlaylistGenres_Genres_GenreId",
                         column: x => x.GenreId,
                         principalTable: "Genres",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PlaylistGenres_Playlists_PlaylistId",
                         column: x => x.PlaylistId,
                         principalTable: "Playlists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -317,14 +340,12 @@ namespace RidePal.Data.Migrations
                         name: "FK_PlaylistTracks_Playlists_PlaylistId",
                         column: x => x.PlaylistId,
                         principalTable: "Playlists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PlaylistTracks_Tracks_TrackId",
                         column: x => x.TrackId,
                         principalTable: "Tracks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -332,8 +353,8 @@ namespace RidePal.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "8b991456-faa8-438b-9eae-77976963445a", "Admin", "ADMIN" },
-                    { 2, "306dd2e1-818c-4883-a7b3-a9363aa11385", "User", "USER" }
+                    { 1, "cab460b9-2fd0-4914-be6c-d956ac8aa29a", "Admin", "ADMIN" },
+                    { 2, "dcf7c33c-c937-4bf2-b1fa-215150af61ce", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -341,8 +362,8 @@ namespace RidePal.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsBanned", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "bc4aa514-2844-4fa9-8c63-2525429ce9c4", "maria_topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA_TOPCHIEVA@ABV.BG", "MARIA", "AQAAAAEAACcQAAAAEKrSNwMoA6rYa/v9fB9keWQ3YYjKIq+wibKwaifu5luUatNjHIQBLaOEWzxY2ZVyAw==", null, false, "87783e1c-e7c1-465b-bd17-489a26d882af", false, "Maria" },
-                    { 2, 0, "d2377572-a633-46bf-ae4c-eaa3261fa4eb", "maria.topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA.TOPCHIEVA@ABV.BG", "MARIATOP", "AQAAAAEAACcQAAAAEJXVBp0e2D9lJoZRZ3/aJN97ys2q5t86zEgjpa7Jl2KJqJfXEyW5jmzlMjlzRbuEtA==", null, false, "1c93507c-eb51-44e1-bf0b-0e4af195bde1", false, "MariaTop" }
+                    { 1, 0, "86f7c91c-5666-46a4-b16a-98cbc60000e4", "maria_topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA_TOPCHIEVA@ABV.BG", "MARIA", "AQAAAAEAACcQAAAAELZvhe0T8tomUY+gxYqMX1vhIjxYPfcbXaQApJdWaA4tGoXAjSNhq78AFuh8AcuywQ==", null, false, "ad0c5393-ef84-4e22-8d1f-073e4681e605", false, "Maria" },
+                    { 2, 0, "98e0f532-b99d-40fd-ae4f-cfa6606d2c09", "maria.topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA.TOPCHIEVA@ABV.BG", "MARIATOP", "AQAAAAEAACcQAAAAELpHoWtWePXC0C9999JV9V6jnmqpeK/Rll2IFEqd7JQtzznUHAHitGz9q/xqK9u8bw==", null, false, "820d406f-0ede-4408-baf1-e9f0634750a0", false, "MariaTop" }
                 });
 
             migrationBuilder.InsertData(
@@ -400,6 +421,16 @@ namespace RidePal.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Favorites_PlaylistId",
+                table: "Favorites",
+                column: "PlaylistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Favorites_UserId",
+                table: "Favorites",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PlaylistGenres_GenreId",
                 table: "PlaylistGenres",
                 column: "GenreId");
@@ -408,6 +439,12 @@ namespace RidePal.Data.Migrations
                 name: "IX_PlaylistGenres_PlaylistId",
                 table: "PlaylistGenres",
                 column: "PlaylistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Playlists_Title",
+                table: "Playlists",
+                column: "Title",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Playlists_UserId",
@@ -456,6 +493,9 @@ namespace RidePal.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Favorites");
 
             migrationBuilder.DropTable(
                 name: "PlaylistGenres");
