@@ -260,6 +260,7 @@ namespace RidePal.Service
                 User = playlistDTO.User,
                 UserId = playlistDTO.UserId,
                 Title = playlistDTO.PlaylistName,
+                TravelDuration = travelDuration,
                 PlaylistPlaytime = CalculatePlaytime(finalPlaylist),
                 Rank = CalculateRank(finalPlaylist),
                 CreatedOn = this.dateTimeProvider.GetDateTime()

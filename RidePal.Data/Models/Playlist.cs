@@ -19,6 +19,7 @@ namespace RidePal.Data.Models
         public string Title { get; set; }
 
         public double PlaylistPlaytime { get; set; }
+        public double TravelDuration { get; set; }
 
         public double Rank { get; set; }
 

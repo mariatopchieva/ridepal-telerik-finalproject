@@ -16,6 +16,8 @@ using RidePal.Data.Context;
 using RidePal.Data.Models;
 using RidePal.Service;
 using RidePal.Service.Contracts;
+using RidePal.Service.Providers;
+using RidePal.Service.Providers.Contracts;
 
 namespace RidePal
 {
@@ -70,6 +72,7 @@ namespace RidePal
             services.AddRazorPages();
 
             services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
             services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IAdminService, AdminService>();
