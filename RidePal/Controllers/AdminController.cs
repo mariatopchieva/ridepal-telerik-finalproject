@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RidePal.Models;
 using RidePal.Service.Contracts;
+using RidePal.Service.DTO;
 
 namespace RidePal.Controllers
 {
@@ -18,9 +19,9 @@ namespace RidePal.Controllers
         private readonly IGeneratePlaylistService _playlistService;
         private readonly IAdminService adminService;
 
-        public AdminController(ILogger<AdminController> logger, 
-                                IDatabaseSeedService seedService, 
-                                IGeneratePlaylistService playlistService, 
+        public AdminController(ILogger<AdminController> logger,
+                                IDatabaseSeedService seedService,
+                                IGeneratePlaylistService playlistService,
                                 IAdminService adminService)
         {
             this._logger = logger;
@@ -34,9 +35,42 @@ namespace RidePal.Controllers
         {
             var users = await this.adminService.GetAllRegularUsers();
 
-            var adminView = new AdminViewModel() { RegularUsers = users };
+            var currentAdmin = users.FirstOrDefault(user => user.UserName == HttpContext.User.Identity.Name);
+
+            if (currentAdmin == null)
+            {
+                throw new ArgumentNullException("User not found in the current list of users.");
+            }
+
+            users.Remove(currentAdmin);
+
+            var adminView = new AdminViewModel() { AllUsers = users };
 
             return View(adminView);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUser(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await this.adminService.GetUserById((int)id);
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(UserDTO user)
+        {
+            if (ModelState.IsValid)
+            {
+                var edited = await this.adminService.EditUser(user);
+            }
+
+            return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User info edited." });
         }
 
         [HttpPost]
@@ -58,6 +92,32 @@ namespace RidePal.Controllers
             var banned = await this.adminService.UnbanUserById(userId);
 
             if (banned == true)
+            {
+                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User unbanned!" });
+            }
+
+            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User unban failed!" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            var deleted = await this.adminService.DeleteUser(userId);
+
+            if (deleted == true)
+            {
+                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User unbanned!" });
+            }
+
+            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User unban failed!" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RevertDeleteUser(int userId)
+        {
+            var reverted = await this.adminService.RevertDeleteUser(userId);
+
+            if (reverted == true)
             {
                 return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User unbanned!" });
             }
