@@ -165,7 +165,7 @@ namespace RidePal.Service
                 double upperLimit = playtime - maxPlaytime;
                 double lowerLimit = upperLimit + 600;
 
-                for (int i = playlist.Count - 1; i > 1; i--) //ако съм прескочила с 10 мин //use random
+                for (int i = playlist.Count - 1; i > 1; i--) //ако съм прескочила с 10 мин => може да няма толкова дълга песен //use random
                 {
                     if(playlist[i].TrackDuration > upperLimit && playlist[i].TrackDuration < lowerLimit)
                     {
@@ -334,14 +334,14 @@ namespace RidePal.Service
             }
 
             List<PlaylistTrack> playlistTracks = finalPlaylist.Select(x => new PlaylistTrack(x.Id, playlistFromDb.Id)).ToList();
-            playlistFromDb.TracksCount = playlistTracks.Count; //=> check save to context.Playlists!!!
+            playlistFromDb.TracksCount = playlistTracks.Count;
 
             List<string> genresStringList = playlistDTO.GenrePercentage.Where(x => x.Value > 0).Select(y => y.Key).ToList();
 
             List<Genre> genres = this.context.Genres.Where(x => genresStringList.Contains(x.Name)).ToList();
 
             List<PlaylistGenre> playlistGenres = genres.Select(x => new PlaylistGenre(x.Id, playlistFromDb.Id)).ToList();
-            playlistFromDb.GenresCount = playlistGenres.Count; //=> check save to context.Playlists!!!
+            playlistFromDb.GenresCount = playlistGenres.Count;
 
             await this.context.PlaylistTracks.AddRangeAsync(playlistTracks);
             await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);

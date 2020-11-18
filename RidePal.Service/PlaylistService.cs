@@ -10,15 +10,25 @@ namespace RidePal.Service
         //EDIT, DELETE, GET ALL, GET BY ID
         //GetByUserId => my playlists my favorites
 
-        //TracksCount - playlist property
-        //PlaytimeString => .. hours, .. minutes, ..seconds => playlist property
-        
         //get all genres / artists/ albums in a playlist
         
         //GetHighestPlaytime
+
         //GetShortestPlaytime
 
+        //Sort => by default playlists shoud be sorted by average rank descending
 
+        //Filter by name, genre and duration
+
+        //Get All => show average rank and total playtime
+
+        //Georgi//Get by Id (Details) => lists of artists/ tracks; play a preview
+
+        //Edit/ delete Playlist => (admin)List all/ (user)My playlists
+
+        //Pagination
+
+        //Add authorization restrictions => here?
 
 
 
