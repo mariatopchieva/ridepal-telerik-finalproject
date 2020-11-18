@@ -43,47 +43,47 @@ namespace RidePal.Data.Context
             
             var hasher = new PasswordHasher<User>();
 
-            var admin = new User
+            User admin = new User
             {
                 Id = 1,
-                FirstName = "Maria",
-                LastName = "Topchieva",
-                UserName = "Maria",
-                NormalizedUserName = "MARIA",
-                Email = "maria_topchieva@abv.bg",
-                NormalizedEmail = "MARIA_TOPCHIEVA@ABV.BG",
+                UserName = "admin",
+                NormalizedUserName = "ADMIN@RIDEPAL.COM",
+                Email = "admin@ridepal.com",
+                NormalizedEmail = "ADMIN@RIDEPAL.COM",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            admin.PasswordHash = hasher.HashPassword(admin, "Registration87!");
+
+            admin.PasswordHash = hasher.HashPassword(admin, "admin123");
+
             modelBuilder.Entity<User>().HasData(admin);
+
             modelBuilder.Entity<IdentityUserRole<int>>().HasData(
-                new IdentityUserRole<int>()
+                new IdentityUserRole<int>
                 {
                     RoleId = 1,
                     UserId = admin.Id
-                }
-                );
+                });
 
-            var user = new User
+            User user = new User
             {
                 Id = 2,
-                FirstName = "Maria",
-                LastName = "Topchieva",
-                UserName = "MariaTop",
-                NormalizedUserName = "MARIATOP",
-                Email = "maria.topchieva@abv.bg",
-                NormalizedEmail = "MARIA.TOPCHIEVA@ABV.BG",
+                UserName = "user",
+                NormalizedUserName = "USER@RIDEPAL.COM",
+                Email = "user@ridepal.com",
+                NormalizedEmail = "USER@RIDEPAL.COM",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            user.PasswordHash = hasher.HashPassword(user, "Registration87!");
+
+            user.PasswordHash = hasher.HashPassword(user, "user123");
+
             modelBuilder.Entity<User>().HasData(user);
+
             modelBuilder.Entity<IdentityUserRole<int>>().HasData(
-                new IdentityUserRole<int>()
+                new IdentityUserRole<int>
                 {
                     RoleId = 2,
                     UserId = user.Id
-                }
-                );
+                });
 
             modelBuilder.Entity<Playlist>(entity => {
                 entity.HasIndex(e => e.Title).IsUnique(true);

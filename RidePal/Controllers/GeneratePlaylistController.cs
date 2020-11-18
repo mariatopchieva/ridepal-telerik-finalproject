@@ -27,38 +27,33 @@ namespace RidePal.Controllers
 
         public IActionResult Index()
         {
-            var duration = generatePlaylistService.GetTravelDuration("Sofia", "Varna").Result;
-
-            Dictionary<string, int> genrePercentage = new Dictionary<string, int>() 
+            var generatePlaylistDTO = new GeneratePlaylistDTO()
             {
-                {
-                    "rock", 20
-                },
-                {
-                    "metal", 40
-                },
-                {
-                    "pop", 20
-                },
-                {
-                    "jazz", 20
-                },
-
-            };
-
-            GeneratePlaylistDTO playlistDTO = new GeneratePlaylistDTO()
-            {
-                StartLocationName = "Sofia",
-                DestinationName = "Ihtiman",
-                PlaylistName = "To the sea",
+                StartLocationName = "Varna",
+                DestinationName = "Burgas",
+                PlaylistName = "Varna Burgas6",
                 RepeatArtist = true,
-                UseTopTracks = true,
-                GenrePercentage = genrePercentage,
-                User = new Data.Models.User()
+                UseTopTracks = false,
+                GenrePercentage = new Dictionary<string, int>()
+                {
+                    {
+                        "rock", 50
+                    },
+                    {
+                        "metal", 10
+                    },
+                    {
+                        "pop", 30
+                    },
+                    {
+                        "jazz", 10
+                    }
+
+                },
+                UserId = 2
             };
 
-
-            var playlist = generatePlaylistService.GeneratePlaylist(playlistDTO).Result;
+             var playlist = generatePlaylistService.GeneratePlaylist(generatePlaylistDTO).Result;
 
             return View("GeneratePlaylist");
         }

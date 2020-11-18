@@ -2,6 +2,7 @@
 using RidePal.Data.Models;
 using RidePal.Data.Models.DeezerAPIModels;
 using RidePal.Service.Contracts;
+using RidePal.Service.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,12 @@ namespace RidePal.Service
         Dictionary<long, Album> Albums = new Dictionary<long, Album>();
         Dictionary<long, Track> Tracks = new Dictionary<long, Track>();
         Dictionary<long, Genre> Genres = new Dictionary<long, Genre>();
+        private readonly IGeneratePlaylistService service;
 
-        public DatabaseSeedService(RidePalDbContext _context)
+        public DatabaseSeedService(RidePalDbContext _context, IGeneratePlaylistService _service)
         {
-            context = _context;
+            this.context = _context;
+            this.service = _service;
         }
 
         public async Task DownloadTrackData(string incomingGenre)
@@ -53,13 +56,13 @@ namespace RidePal.Service
 
             int trackCountBeforeSeed = context.Tracks.Count();
 
-            while(currentTracklistUrl != null)
+            while (currentTracklistUrl != null)
             {
-                if(Tracks.Count >= trackCountBeforeSeed + 250) //250 tracks with each genre
+                if (Tracks.Count >= trackCountBeforeSeed + 250) //250 tracks with each genre
                 {
                     break;
                 }
-                
+
                 var response = await client.GetAsync(currentTracklistUrl);
 
                 var jsonString = await response.Content.ReadAsStringAsync();
@@ -68,7 +71,7 @@ namespace RidePal.Service
 
                 foreach (var track in deezerTrackCollection.Tracks)
                 {
-                    if(Tracks.ContainsKey(track.Id))
+                    if (Tracks.ContainsKey(track.Id))
                     {
                         continue;
                     }
@@ -111,6 +114,313 @@ namespace RidePal.Service
 
                 currentTracklistUrl = deezerTrackCollection.NextPageUrl;
             }
+        }
+
+        public IEnumerable<GeneratePlaylistDTO> GeneratePlaylists()
+        {
+            return new GeneratePlaylistDTO[]
+            {
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Ihtiman",
+                    PlaylistName = "Ihtiman",
+                    RepeatArtist = true,
+                    UseTopTracks = true,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 20
+                        },
+                        {
+                            "metal", 40
+                        },
+                        {
+                            "pop", 20
+                        },
+                        {
+                            "jazz", 20
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Varna",
+                    PlaylistName = "To the sea",
+                    RepeatArtist = false,
+                    UseTopTracks = true,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 0
+                        },
+                        {
+                            "metal", 60
+                        },
+                        {
+                            "pop", 40
+                        },
+                        {
+                            "jazz", 0
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Plovdiv",
+                    PlaylistName = "Plovdiv",
+                    RepeatArtist = true,
+                    UseTopTracks = false,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 100
+                        },
+                        {
+                            "metal", 0
+                        },
+                        {
+                            "pop", 0
+                        },
+                        {
+                            "jazz", 0
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Harmanli",
+                    PlaylistName = "Harmanli",
+                    RepeatArtist = false,
+                    UseTopTracks = false,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 10
+                        },
+                        {
+                            "metal", 20
+                        },
+                        {
+                            "pop", 50
+                        },
+                        {
+                            "jazz", 20
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Targovishte",
+                    DestinationName = "Plovdiv",
+                    PlaylistName = "Targovishte Plovdiv",
+                    RepeatArtist = false,
+                    UseTopTracks = true,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 0
+                        },
+                        {
+                            "metal", 0
+                        },
+                        {
+                            "pop", 0
+                        },
+                        {
+                            "jazz", 100
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Kardzhali",
+                    DestinationName = "Plovdiv",
+                    PlaylistName = "Kardzhali Plovdiv",
+                    RepeatArtist = true,
+                    UseTopTracks = true,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 20
+                        },
+                        {
+                            "metal", 80
+                        },
+                        {
+                            "pop", 0
+                        },
+                        {
+                            "jazz", 0
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Svoge",
+                    PlaylistName = "Svoge",
+                    RepeatArtist = false,
+                    UseTopTracks = true,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 40
+                        },
+                        {
+                            "metal", 20
+                        },
+                        {
+                            "pop", 10
+                        },
+                        {
+                            "jazz", 30
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Lukovit",
+                    PlaylistName = "Lukovit",
+                    RepeatArtist = true,
+                    UseTopTracks = true,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 50
+                        },
+                        {
+                            "metal", 50
+                        },
+                        {
+                            "pop", 0
+                        },
+                        {
+                            "jazz", 0
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Svilengrad",
+                    PlaylistName = "Svilengrad",
+                    RepeatArtist = false,
+                    UseTopTracks = false,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 0
+                        },
+                        {
+                            "metal", 0
+                        },
+                        {
+                            "pop", 100
+                        },
+                        {
+                            "jazz", 0
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Samokov",
+                    PlaylistName = "Samokov",
+                    RepeatArtist = true,
+                    UseTopTracks = false,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 0
+                        },
+                        {
+                            "metal", 0
+                        },
+                        {
+                            "pop", 50
+                        },
+                        {
+                            "jazz", 50
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Burgas",
+                    DestinationName = "Varna",
+                    PlaylistName = "Burgas Varna",
+                    RepeatArtist = false,
+                    UseTopTracks = true,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 20
+                        },
+                        {
+                            "metal", 20
+                        },
+                        {
+                            "pop", 0
+                        },
+                        {
+                            "jazz", 60
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Varna",
+                    DestinationName = "Burgas",
+                    PlaylistName = "Varna Burgas",
+                    RepeatArtist = true,
+                    UseTopTracks = false,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 50
+                        },
+                        {
+                            "metal", 10
+                        },
+                        {
+                            "pop", 30
+                        },
+                        {
+                            "jazz", 10
+                        }
+
+                    },
+                    UserId = 2
+                }
+            };
         }
     }
 }

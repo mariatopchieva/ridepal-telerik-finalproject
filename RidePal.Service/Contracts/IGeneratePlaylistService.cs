@@ -14,6 +14,14 @@ namespace RidePal.Service.Contracts
 
         Task<IEnumerable<Track>> GetTopTracks(string genre, double travelDuration, Dictionary<string, int> genrePercentage, bool repeatArtist);
 
+        double CalculatePlaytime(List<Track> playlist);
+
+        double CalculateRank(List<Track> playlist);
+
+        string GetPlaytimeString(int playtime);
+
+        public IEnumerable<Track> FinetunePlaytime(double travelDuration, List<Track> playlist, Dictionary<string, int> genrePercentage);
+
         Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO);
     }
 }

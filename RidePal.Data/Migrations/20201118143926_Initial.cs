@@ -220,7 +220,13 @@ namespace RidePal.Data.Migrations
                     UserId = table.Column<int>(nullable: false),
                     Title = table.Column<string>(maxLength: 50, nullable: false),
                     PlaylistPlaytime = table.Column<double>(nullable: false),
+                    TravelDuration = table.Column<double>(nullable: false),
                     Rank = table.Column<double>(nullable: false),
+                    TracksCount = table.Column<int>(nullable: false),
+                    GenresCount = table.Column<int>(nullable: false),
+                    PlaytimeString = table.Column<string>(nullable: true),
+                    RepeatArtist = table.Column<bool>(nullable: false),
+                    UseTopTracks = table.Column<bool>(nullable: false),
                     FilePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -353,8 +359,8 @@ namespace RidePal.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "cab460b9-2fd0-4914-be6c-d956ac8aa29a", "Admin", "ADMIN" },
-                    { 2, "dcf7c33c-c937-4bf2-b1fa-215150af61ce", "User", "USER" }
+                    { 1, "96e6c779-8b92-4394-a684-36907edcbddc", "Admin", "ADMIN" },
+                    { 2, "9c392f15-e0e0-4339-a37a-9d170f83e9fc", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -362,8 +368,8 @@ namespace RidePal.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsBanned", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "86f7c91c-5666-46a4-b16a-98cbc60000e4", "maria_topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA_TOPCHIEVA@ABV.BG", "MARIA", "AQAAAAEAACcQAAAAELZvhe0T8tomUY+gxYqMX1vhIjxYPfcbXaQApJdWaA4tGoXAjSNhq78AFuh8AcuywQ==", null, false, "ad0c5393-ef84-4e22-8d1f-073e4681e605", false, "Maria" },
-                    { 2, 0, "98e0f532-b99d-40fd-ae4f-cfa6606d2c09", "maria.topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA.TOPCHIEVA@ABV.BG", "MARIATOP", "AQAAAAEAACcQAAAAELpHoWtWePXC0C9999JV9V6jnmqpeK/Rll2IFEqd7JQtzznUHAHitGz9q/xqK9u8bw==", null, false, "820d406f-0ede-4408-baf1-e9f0634750a0", false, "MariaTop" }
+                    { 1, 0, "53b29fc4-ca54-4cf3-844c-7e538ea9f60f", "admin@ridepal.com", false, null, false, false, null, false, null, "ADMIN@RIDEPAL.COM", "ADMIN@RIDEPAL.COM", "AQAAAAEAACcQAAAAEFWJ96gVoe1GM+IJ+GKDSev3oXiy1JDZqzJjuBXSsjVIKf2q1P+RG0kYc7NpsnXtyA==", null, false, "bc539ca0-8228-4668-aa96-306c00b8eb3a", false, "admin" },
+                    { 2, 0, "b41dae0e-1d3f-4ab8-aa29-76b9fef2a9d8", "user@ridepal.com", false, null, false, false, null, false, null, "USER@RIDEPAL.COM", "USER@RIDEPAL.COM", "AQAAAAEAACcQAAAAECH8JDAmDnmU6kBwcVxGUkTRbYPWx5kAGy0tdgcoxHqSeYEgnhPdwUbCp8vaISQOWw==", null, false, "9472a4be-7c8a-4c8f-b926-cc9b823daf29", false, "user" }
                 });
 
             migrationBuilder.InsertData(

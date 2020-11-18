@@ -15,13 +15,13 @@ namespace RidePal.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IDatabaseSeedService _seedService;
-        private readonly IGeneratePlaylistService _playlistService;
+        private readonly IGeneratePlaylistService _generatePlaylistService;
 
-        public HomeController(ILogger<HomeController> logger, IDatabaseSeedService seedService, IGeneratePlaylistService playlistService)
+        public HomeController(ILogger<HomeController> logger, IDatabaseSeedService seedService, IGeneratePlaylistService generatePlaylistService)
         {
             this._logger = logger;
             this._seedService = seedService;
-            this._playlistService = playlistService;
+            this._generatePlaylistService = generatePlaylistService;
         }
 
         public IActionResult Index()
@@ -37,11 +37,23 @@ namespace RidePal.Controllers
             await _seedService.DownloadTrackData("jazz");
 
             return View("Index");
-        } //hangfire
+        }
+
+        public IActionResult SeedPlaylists()
+        {
+            var generatePlaylistsDTO = _seedService.GeneratePlaylists();
+
+            foreach (var generatePlaylistDTO in generatePlaylistsDTO)
+            {
+                var playlist = _generatePlaylistService.GeneratePlaylist(generatePlaylistDTO).Result;
+            }
+
+            return View("Index");
+        }
 
         public async Task<IActionResult> GetTravelDuration()
         {
-            var result = await _playlistService.GetTravelDuration("Sofia", "Varna");
+            var result = await _generatePlaylistService.GetTravelDuration("Sofia", "Varna");
             return new JsonResult(result);
         }
         

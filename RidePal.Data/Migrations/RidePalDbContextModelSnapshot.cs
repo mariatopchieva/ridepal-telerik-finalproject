@@ -210,6 +210,9 @@ namespace RidePal.Data.Migrations
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("GenresCount")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -219,16 +222,28 @@ namespace RidePal.Data.Migrations
                     b.Property<double>("PlaylistPlaytime")
                         .HasColumnType("float");
 
+                    b.Property<string>("PlaytimeString")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("Rank")
                         .HasColumnType("float");
+
+                    b.Property<bool>("RepeatArtist")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<int>("TracksCount")
+                        .HasColumnType("int");
+
                     b.Property<double>("TravelDuration")
                         .HasColumnType("float");
+
+                    b.Property<bool>("UseTopTracks")
+                        .HasColumnType("bit");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -344,14 +359,14 @@ namespace RidePal.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "cbe17af6-9313-47a7-b4cc-a88429b12932",
+                            ConcurrencyStamp = "96e6c779-8b92-4394-a684-36907edcbddc",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "6189f78b-44a8-4515-bd30-9e35901580fd",
+                            ConcurrencyStamp = "9c392f15-e0e0-4339-a37a-9d170f83e9fc",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -494,41 +509,37 @@ namespace RidePal.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4c51bfac-9663-41c5-a5d7-669091fd01c6",
-                            Email = "maria_topchieva@abv.bg",
+                            ConcurrencyStamp = "53b29fc4-ca54-4cf3-844c-7e538ea9f60f",
+                            Email = "admin@ridepal.com",
                             EmailConfirmed = false,
-                            FirstName = "Maria",
                             IsBanned = false,
                             IsDeleted = false,
-                            LastName = "Topchieva",
                             LockoutEnabled = false,
-                            NormalizedEmail = "MARIA_TOPCHIEVA@ABV.BG",
-                            NormalizedUserName = "MARIA",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJrqEf+8e1ZYoR5YLgrztw9fjyuXp14UwXgQY2k91e0i1EwYwrLx5a4UGa139U82FA==",
+                            NormalizedEmail = "ADMIN@RIDEPAL.COM",
+                            NormalizedUserName = "ADMIN@RIDEPAL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFWJ96gVoe1GM+IJ+GKDSev3oXiy1JDZqzJjuBXSsjVIKf2q1P+RG0kYc7NpsnXtyA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a2589e2f-f53e-4c58-a059-9f2c460cc520",
+                            SecurityStamp = "bc539ca0-8228-4668-aa96-306c00b8eb3a",
                             TwoFactorEnabled = false,
-                            UserName = "Maria"
+                            UserName = "admin"
                         },
                         new
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7cc05572-f7c7-4fcc-994f-e8bb0174edb1",
-                            Email = "maria.topchieva@abv.bg",
+                            ConcurrencyStamp = "b41dae0e-1d3f-4ab8-aa29-76b9fef2a9d8",
+                            Email = "user@ridepal.com",
                             EmailConfirmed = false,
-                            FirstName = "Maria",
                             IsBanned = false,
                             IsDeleted = false,
-                            LastName = "Topchieva",
                             LockoutEnabled = false,
-                            NormalizedEmail = "MARIA.TOPCHIEVA@ABV.BG",
-                            NormalizedUserName = "MARIATOP",
-                            PasswordHash = "AQAAAAEAACcQAAAAEF5SMrR9F/wsyVYUqXIq2RuJXDVu0pMgp11nJp6v2ZzBc+YMV9prT/NSvegQHvip4w==",
+                            NormalizedEmail = "USER@RIDEPAL.COM",
+                            NormalizedUserName = "USER@RIDEPAL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAECH8JDAmDnmU6kBwcVxGUkTRbYPWx5kAGy0tdgcoxHqSeYEgnhPdwUbCp8vaISQOWw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a9c5fe06-51d4-46e9-8923-6713bce97cf2",
+                            SecurityStamp = "9472a4be-7c8a-4c8f-b926-cc9b823daf29",
                             TwoFactorEnabled = false,
-                            UserName = "MariaTop"
+                            UserName = "user"
                         });
                 });
 

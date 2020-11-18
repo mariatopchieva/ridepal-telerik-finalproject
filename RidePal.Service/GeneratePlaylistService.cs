@@ -159,71 +159,77 @@ namespace RidePal.Service
             double playtime = CalculatePlaytime(playlist);
             double minPlaytime = travelDuration - 300;
             double maxPlaytime = travelDuration + 300;
-
-            //if(playtime < minPlaytime) //add a song with length between lower and upper limit; 
-            //{
-            //    double lowerLimit = minPlaytime - playtime;
-            //    double upperLimit = lowerLimit + 10;
-
-            //    //song must not be repeated; artist not repeated and be within genre preference
-            //    string genre;
-
-            //    if(genrePercentage["jazz"] != 0)
-            //    {
-            //        genre = "jazz";
-            //    }
-            //    else
-            //    {
-            //        if(genrePercentage["pop"] != 0)
-            //        {
-            //            genre = "pop";
-            //        }
-            //        else
-            //        {
-            //            if (genrePercentage["metal"] != 0)
-            //            {
-            //                genre = "metal";
-            //            }
-            //            else
-            //            {
-            //                genre = "rock";
-            //            }
-            //        }
-            //    }
-
-            //    var tracksPerGenre = context.Tracks.Where(x => x.Genre.Name == genre).ToList();
-            //    var tracksUniqueArtists = tracksPerGenre.GroupBy(y => y.ArtistId).Select(z => z.First()).ToList();
-
-            //    for (int i = tracksUniqueArtists.Count - 1; i > 1; i--)
-            //    {
-            //        if (tracksUniqueArtists[i].TrackDuration > lowerLimit && tracksUniqueArtists[i].TrackDuration < upperLimit
-            //            && !playlist.Contains(tracksUniqueArtists[i]))
-            //        {
-            //            playlist.Add(tracksUniqueArtists[i]);
-
-            //            break;
-            //        }
-            //    }
-                
-            //    //ако не намери песен с такава дължина от този жанр, ще върне твърде кратък плейлист => change genre?
-            //    return playlist;
-            //}
+            
             if(playtime > maxPlaytime) //remove a song with length between lower and upper limit
             {
                 double upperLimit = playtime - maxPlaytime;
-                double lowerLimit = upperLimit + 10;
+                double lowerLimit = upperLimit + 600;
 
                 for (int i = playlist.Count - 1; i > 1; i--) //ако съм прескочила с 10 мин //use random
                 {
                     if(playlist[i].TrackDuration > upperLimit && playlist[i].TrackDuration < lowerLimit)
                     {
+                        double secondPlaytime = playtime - playlist[i].TrackDuration;
                         playlist.Remove(playlist[i]);
                         
+                        if(secondPlaytime <= maxPlaytime)
+                        {
+                            break;
+                        }
+                    }
+
+                }
+            }
+
+            double newPlaytime = CalculatePlaytime(playlist);
+
+            if (newPlaytime < minPlaytime) //add a song with length between lower and upper limit; 
+            {
+                double lowerLimit = minPlaytime - playtime;
+                double upperLimit = lowerLimit + 600;
+
+                //song must not be repeated; artist not repeated and be within genre preference
+                string genre;
+
+                if (genrePercentage["jazz"] != 0)
+                {
+                    genre = "jazz";
+                }
+                else
+                {
+                    if (genrePercentage["pop"] != 0)
+                    {
+                        genre = "pop";
+                    }
+                    else
+                    {
+                        if (genrePercentage["metal"] != 0)
+                        {
+                            genre = "metal";
+                        }
+                        else
+                        {
+                            genre = "rock";
+                        }
+                    }
+                }
+
+                var tracksPerGenre = context.Tracks.Where(x => x.Genre.Name == genre).ToList();
+                var tracksUniqueArtists = tracksPerGenre.GroupBy(y => y.ArtistId).Select(z => z.First()).ToList();
+
+                for (int i = tracksUniqueArtists.Count - 1; i > 1; i--)
+                {
+                    if (tracksUniqueArtists[i].TrackDuration > lowerLimit && tracksUniqueArtists[i].TrackDuration < upperLimit
+                        && !playlist.Contains(tracksUniqueArtists[i]))
+                    {
+                        playlist.Add(tracksUniqueArtists[i]);
+
                         break;
                     }
                 }
 
-                return playlist; 
+                //ако не намери песен с такава дължина от този жанр, ще върне твърде кратък плейлист => change genre?
+                return playlist;
             }
             else
             {
@@ -231,6 +237,54 @@ namespace RidePal.Service
             }
         }
 
+        public string GetPlaytimeString(int playlistPlaytime)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            int hours = playlistPlaytime / 3600;
+
+            int remainingMinutes = (playlistPlaytime % 3600) / 60;
+
+            int remainingSeconds = (playlistPlaytime % 3600) % 60;
+
+            if (hours > 0)
+            {
+                if(hours == 1)
+                {
+                    sb.Append($"{hours} hour ");
+                }
+                else
+                {
+                    sb.Append($"{hours} hours ");
+                }
+            }
+
+            if (remainingMinutes >= 0)
+            {
+                if (remainingMinutes == 1)
+                {
+                    sb.Append($"{remainingMinutes} minute ");
+                }
+                else
+                {
+                    sb.Append($"{remainingMinutes} minutes ");
+                }
+            }
+
+            if(remainingSeconds >= 0)
+            {
+                if (remainingSeconds == 1)
+                {
+                    sb.Append($"{remainingSeconds} second");
+                }
+                else
+                {
+                    sb.Append($"{remainingSeconds} seconds");
+                }
+            }
+
+            return sb.ToString();
+        }
 
         public async Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO)
         {
@@ -254,14 +308,18 @@ namespace RidePal.Service
             }
 
             List<Track> finalPlaylist = FinetunePlaytime(travelDuration, tracks, playlistDTO.GenrePercentage).ToList();
+            double playtime = CalculatePlaytime(finalPlaylist);
 
             var playlist = new Playlist()
             {
                 User = playlistDTO.User,
                 UserId = playlistDTO.UserId,
                 Title = playlistDTO.PlaylistName,
+                UseTopTracks = playlistDTO.UseTopTracks,
+                RepeatArtist = playlistDTO.RepeatArtist,
                 TravelDuration = travelDuration,
-                PlaylistPlaytime = CalculatePlaytime(finalPlaylist),
+                PlaylistPlaytime = playtime,
+                PlaytimeString = GetPlaytimeString((int)playtime),
                 Rank = CalculateRank(finalPlaylist),
                 CreatedOn = this.dateTimeProvider.GetDateTime()
             };
@@ -276,12 +334,14 @@ namespace RidePal.Service
             }
 
             List<PlaylistTrack> playlistTracks = finalPlaylist.Select(x => new PlaylistTrack(x.Id, playlistFromDb.Id)).ToList();
+            playlistFromDb.TracksCount = playlistTracks.Count; //=> check save to context.Playlists!!!
 
             List<string> genresStringList = playlistDTO.GenrePercentage.Where(x => x.Value > 0).Select(y => y.Key).ToList();
 
             List<Genre> genres = this.context.Genres.Where(x => genresStringList.Contains(x.Name)).ToList();
 
             List<PlaylistGenre> playlistGenres = genres.Select(x => new PlaylistGenre(x.Id, playlistFromDb.Id)).ToList();
+            playlistFromDb.GenresCount = playlistGenres.Count; //=> check save to context.Playlists!!!
 
             await this.context.PlaylistTracks.AddRangeAsync(playlistTracks);
             await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);
