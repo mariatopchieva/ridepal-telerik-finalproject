@@ -27,38 +27,38 @@ namespace RidePal.Controllers
 
         public IActionResult Index()
         {
-            var duration = generatePlaylistService.GetTravelDuration("Sofia", "Varna").Result;
+            //var duration = generatePlaylistService.GetTravelDuration("Sofia", "Varna").Result;
 
-            Dictionary<string, int> genrePercentage = new Dictionary<string, int>() 
-            {
-                {
-                    "rock", 20
-                },
-                {
-                    "metal", 40
-                },
-                {
-                    "pop", 20
-                },
-                {
-                    "jazz", 20
-                },
+            //Dictionary<string, int> genrePercentage = new Dictionary<string, int>() 
+            //{
+            //    {
+            //        "rock", 20
+            //    },
+            //    {
+            //        "metal", 40
+            //    },
+            //    {
+            //        "pop", 20
+            //    },
+            //    {
+            //        "jazz", 20
+            //    },
 
-            };
+            //};
 
-            GeneratePlaylistDTO playlistDTO = new GeneratePlaylistDTO()
-            {
-                StartLocationName = "Sofia",
-                DestinationName = "Ihtiman",
-                PlaylistName = "To the sea",
-                RepeatArtist = true,
-                UseTopTracks = true,
-                GenrePercentage = genrePercentage,
-                User = new Data.Models.User()
-            };
+            //GeneratePlaylistDTO playlistDTO = new GeneratePlaylistDTO()
+            //{
+            //    StartLocationName = "Sofia",
+            //    DestinationName = "Ihtiman",
+            //    PlaylistName = "To the sEEE",
+            //    RepeatArtist = true,
+            //    UseTopTracks = true,
+            //    GenrePercentage = genrePercentage,
+            //    User = new Data.Models.User()
+            //};
 
 
-            var playlist = generatePlaylistService.GeneratePlaylist(playlistDTO).Result;
+            //var playlist = generatePlaylistService.GeneratePlaylist(playlistDTO).Result;
 
             return View("GeneratePlaylist");
         }
