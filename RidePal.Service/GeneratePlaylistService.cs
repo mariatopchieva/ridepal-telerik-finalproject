@@ -341,7 +341,7 @@ namespace RidePal.Service
             List<Genre> genres = this.context.Genres.Where(x => genresStringList.Contains(x.Name)).ToList();
 
             List<PlaylistGenre> playlistGenres = genres.Select(x => new PlaylistGenre(x.Id, playlistFromDb.Id)).ToList();
-            playlistFromDb.GenresCount = playlistGenres.Count;
+            playlistFromDb.GenresCount = genres.Count;
 
             await this.context.PlaylistTracks.AddRangeAsync(playlistTracks);
             await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);

@@ -1,12 +1,14 @@
-﻿using System;
+﻿using RidePal.Data.Models.Abstract;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace RidePal.Data.Models
 {
-    public class PlaylistGenre
+    public class PlaylistGenre : Entity
     {
+
         public PlaylistGenre(long genreId, int playlistId)
         {
             this.GenreId = genreId;
