@@ -1,4 +1,5 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     Layout = "_Layout";
     ViewData["Title"] = "Home Page";
 }
@@ -43,7 +44,7 @@
             </a>
         </div>
     </div>*@
-
+<!--Carousel-->
 <div class="container-fluid px-0">
     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner" role="listbox">
@@ -86,28 +87,72 @@
     </div>
 </div>
 
-<div class="statistics text-capitalize text-center font-weight-bold">
+<!--top playlists-->
+<div class="container-about">
+    <div class="container">
+        <div class="page-header" id="about">
+            <h2 class="text-center text-danger">Top playlists</h2>
+            <br />
+        </div>
+        <div class="row">
+            @*@foreach (var playlist in Model.TopPlaylists)
+            {
+                <partial name="_PlaylistPartial" />
+            }*@
+        </div>
+    </div>
+</div>
+
+<!--featured artists-->
+<div class="container-about">
+    <div class="container">
+        <div class="page-header" id="about">
+            <h2 class="text-center text-danger">Featured artists</h2>
+            <br />
+        </div>
+        <div class="row">
+            @foreach (var artist in Model.FeaturedArtists)
+            {
+                <div class="col-md-4 text-center">
+                    <img class="img-responsive" style="border-radius:50%; width:250px; height:250px;" src="@artist.ArtistPictureURL" />
+                    <h3 class="text-danger">@artist.ArtistName</h3>
+                    <br />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!--Statistics-->
+<div class="counter">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3 col-md-6 col-12">
-                <i class="fas fa-umbrella-beach fa-3x"></i>
-                <h3>1000</h3>
-                <p>songs</p>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="tracks">
+                    <p class="counter-count">@Model.TrackCount</p>
+                    <p class="employee-p">Tracks</p>
+                </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-12">
-                <i class="fas fa-birthday-cake fa-3x"></i>
-                <h3>56</h3>
-                <p>artists</p>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="artists">
+                    <p class="counter-count">@Model.ArtistCount</p>
+                    <p class="customer-p">Artists</p>
+                </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-12">
-                <i class="fa fa-home fa-3x"></i>
-                <h3>120</h3>
-                <p>playlists</p>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="playlists">
+                    <p class="counter-count">@Model.PlaylistCount</p>
+                    <p class="design-p">Playlists</p>
+                </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-12">
-                <i class="fas fa-glass-cheers fa-3x"></i>
-                <h3>2523</h3>
-                <p>users</p>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="users">
+                    <p class="counter-count">@Model.UserCount</p>
+                    <p class="order-p">Users</p>
+                </div>
             </div>
         </div>
     </div>

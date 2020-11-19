@@ -76,7 +76,7 @@ namespace RidePal
             services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IAdminService, AdminService>();
-
+            services.AddScoped<IStatisticsService, StatisticsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

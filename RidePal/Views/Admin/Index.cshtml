@@ -102,34 +102,32 @@
                     {
                         <tr>
                             <td>@item.Id</td>
-                            <td>@item.FirstName @item.LastName</td>
-                            <td>@item.Email</td>
-                            <td>@item.LockoutEnabled</td>
-                            <td>@item.IsDeleted</td>
-                            @*<a href="#" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
-                                <a href="#" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                                <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>*@
+                            <td class="col-md-4">@item.FirstName @item.LastName</td>
+                            <td class="col-md-4">@item.Email</td>
+                            <td class="col-md-1">@item.LockoutEnabled</td>
+                            <td class="col-md-1">@item.IsDeleted</td>
+
                             <td class="col-sm">
                                 <a class="btn btn-outline-primary waves-effect" asp-controller="Admin" asp-action="EditUser" asp-route-id="@item.Id">Edit</a>
                             </td>
                             <!--Ban buttons-->
                             <td class="col-sm">
-                                <form class="form" method="post" asp-action="BanUser" style="margin-bottom: 30px; margin-left: 20px">
+                                <form class="form" method="post" asp-action="BanUser">
                                     <input type="hidden" name="UserId" value="@item.Id" />
                                     <button class="btn btn-outline-danger waves-effect" type="submit" title="Ban" data-toggle="tooltip"><i class="material-icons">&#xe897;</i></button>
                                 </form>
-                                <form class="form" method="post" asp-action="UnbanUser" style="margin-bottom:30px">
+                                <form class="form" method="post" asp-action="UnbanUser">
                                     <input type="hidden" name="UserId" value="@item.Id" />
                                     <button class="btn btn-outline-primary waves-effect" type="submit"title="Unban" data-toggle="tooltip"><i class="material-icons">&#xe898;</i></button>
                                 </form>
                             </td>
                             <!--Delete buttons-->
                             <td class="col-sm">
-                                <form class="form" method="post" asp-action="DeleteUser" style="margin-bottom: 30px; margin-left: 20px">
+                                <form class="form" method="post" asp-action="DeleteUser">
                                     <input type="hidden" name="UserId" value="@item.Id" />
                                     <button class="btn btn-outline-danger waves-effect" type="submit" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></button>
                                 </form>
-                                <form class="form" method="post" asp-action="RevertDeleteUser" style="margin-bottom:30px">
+                                <form class="form" method="post" asp-action="RevertDeleteUser">
                                     <input type="hidden" name="UserId" value="@item.Id" />
                                     <button class="btn btn-outline-primary waves-effect" type="submit" title="Revert" data-toggle="tooltip"><i class="material-icons">&#xe8ba;</i></button>
                                 </form>
