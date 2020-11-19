@@ -16,17 +16,33 @@ namespace RidePal.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IDatabaseSeedService _seedService;
         private readonly IGeneratePlaylistService _generatePlaylistService;
+        private readonly IStatisticsService _statistics;
 
-        public HomeController(ILogger<HomeController> logger, IDatabaseSeedService seedService, IGeneratePlaylistService generatePlaylistService)
+        public HomeController(ILogger<HomeController> logger, 
+                                IDatabaseSeedService seedService, 
+                                IGeneratePlaylistService generatePlaylistService,
+                                IStatisticsService stats)
         {
             this._logger = logger;
             this._seedService = seedService;
             this._generatePlaylistService = generatePlaylistService;
+            this._statistics = stats;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var homeView = new HomeViewModel()
+            {
+                TrackCount = this._statistics.TrackCount().Result,
+                ArtistCount = this._statistics.ArtistCount().Result,
+                GenreCount = this._statistics.GenreCount().Result,
+                PlaylistCount = this._statistics.PlaylistCount().Result,
+                UserCount = this._statistics.UserCount().Result,
+                //TopPlaylists = this._statistics.TopPlaylists().Result.Select(x => new PlaylistViewModel(x)),
+                FeaturedArtists = this._statistics.FeaturedArtists().Result,
+            };
+
+            return View(homeView);
         }
 
         public async Task<IActionResult> SeedDatabase()

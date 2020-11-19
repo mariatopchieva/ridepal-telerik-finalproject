@@ -1,4 +1,5 @@
 ﻿using RidePal.Data.Models;
+using RidePal.Service.DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +11,17 @@ namespace RidePal.Models
 {
     public class PlaylistViewModel
     {
+        public PlaylistViewModel(PlaylistDTO playlistDTO)
+        {
+            this.Id = playlistDTO.Id;
+            this.Title = playlistDTO.Title;
+            this.Rank = playlistDTO.Rank;
+            this.PlaylistPlaytime = playlistDTO.PlaylistPlaytime;
+        }
+
+        public PlaylistViewModel()
+        {
+        }
         [Key]
         public int Id { get; set; }
 
@@ -17,7 +29,7 @@ namespace RidePal.Models
         [DisplayName("Name:")]
         public string Title { get; set; }
 
-        public int PlaylistPlaytime { get; set; }
+        public double PlaylistPlaytime { get; set; }
         public double Rank { get; set; }
         public ICollection<PlaylistTrack> Tracks { get; set; }
 
