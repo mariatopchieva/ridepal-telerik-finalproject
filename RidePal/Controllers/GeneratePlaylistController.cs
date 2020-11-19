@@ -14,10 +14,13 @@ namespace RidePal.Controllers
     public class GeneratePlaylistController : Controller
     {
         private IGeneratePlaylistService generatePlaylistService;
+        private IPlaylistService playlistService;
 
-        public GeneratePlaylistController(IGeneratePlaylistService _generatePlaylistService)
+
+        public GeneratePlaylistController(IGeneratePlaylistService _generatePlaylistService, IPlaylistService _playlistService)
         {
             this.generatePlaylistService = _generatePlaylistService;
+            this.playlistService = _playlistService;
         }
         //public IActionResult Index()
         //{
@@ -27,33 +30,58 @@ namespace RidePal.Controllers
 
         public IActionResult Index()
         {
-            var generatePlaylistDTO = new GeneratePlaylistDTO()
+            //var generatePlaylistDTO = new GeneratePlaylistDTO()
+            //{
+            //    StartLocationName = "Varna",
+            //    DestinationName = "Burgas",
+            //    PlaylistName = "Varna Burgas7",
+            //    RepeatArtist = true,
+            //    UseTopTracks = false,
+            //    GenrePercentage = new Dictionary<string, int>()
+            //    {
+            //        {
+            //            "rock", 50
+            //        },
+            //        {
+            //            "metal", 10
+            //        },
+            //        {
+            //            "pop", 30
+            //        },
+            //        {
+            //            "jazz", 10
+            //        }
+
+            //    },
+            //    UserId = 2
+            //};
+
+            //var playlist = generatePlaylistService.GeneratePlaylist(generatePlaylistDTO).Result;
+
+            var playlistDTO = new EditPlaylistDTO()
             {
-                StartLocationName = "Varna",
-                DestinationName = "Burgas",
-                PlaylistName = "Varna Burgas6",
-                RepeatArtist = true,
-                UseTopTracks = false,
+                Title = "Varna Burgas7",
+                Id = 14,
                 GenrePercentage = new Dictionary<string, int>()
                 {
                     {
                         "rock", 50
                     },
                     {
-                        "metal", 10
+                        "metal", 0
                     },
                     {
-                        "pop", 30
+                        "pop", 50
                     },
                     {
-                        "jazz", 10
+                        "jazz", 0
                     }
 
                 },
                 UserId = 2
             };
 
-             var playlist = generatePlaylistService.GeneratePlaylist(generatePlaylistDTO).Result;
+            var playlist = playlistService.EditPlaylistAsync(playlistDTO).Result;
 
             return View("GeneratePlaylist");
         }

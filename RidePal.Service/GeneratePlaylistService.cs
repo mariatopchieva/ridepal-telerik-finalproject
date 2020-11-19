@@ -145,9 +145,9 @@ namespace RidePal.Service
             return playtime;
         }
 
-        public double CalculateRank(List<Track> playlist)
+        public int CalculateRank(List<Track> playlist)
         {
-            double rank = playlist.Select(track => track.TrackRank).Average();
+            int rank = (int)playlist.Select(track => track.TrackRank).Average();
             
             return rank;
         }
@@ -185,7 +185,7 @@ namespace RidePal.Service
 
             if (newPlaytime < minPlaytime) //add a song with length between lower and upper limit; 
             {
-                double lowerLimit = minPlaytime - playtime;
+                double lowerLimit = minPlaytime - newPlaytime;
                 double upperLimit = lowerLimit + 600;
 
                 //song must not be repeated; artist not repeated and be within genre preference
@@ -249,38 +249,17 @@ namespace RidePal.Service
 
             if (hours > 0)
             {
-                if(hours == 1)
-                {
-                    sb.Append($"{hours} hour ");
-                }
-                else
-                {
-                    sb.Append($"{hours} hours ");
-                }
+                sb.Append($"{hours}h ");
             }
 
             if (remainingMinutes >= 0)
             {
-                if (remainingMinutes == 1)
-                {
-                    sb.Append($"{remainingMinutes} minute ");
-                }
-                else
-                {
-                    sb.Append($"{remainingMinutes} minutes ");
-                }
+                sb.Append($"{remainingMinutes}m ");
             }
 
             if(remainingSeconds >= 0)
             {
-                if (remainingSeconds == 1)
-                {
-                    sb.Append($"{remainingSeconds} second");
-                }
-                else
-                {
-                    sb.Append($"{remainingSeconds} seconds");
-                }
+                sb.Append($"{remainingSeconds}s");
             }
 
             return sb.ToString();
@@ -345,6 +324,17 @@ namespace RidePal.Service
 
             await this.context.PlaylistTracks.AddRangeAsync(playlistTracks);
             await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);
+            await this.context.SaveChangesAsync();
+
+            foreach (var genre in genres) //добавяне на всеки PlaylistGenre към верния genre
+            {
+                foreach (var playlistGenre in playlistGenres)
+                {
+                    if (playlistGenre.Genre.Equals(genre))
+                        genre.Playlists.Add(playlistGenre);
+                }
+            }
+
             await this.context.SaveChangesAsync();
 
             //public string FilePath { get; set; }

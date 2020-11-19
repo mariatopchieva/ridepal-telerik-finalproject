@@ -24,7 +24,6 @@ namespace RidePal.Service
         }
 
         public async Task<PlaylistDTO> GetPlaylistByIdAsync(int id)
-
         {
             var playlist = await this.context.Playlists
                 .Where(playlist => playlist.IsDeleted == false)
@@ -70,9 +69,14 @@ namespace RidePal.Service
                 throw new ArgumentNullException("Playlist not found in the database.");
             }
 
-            var oldPlaylistGenres = this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id);
+            var oldPlaylistGenres = this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id).Where(x => x.IsDeleted == false);
             var oldGenresStringList = oldPlaylistGenres.Select(x => x.Genre.Name).ToList();
-            var newGenresStringList = editPlaylistDTO.GenrePercentage.Where(x => x.Value > 0).Select(y => y.Key).ToList(); 
+
+            var oldDeletedGenres = this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id).Where(x => x.IsDeleted == true);
+            var oldDeletedGenresStringList = oldDeletedGenres.Select(x => x.Genre.Name).ToList();
+
+            var newGenresStringList = editPlaylistDTO.GenrePercentage.Where(x => x.Value > 0).Select(y => y.Key).ToList();
+            int newGenresCount = newGenresStringList.Count();
 
             // create new PlaylistGenres за онези, които ги има в новите, но не и в старите 
             var genresToCreate = new List<string>();
@@ -83,11 +87,10 @@ namespace RidePal.Service
                     genresToCreate.Add(newGenre);
                 }
             }
-
             List<Genre> newGenres = this.context.Genres.Where(x => genresToCreate.Contains(x.Name)).ToList();
             List<PlaylistGenre> playlistGenres = newGenres.Select(x => new PlaylistGenre(x.Id, editPlaylistDTO.Id)).ToList();
 
-            // ако новите жанрове не съвпадат с новите => update IsDeleted = true
+            // ако новите жанрове не съвпадат със старите, които не са изтрити => update IsDeleted = true
             var genresToDelete = new List<string>();
             foreach (var oldGenre in oldGenresStringList)
             {
@@ -96,22 +99,34 @@ namespace RidePal.Service
                     genresToDelete.Add(oldGenre);
                 }
             }
+            await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id)
+                                             .Where(x => genresToDelete.Contains(x.Genre.Name))
+                                             .ForEachAsync(x => x.IsDeleted = true);
 
-            await oldPlaylistGenres.Where(x => genresToDelete.Contains(x.Genre.Name)).ForEachAsync(x => x.IsDeleted = true);
-
-            //test this! GetGenresCount
-            var newGenresCount = this.context.PlaylistGenres.Where(x => x.Id == editPlaylistDTO.Id).GroupBy(x => x.GenreId)
-                .Select(x => x.First()).ToList().Count();
-
-            playlist.GenresCount = newGenresCount;
+            //Undelete the previously deleted genres
+            var genresToUndelete = new List<string>();
+            foreach (var oldDeletedGenre in oldDeletedGenresStringList)
+            {
+                if (newGenresStringList.Contains(oldDeletedGenre))
+                {
+                    genresToUndelete.Add(oldDeletedGenre);
+                }
+            }
+            await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id)
+                                             .Where(x => genresToUndelete.Contains(x.Genre.Name))
+                                             .ForEachAsync(x => x.IsDeleted = false);
 
             playlist.Title = editPlaylistDTO.Title;
-
+            playlist.GenresCount = newGenresCount;
             playlist.ModifiedOn = this.dateTimeProvider.GetDateTime();
 
+            await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);
             await this.context.SaveChangesAsync();
 
             return new PlaylistDTO(playlist);
+
+            //update PlaylistGenre list-a na each genre (see Generate service)
+
         }
 
         public async Task<bool> DeletePlaylist(int id)
@@ -132,14 +147,21 @@ namespace RidePal.Service
             return true;
         }
 
-        //GetAllGenres да връща списък на жанровете като стринг 
+        public async Task<IEnumerable<PlaylistDTO>> GetPlaylistOfUser(int userId)
+        {
+            var playlistsDTO = await this.context.Playlists.Where(x => x.UserId == userId)
+                            .Select(playlist => new PlaylistDTO(playlist))
+                            .ToListAsync();
 
-        //GetByUserId => my playlists my favorites
+            if (playlistsDTO == null)
+            {
+                return null;
+            }
+            
+            return playlistsDTO;
+        }
 
-        //get all genres / artists/ albums in a playlist
-
-        public async Task<int> GetHighestPlaytimeAsync()
-
+        public async Task<long> GetHighestPlaytimeAsync()
         {
             var playlist = await this
                 .context.Playlists
@@ -150,10 +172,18 @@ namespace RidePal.Service
                 return 0;
             }
 
-            return (int)playlist.PlaylistPlaytime;
+            return (long)playlist.PlaylistPlaytime;
         }
 
-        //GetShortestPlaytime
+        //GetAllArtistsInPlaylist
+        //GetArtistsCountInPlaylist
+
+
+        //GetByUserId => my favorites; Add Playlist to Favorites; Delete Playlist from Favorites
+
+        //get all genres / artists/ albums in a playlist
+
+        //GetAllGenres да връща списък на жанровете като стринг 
 
         //Sort => by default playlists shoud be sorted by average rank descending
 
@@ -161,14 +191,13 @@ namespace RidePal.Service
 
         //Get All => show average rank and total playtime
 
-        //Georgi//Get by Id (Details) => lists of artists/ tracks; play a preview
-
         //Edit/ delete Playlist => (admin)List all/ (user)My playlists
 
         //Pagination
 
         //Add authorization restrictions => here?
 
+        //Add all methods to IPlaylistService
 
     }
 }
