@@ -16,7 +16,7 @@ namespace RidePal.Service.Contracts
 
         double CalculatePlaytime(List<Track> playlist);
 
-        double CalculateRank(List<Track> playlist);
+        int CalculateRank(List<Track> playlist);
 
         string GetPlaytimeString(int playtime);
 
