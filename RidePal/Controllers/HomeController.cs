@@ -38,7 +38,7 @@ namespace RidePal.Controllers
                 GenreCount = this._statistics.GenreCount().Result,
                 PlaylistCount = this._statistics.PlaylistCount().Result,
                 UserCount = this._statistics.UserCount().Result,
-                //TopPlaylists = this._statistics.TopPlaylists().Result.Select(x => new PlaylistViewModel(x)),
+                TopPlaylists = this._statistics.TopPlaylists().Result.Select(x => new PlaylistViewModel(x)).ToList(),
                 FeaturedArtists = this._statistics.FeaturedArtists().Result,
             };
 

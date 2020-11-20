@@ -19,7 +19,7 @@ namespace RidePal.Models
         public int GenreCount { get; set; }
         public int PlaylistCount { get; set; }
         public int UserCount { get; set; }
-        public IList<PlaylistDTO> TopPlaylists { get; set; }
+        public IList<PlaylistViewModel> TopPlaylists { get; set; }
         public IList<ArtistDTO>  FeaturedArtists{ get; set; }
     }
 }

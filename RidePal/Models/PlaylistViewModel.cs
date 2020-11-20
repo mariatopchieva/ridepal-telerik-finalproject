@@ -17,6 +17,14 @@ namespace RidePal.Models
             this.Title = playlistDTO.Title;
             this.Rank = playlistDTO.Rank;
             this.PlaylistPlaytime = playlistDTO.PlaylistPlaytime;
+            this.User = playlistDTO.User;
+            this.PlaytimeString = playlistDTO.PlaytimeString;
+            this.FilePath = playlistDTO.FilePath;
+            this.Tracks = playlistDTO.Tracks;
+            this.Genres = playlistDTO.Genres;
+            this.Favorites = playlistDTO.Favorites;
+            this.TracksCount = playlistDTO.TracksCount;
+            this.GenresCount = playlistDTO.GenresCount;
         }
 
         public PlaylistViewModel()
@@ -25,22 +33,33 @@ namespace RidePal.Models
         [Key]
         public int Id { get; set; }
 
-        [Required, MinLength(3), MaxLength(50)]
-        [DisplayName("Name:")]
+        public int UserId { get; set; }
+
+        public User User { get; set; }
+
         public string Title { get; set; }
 
+        [DisplayName("Duration in seconds")]
         public double PlaylistPlaytime { get; set; }
+
+        [DisplayName("Duration")]
+        public string PlaytimeString { get; set; }
+
         public double Rank { get; set; }
+
+        [DisplayName("Image")]
+        public string FilePath { get; set; }
+
         public ICollection<PlaylistTrack> Tracks { get; set; }
 
         public ICollection<PlaylistGenre> Genres { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
 
-        [DisplayName("Tracks from the same artist allowed")]
-        public bool IsAllowedSameArtistTracks { get; set; }
+        public ICollection<PlaylistFavorite> Favorites { get; set; }
 
-        [DisplayName("Top tracks used")]
-        public bool ArePreferredTopTracks { get; set; }
+        [DisplayName("Number of tracks")]
+        public int TracksCount { get; set; }
+
+        [DisplayName("Number of genres")]
+        public int GenresCount { get; set; }
     }
 }
