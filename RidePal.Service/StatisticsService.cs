@@ -52,6 +52,7 @@ namespace RidePal.Service
         public async Task<IList<PlaylistDTO>> TopPlaylists()
         {
             var topPlaylistDTOs = await this.context.Playlists
+                                            .Include(pl => pl.User)
                                             .Where(pl => pl.IsDeleted == false)
                                             .OrderBy(pl => pl.Rank)
                                             .Take(3)

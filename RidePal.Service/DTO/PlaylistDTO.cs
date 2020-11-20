@@ -12,6 +12,7 @@ namespace RidePal.Service.DTO
         {
             this.Id = playlist.Id;
             this.UserId = playlist.UserId;
+            this.User = playlist.User;
             this.Title = playlist.Title;
             this.PlaylistPlaytime = playlist.PlaylistPlaytime;
             this.Rank = playlist.Rank;
@@ -33,6 +34,8 @@ namespace RidePal.Service.DTO
 
         public int UserId { get; set; }
 
+        public User User { get; set; }
+
         public string Title { get; set; }
 
         [DisplayName("Duration in seconds")]
@@ -46,8 +49,6 @@ namespace RidePal.Service.DTO
         [DisplayName("Image")]
         public string FilePath { get; set; }
 
-        //public double TravelDuration { get; set; }
-
         public ICollection<PlaylistTrack> Tracks { get; set; }
 
         public ICollection<PlaylistGenre> Genres { get; set; }
@@ -59,9 +60,5 @@ namespace RidePal.Service.DTO
 
         [DisplayName("Number of genres")]
         public int GenresCount { get; set; }
-
-        //public bool RepeatArtist { get; set; }
-        //public bool UseTopTracks { get; set; }
-
     }
 }

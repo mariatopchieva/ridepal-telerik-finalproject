@@ -27,13 +27,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.UserId)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsAllowedSameArtistTracks)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ArePreferredTopTracks)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -53,12 +46,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsAllowedSameArtistTracks)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ArePreferredTopTracks)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
