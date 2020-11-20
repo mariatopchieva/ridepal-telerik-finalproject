@@ -179,9 +179,9 @@ namespace RidePal.Service
 
         //GetByUserId => my favorites; Add Playlist to Favorites; Delete Playlist from Favorites
 
-        //GetAllGenres / GetAllGenresString/ artists/ artist count/ albums in a playlist
+        //GetAllGenres / GetAllGenresString/ artists/ artist count/ albums in a playlist //Title, Destination from/to
 
-        //Sort => by default playlists shoud be sorted by average rank descending
+        //Sort => by default playlists shoud be sorted by average rank descending //duration
         //Могат да се сортират и по Playtime
 
         //Filter by name, genre and duration
