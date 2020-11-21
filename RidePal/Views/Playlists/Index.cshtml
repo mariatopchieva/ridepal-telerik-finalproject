@@ -1,7 +1,6 @@
 ﻿@model FilteredPlaylistsViewModel
-
 @*@inject UserManager<User> UserManager
-@inject SignInManager<User> SignInManager*@
+    @inject SignInManager<User> SignInManager*@
 
 @{
     ViewData["Title"] = "The playlists created by all our users";
@@ -21,31 +20,45 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-@*<table class="table">*@
-    <table id="table_id">
-        <thead>
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Number of tracks
-                </th>
-                <th>
-                    Total playtime
-                </th>
-                <th>
-                    Playlist rank
-                </th>
-                <th>
-                    Number of genres
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+<div class="container-about">
+    <div class="container">
+        <div class="page-header" id="about">
+            <h2 class="text-center text-danger">Our playlists</h2>
+            <br />
+        </div>
+        <div class="row">
             @foreach (var playlist in Model.Playlists)
             {
+                <partial name="_PlaylistPartial" model="playlist" />
+            }
+        </div>
+    </div>
+</div>
+
+@*<table id="table_id">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Number of tracks
+            </th>
+            <th>
+                Total playtime
+            </th>
+            <th>
+                Playlist rank
+            </th>
+            <th>
+                Number of genres
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var playlist in Model.Playlists)
+        {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => playlist.Title)
@@ -59,9 +72,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => playlist.Rank)
                 </td>
-                @*<td>
-            @Html.DisplayFor(modelItem => playlist.FilePath)
-        </td>*@
+                *<td>
+                        @Html.DisplayFor(modelItem => playlist.FilePath)
+                    </td>*
                 <td>
                     @Html.DisplayFor(modelItem => playlist.GenresCount)
                 </td>
@@ -71,6 +84,6 @@
                     @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
                 </td>
             </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>*@

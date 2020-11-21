@@ -45,6 +45,23 @@ namespace RidePal.Controllers
             return View(homeView);
         }
 
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet]
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> SeedDatabase()
         {
             await _seedService.DownloadTrackData("rock");
@@ -65,29 +82,6 @@ namespace RidePal.Controllers
             }
 
             return View("Index");
-        }
-
-        public async Task<IActionResult> GetTravelDuration()
-        {
-            var result = await _generatePlaylistService.GetTravelDuration("Sofia", "Varna");
-            return new JsonResult(result);
-        }
-        
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        [HttpGet]
-        public IActionResult AboutUs()
-        {
-            return View();
         }
     }
 }
