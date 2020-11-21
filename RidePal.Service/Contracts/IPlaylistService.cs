@@ -8,17 +8,20 @@ namespace RidePal.Service.Contracts
 {
     public interface IPlaylistService
     {
-        Task<PlaylistDTO> GetPlaylistByIdAsync(int id);
+        Task<PlaylistDTO> GetPlaylistByIdAsync(long id);
 
         Task<IEnumerable<PlaylistDTO>> GetAllPlaylistsAsync();
 
         Task<PlaylistDTO> EditPlaylistAsync(EditPlaylistDTO editPlaylistDTO);
 
-        Task<bool> DeletePlaylist(int id);
+        Task<bool> DeletePlaylistAsync(long id);
 
-        Task<IEnumerable<PlaylistDTO>> GetPlaylistOfUser(int userId);
+        Task<IEnumerable<PlaylistDTO>> GetPlaylistsOfUserAsync(int userId);
 
         Task<long> GetHighestPlaytimeAsync();
 
+        Task<IEnumerable<GenreDTO>> GetAllGenresAsync();
+
+        Task<string> GetPlaylistGenresAsStringAsync(int playlistId);
     }
 }

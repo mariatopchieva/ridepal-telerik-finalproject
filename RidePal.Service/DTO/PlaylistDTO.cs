@@ -44,7 +44,7 @@ namespace RidePal.Service.DTO
         [DisplayName("Duration")]
         public string PlaytimeString { get; set; }
 
-        public double Rank { get; set; }
+        public int Rank { get; set; }
 
         [DisplayName("Image")]
         public string FilePath { get; set; }

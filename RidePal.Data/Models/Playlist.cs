@@ -21,7 +21,7 @@ namespace RidePal.Data.Models
         public double PlaylistPlaytime { get; set; }
         public double TravelDuration { get; set; }
 
-        public double Rank { get; set; }
+        public int Rank { get; set; }
 
         public ICollection<PlaylistTrack> Tracks { get; set; }
 

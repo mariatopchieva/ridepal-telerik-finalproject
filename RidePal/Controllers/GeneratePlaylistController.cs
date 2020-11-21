@@ -22,13 +22,15 @@ namespace RidePal.Controllers
             this.generatePlaylistService = _generatePlaylistService;
             this.playlistService = _playlistService;
         }
-        //public IActionResult Index()
-        //{
-        //    return View("GeneratePlaylist");
-        //}
-
 
         public IActionResult Index()
+        {
+            return View("GeneratePlaylist");
+        }
+
+
+
+        public async Task<IActionResult> Test()
         {
             //var generatePlaylistDTO = new GeneratePlaylistDTO()
             //{
@@ -83,10 +85,8 @@ namespace RidePal.Controllers
 
             var playlist = playlistService.EditPlaylistAsync(playlistDTO).Result;
 
-            return View("GeneratePlaylist");
+            return View("Index");
         }
-
-
 
     }
 }

@@ -1,58 +1,76 @@
-﻿@model IEnumerable<RidePal.Models.PlaylistViewModel>
+﻿@model FilteredPlaylistsViewModel
+
+@*@inject UserManager<User> UserManager
+@inject SignInManager<User> SignInManager*@
 
 @{
-    ViewData["Title"] = "Playlists";
+    ViewData["Title"] = "The playlists created by all our users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Playlists</h1>
 
+@if (TempData["Msg"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["Msg"].ToString();
+    </div>
+}
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PlaylistPlaytime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rank)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlaylistPlaytime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rank)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+@*<table class="table">*@
+    <table id="table_id">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Number of tracks
+                </th>
+                <th>
+                    Total playtime
+                </th>
+                <th>
+                    Playlist rank
+                </th>
+                <th>
+                    Number of genres
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var playlist in Model.Playlists)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => playlist.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => playlist.TracksCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => playlist.PlaylistPlaytime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => playlist.Rank)
+                </td>
+                @*<td>
+            @Html.DisplayFor(modelItem => playlist.FilePath)
+        </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => playlist.GenresCount)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>

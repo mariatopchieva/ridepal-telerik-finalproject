@@ -162,16 +162,15 @@ namespace RidePal.Service
             
             if(playtime > maxPlaytime) //remove a song with length between lower and upper limit
             {
-                //double upperLimit = playtime - maxPlaytime;
-                //double lowerLimit = upperLimit + 600;
                 Random randomGenerator = new Random();
+                double reducedPlaytime = playtime;
 
-                for (int i = 1; i < playlist.Count; i++) //ако съм прескочила с 10 мин => може да няма толкова дълга песен //use random
+                for (int i = 1; i < playlist.Count; i++)
                 {
                     int randomNumber = randomGenerator.Next(1, playlist.Count() - 1);
                     var currentTrack = playlist.ElementAt(randomNumber);
 
-                    var reducedPlaytime = playtime - currentTrack.TrackDuration;
+                    reducedPlaytime -= currentTrack.TrackDuration;
                     playlist.Remove(currentTrack);
 
                     if (reducedPlaytime <= maxPlaytime)
@@ -179,21 +178,6 @@ namespace RidePal.Service
                         break;
                     }
                 }
-
-                //for (int i = playlist.Count - 1; i > 1; i--) //ако съм прескочила с 10 мин => може да няма толкова дълга песен //use random
-                //{
-                //    if(playlist[i].TrackDuration > upperLimit && playlist[i].TrackDuration < lowerLimit)
-                //    {
-                //        double secondPlaytime = playtime - playlist[i].TrackDuration;
-                //        playlist.Remove(playlist[i]);
-
-                //        if(secondPlaytime <= maxPlaytime)
-                //        {
-                //            break;
-                //        }
-                //    }
-
-                //}
             }
 
             double newPlaytime = CalculatePlaytime(playlist);

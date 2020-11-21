@@ -23,7 +23,7 @@ namespace RidePal.Service
             this.dateTimeProvider = _dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
-        public async Task<PlaylistDTO> GetPlaylistByIdAsync(int id)
+        public async Task<PlaylistDTO> GetPlaylistByIdAsync(long id)
         {
             var playlist = await this.context.Playlists
                                 .Where(playlist => playlist.IsDeleted == false)
@@ -130,7 +130,7 @@ namespace RidePal.Service
 
         }
 
-        public async Task<bool> DeletePlaylist(int id)
+        public async Task<bool> DeletePlaylistAsync(long id)
         {
             var playlist = await this.context.Playlists.Where(playlist => playlist.IsDeleted == false)
                 .FirstOrDefaultAsync(playlist => playlist.Id == id);
@@ -148,7 +148,7 @@ namespace RidePal.Service
             return true;
         }
 
-        public async Task<IEnumerable<PlaylistDTO>> GetPlaylistOfUser(int userId)
+        public async Task<IEnumerable<PlaylistDTO>> GetPlaylistsOfUserAsync(int userId)
         {
             var playlistsDTO = await this.context.Playlists.Where(x => x.UserId == userId)
                             .OrderByDescending(playlist => playlist.Rank)
@@ -177,9 +177,43 @@ namespace RidePal.Service
             return (long)playlist.PlaylistPlaytime;
         }
 
+        public async Task<IEnumerable<GenreDTO>> GetAllGenresAsync()
+        {
+            var genresDTO = await this.context.Genres
+                                    .Select(genre => new GenreDTO(genre))
+                                    .ToListAsync();
+
+            if (genresDTO == null)
+            {
+                throw new ArgumentNullException("No genres have been found.");
+            }
+
+            return genresDTO;
+
+        }
+
+        public async Task<string> GetPlaylistGenresAsStringAsync(int playlistId)
+        {
+            var genresId = await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlistId)
+                               .GroupBy(x => x.GenreId).Select(x => x.First())
+                               .Select(x => x.GenreId).ToListAsync();
+
+            if (genresId == null)
+            {
+                throw new ArgumentNullException("No genres have been found.");
+            }
+
+            var genreNames = this.context.Genres.Where(x => genresId.Contains(x.Id)).Select(x => x.Name).ToList();
+
+            string genresString = string.Join(", ", genreNames);
+
+            return genresString;
+
+        }
+
         //GetByUserId => my favorites; Add Playlist to Favorites; Delete Playlist from Favorites
 
-        //GetAllGenres / GetAllGenresString/ artists/ artist count/ albums in a playlist //Title, Destination from/to
+        //Get all artists/ artist count/ albums in a playlist //Title, Destination from/to
 
         //Sort => by default playlists shoud be sorted by average rank descending //duration
         //Могат да се сортират и по Playtime

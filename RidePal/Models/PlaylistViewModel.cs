@@ -30,6 +30,7 @@ namespace RidePal.Models
         public PlaylistViewModel()
         {
         }
+
         [Key]
         public int Id { get; set; }
 
@@ -45,7 +46,7 @@ namespace RidePal.Models
         [DisplayName("Duration")]
         public string PlaytimeString { get; set; }
 
-        public double Rank { get; set; }
+        public int Rank { get; set; }
 
         [DisplayName("Image")]
         public string FilePath { get; set; }
