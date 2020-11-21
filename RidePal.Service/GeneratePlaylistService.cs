@@ -295,6 +295,8 @@ namespace RidePal.Service
                 Title = playlistDTO.PlaylistName,
                 UseTopTracks = playlistDTO.UseTopTracks,
                 RepeatArtist = playlistDTO.RepeatArtist,
+                StartLocation = playlistDTO.StartLocationName,
+                Destination = playlistDTO.DestinationName,
                 TravelDuration = travelDuration,
                 PlaylistPlaytime = playtime,
                 PlaytimeString = GetPlaytimeString((int)playtime),

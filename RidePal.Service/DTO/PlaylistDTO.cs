@@ -48,6 +48,8 @@ namespace RidePal.Service.DTO
 
         [DisplayName("Image")]
         public string FilePath { get; set; }
+        public string StartLocation { get; set; }
+        public string Destination { get; set; }
 
         public ICollection<PlaylistTrack> Tracks { get; set; }
 

@@ -127,7 +127,6 @@ namespace RidePal.Service
             return new PlaylistDTO(playlist);
 
             //update PlaylistGenre list-a na each genre (see Generate service)
-
         }
 
         public async Task<bool> DeletePlaylistAsync(long id)
@@ -189,7 +188,6 @@ namespace RidePal.Service
             }
 
             return genresDTO;
-
         }
 
         public async Task<string> GetPlaylistGenresAsStringAsync(int playlistId)
@@ -208,14 +206,107 @@ namespace RidePal.Service
             string genresString = string.Join(", ", genreNames);
 
             return genresString;
-
         }
 
-        //GetByUserId => my favorites; Add Playlist to Favorites; Delete Playlist from Favorites
+        //Test the three cases of this method
+        public async Task<bool> AddPlaylistToFavoritesAsync(int playlistId, int userId)
+        {
+            var playlist = await context.Playlists.FirstOrDefaultAsync(p => p.Id == playlistId);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-        //Get all artists/ artist count/ albums in a playlist //Title, Destination from/to
+            if (playlist == null || user == null)
+            {
+                return false;
+            }
 
-        //Sort => by default playlists shoud be sorted by average rank descending //duration
+            PlaylistFavorite item = new PlaylistFavorite
+            {
+                Playlist = playlist,
+                PlaylistId = playlist.Id,
+                IsFavorite = true,
+                UserId = user.Id,
+                User = user
+            };
+
+            var favoritesTrue = await this.context.Favorites.Where(pf => pf.UserId == userId)
+                                    .Where(pf => pf.IsFavorite == true).ToListAsync();
+
+            var favoritesFalse = await this.context.Favorites.Where(pf => pf.UserId == userId)
+                                    .Where(pf => pf.IsFavorite == false).ToListAsync();
+
+            if (favoritesTrue.Any(f => f.Id == item.Id))
+            {
+                return false; //the playlist has already been liked
+            }
+            else if (favoritesFalse.Any(f => f.Id == item.Id))
+            {
+                var playlistToSetFavorite = await this.context.Favorites.FirstOrDefaultAsync(pf => pf.Id == item.Id);
+                playlistToSetFavorite.IsFavorite = true;
+
+                await context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                await context.Favorites.AddAsync(item);
+                await context.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> RemovePlaylistFromFavoritesAsync(int playlistId, int userId)
+        {
+
+            var playlist = await context.Playlists.FirstOrDefaultAsync(p => p.Id == playlistId);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (playlist == null || user == null)
+            {
+                return false;
+            }
+
+            var favoritesSetAsTrue = await GetFavoritePlaylistsOfUser(user.Id);
+
+            if (favoritesSetAsTrue.Any(f => f.Id == playlistId))
+            {
+                var playlistToRemove = await this.context.Favorites.FirstOrDefaultAsync(pf => pf.PlaylistId == playlistId);
+                playlistToRemove.IsFavorite = false;
+
+                await context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false; 
+            }
+        }
+
+        public async Task<IEnumerable<PlaylistDTO>> GetFavoritePlaylistsOfUser(int userId)
+        {
+            var playlistFavorites = await this.context.Favorites.Where(pf => pf.UserId == userId)
+                                    .Where(pf => pf.IsFavorite == true).ToListAsync();
+
+            if (playlistFavorites == null)
+            {
+                return null; //or exception?
+            }
+
+            var playlistsDTO = new List<PlaylistDTO>();
+
+            foreach (var item in playlistFavorites)
+            {
+                var playlist = context.Playlists.First(p => p.Id == item.PlaylistId);
+                var playlistDTO = new PlaylistDTO(playlist);
+                playlistsDTO.Add(playlistDTO);
+            }
+
+            return playlistsDTO;
+        }
+
+
+
+
+
         //Могат да се сортират и по Playtime
 
         //Filter by name, genre and duration

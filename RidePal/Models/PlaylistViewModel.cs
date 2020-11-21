@@ -20,6 +20,8 @@ namespace RidePal.Models
             this.User = playlistDTO.User;
             this.PlaytimeString = playlistDTO.PlaytimeString;
             this.FilePath = playlistDTO.FilePath;
+            this.StartLocation = playlistDTO.StartLocation;
+            this.Destination = playlistDTO.Destination;
             this.Tracks = playlistDTO.Tracks;
             this.Genres = playlistDTO.Genres;
             this.Favorites = playlistDTO.Favorites;
@@ -50,6 +52,10 @@ namespace RidePal.Models
 
         [DisplayName("Image")]
         public string FilePath { get; set; }
+
+        public string Destination { get; set; }
+
+        public string StartLocation { get; set; }
 
         public ICollection<PlaylistTrack> Tracks { get; set; }
 
