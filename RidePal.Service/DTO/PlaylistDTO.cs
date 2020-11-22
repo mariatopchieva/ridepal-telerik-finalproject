@@ -15,7 +15,7 @@ namespace RidePal.Service.DTO
             this.User = playlist.User;
             this.Title = playlist.Title;
             this.PlaylistPlaytime = playlist.PlaylistPlaytime;
-            this.Rank = playlist.Rank;
+            this.Rank = (int)playlist.Rank;
             this.PlaytimeString = playlist.PlaytimeString;
             this.Tracks = playlist.Tracks;
             this.TracksCount = playlist.TracksCount;
