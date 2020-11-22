@@ -49,6 +49,21 @@ namespace RidePal.Controllers
             return View(adminView);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> IndexAsync(string text)
+        {
+            var users = await this.adminService.SearchByEmail(text);
+
+            if (users == null)
+            {
+                return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "No users found." });
+            }
+
+            var adminView = new AdminViewModel() { AllUsers = users };
+
+            return View(adminView);
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditUser(int? id)
         {
@@ -68,9 +83,11 @@ namespace RidePal.Controllers
             if (ModelState.IsValid)
             {
                 var edited = await this.adminService.EditUser(user);
+
+                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User info edited." });
             }
 
-            return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User info edited." });
+            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User info edit failed." });
         }
 
         [HttpPost]

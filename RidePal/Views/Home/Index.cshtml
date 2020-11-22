@@ -4,33 +4,33 @@
     ViewData["Title"] = "Home Page";
 }
 <!--Carousel-->
-<div class="container-fluid px-0">
+<!--<div class="container-fluid d-block">
     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner" role="listbox">
-            <div class="carousel-item active">
-                <img class="d-block img-fluid" src="~/img/travel_1.jpg" alt="First slide">
-                <div class="carousel-caption justify-content-center">
-                    <div class="col-10 mx-auto text-center">
-                        <h3 class="mbr-fonts-style display-1">Enjoy</h3>
-                        <h5>your favorite tracks on vecation.</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img class="d-block img-fluid" src="~/img/travel_2.jpg" alt="Second slide">
-                <div class="carousel-caption justify-content-center">
-                    <div class="col-10 mx-auto text-center">
-                        <h3 class="mbr-fonts-style display-1">Pass</h3>
-                        <h5>the time while waiting.</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img class="d-block img-fluid" src="~/img/travel_3.jpg" alt="Third slide">
-                <div class="carousel-caption justify-content-center">
-                    <div class="col-10 mx-auto text-center">
-                        <h3 class="mbr-fonts-style display-1">Pick</h3>
-                        <h5>a start and an end point and create your own playlist.</h5>
+            <div class="carousel-item active">-->
+@*<img class="d-block img-fluid" src="" alt="First slide">*@
+<!--<div class="carousel-caption">
+        <div class="col-10 mx-auto">
+            <h1 class="mbr-fonts-style display-1">Enjoy</h1>
+            <h3>your favorite tracks on vecation.</h3>
+        </div>
+    </div>
+</div>
+<div class="carousel-item">-->
+@*<img class="d-block img-fluid" src="" alt="Second slide">*@
+<!--<div class="carousel-caption">
+        <div class="col-10 mx-auto">
+            <h1 class="mbr-fonts-style display-1">Pass</h1>
+            <h3>the time while waiting.</h3>
+        </div>
+    </div>
+</div>
+<div class="carousel-item">-->
+@*<img class="d-block img-fluid" src="" alt="Third slide">*@
+<!--<div class="carousel-caption">
+                    <div class="col-10 mx-auto">
+                        <h1 class="mbr-fonts-style display-1">Pick</h1>
+                        <h3>a start and an end point and create your own playlist.</h3>
                     </div>
                 </div>
             </div>
@@ -44,41 +44,59 @@
             <span class="sr-only">Next</span>
         </a>
     </div>
-</div>
-
-<!--top playlists-->
-<div class="container-about">
-    <div class="container">
-        <div class="page-header" id="about">
-            <h2 class="text-center text-danger">Top playlists</h2>
-            <br />
+</div>-->
+<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="carousel-caption">
+                <h1><span>Enjoy</span></h1>
+                <h3>your favorite tracks.</h3>
+            </div>
         </div>
-        <div class="row">
-            @foreach (var playlist in Model.TopPlaylists)
-            {
-                <partial name="_PlaylistPartial" model="playlist"/>
-            }
+        <div class="carousel-item">
+            <div class="carousel-caption">
+                <h1><span>Pass</span></h1>
+                <h3>the time while waiting</h3>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-caption">
+                <h1><span>Pick</span></h1>
+                <h3>a start and an end point and create your own playlist</h3>
+            </div>
         </div>
     </div>
 </div>
 
+<!--top playlists-->
+<div class="container">
+    <div class="page-header" id="topPl">
+        <h2 class="text-center">Top playlists</h2>
+        <br />
+    </div>
+    <div class="row justify-content-center">
+        @foreach (var playlist in Model.TopPlaylists)
+        {
+            <partial name="_PlaylistPartial" model="playlist" />
+        }
+    </div>
+</div>
+
 <!--featured artists-->
-<div class="container-about">
-    <div class="container">
-        <div class="page-header" id="about">
-            <h2 class="text-center text-danger">Featured artists</h2>
-            <br />
-        </div>
-        <div class="row">
-            @foreach (var artist in Model.FeaturedArtists)
-            {
-                <div class="col-md-4 text-center">
-                    <img class="img-responsive" style="border-radius:50%; width:250px; height:250px;" src="@artist.ArtistPictureURL" />
-                    <h3 class="text-danger">@artist.ArtistName</h3>
-                    <br />
-                </div>
-            }
-        </div>
+<div class="container">
+    <div class="page-header" id="featured">
+        <h2 class="text-center">Featured artists</h2>
+        <br />
+    </div>
+    <div class="row">
+        @foreach (var artist in Model.FeaturedArtists)
+        {
+            <div class="col-md-4 text-center">
+                <img class="img-responsive" style="border-radius:50%; width:250px; height:250px;" src="@artist.ArtistPictureURL" />
+                <h3 class="text-danger">@artist.ArtistName</h3>
+                <br />
+            </div>
+        }
     </div>
 </div>
 

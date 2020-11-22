@@ -83,7 +83,7 @@ namespace RidePal.Controllers
                 UserId = 2
             };
 
-            var playlist = playlistService.EditPlaylistAsync(playlistDTO).Result;
+            //var playlist = playlistService.EditPlaylistAsync(playlistDTO).Result;
 
             return View("Index");
         }

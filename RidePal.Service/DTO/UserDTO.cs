@@ -16,6 +16,8 @@ namespace RidePal.Service.DTO
             this.Email = user.Email;
             this.UserName = user.UserName;
             this.LockoutEnabled = user.LockoutEnabled;
+            this.IsBanned = user.IsBanned;
+            this.IsDeleted = user.IsDeleted;
         }
 
         public UserDTO()
@@ -35,5 +37,7 @@ namespace RidePal.Service.DTO
         [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
         public bool LockoutEnabled { get; set; }
+        public bool IsBanned { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

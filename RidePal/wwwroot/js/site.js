@@ -25,3 +25,81 @@ $(document).ready(function () {
         next();
     });
 });
+
+//Create playlist form Slider enable
+$('#inputMetal').click(function () {
+    var checked = this.checked;
+    $('#inputMetalSlider').each(function () {
+        $(this).prop('disabled', !checked);
+    });
+});
+
+$('#inputRock').click(function () {
+    var checked = this.checked;
+    $('#inputRockSlider').each(function () {
+        $(this).prop('disabled', !checked);
+    });
+});
+
+$('#inputPop').click(function () {
+    var checked = this.checked;
+    $('#inputPopSlider').each(function () {
+        $(this).prop('disabled', !checked);
+    });
+});
+
+$('#inputJazz').click(function () {
+    var checked = this.checked;
+    $('#inputJazzSlider').each(function () {
+        $(this).prop('disabled', !checked);
+    });
+});
+
+//sliders numbers
+$(document).ready(
+    function () {
+
+        const $valueSpan = $('#metalSpan');
+        const $value = $('#inputMetalSlider');
+        $valueSpan.html($value.val());
+        $value.on('input change', () => {
+
+            $valueSpan.html($value.val());
+        });
+    });
+
+$(document).ready(
+    function () {
+
+        const $valueSpan = $('#rockSpan');
+        const $value = $('#inputRockSlider');
+        $valueSpan.html($value.val());
+        $value.on('input change', () => {
+
+            $valueSpan.html($value.val());
+        });
+    });
+
+$(document).ready(
+    function () {
+
+        const $valueSpan = $('#popSpan');
+        const $value = $('#inputPopSlider');
+        $valueSpan.html($value.val());
+        $value.on('input change', () => {
+
+            $valueSpan.html($value.val());
+        });
+    });
+
+$(document).ready(
+    function () {
+
+        const $valueSpan = $('#jazzSpan');
+        const $value = $('#inputJazzSlider');
+        $valueSpan.html($value.val());
+        $value.on('input change', () => {
+
+            $valueSpan.html($value.val());
+        });
+    });
