@@ -16,9 +16,29 @@
     </div>
 }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<form action="/action_page.php">
+    <div>
+        <label>Search:</label>
+        <input type="text" id="name" asp-for="FilterCriteria.Name"><br><br>
+    </div>
+    <div>
+        <label>Include:</label>
+        <br />
+        @foreach (var item in Model.AllGenres)
+        {
+            <span>
+                <label>@item.Name</label>
+                <input type="checkbox" id=@item.Id name=GenresNames>
+                <br />
+            </span>
+        }
+    </div>
+    <div>
+        <label for="customRange1">Filter playlists by duration</label>
+        <input type="range" class="custom-range" id="customRange1" asp-for="FilterCriteria.DurationLimits">
+    </div>
+    <input type="submit" value="Submit">
+</form>
 
 <div class="container-about">
     <div class="container">
