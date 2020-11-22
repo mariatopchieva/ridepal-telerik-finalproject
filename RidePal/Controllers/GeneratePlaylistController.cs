@@ -60,6 +60,7 @@ namespace RidePal.Controllers
 
             //var playlist = generatePlaylistService.GeneratePlaylist(generatePlaylistDTO).Result;
 
+            ////// next test
             var playlistDTO = new EditPlaylistDTO()
             {
                 Title = "Varna Burgas7",

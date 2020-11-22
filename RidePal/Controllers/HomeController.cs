@@ -16,16 +16,19 @@ namespace RidePal.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IDatabaseSeedService _seedService;
         private readonly IGeneratePlaylistService _generatePlaylistService;
+        private readonly IPlaylistService _playlistService;
         private readonly IStatisticsService _statistics;
 
         public HomeController(ILogger<HomeController> logger, 
                                 IDatabaseSeedService seedService, 
                                 IGeneratePlaylistService generatePlaylistService,
+                                IPlaylistService playlistService,
                                 IStatisticsService stats)
         {
             this._logger = logger;
             this._seedService = seedService;
             this._generatePlaylistService = generatePlaylistService;
+            this._playlistService = playlistService;
             this._statistics = stats;
         }
 
@@ -82,6 +85,12 @@ namespace RidePal.Controllers
             }
 
             return View("Index");
+        }
+
+        public async Task<IActionResult> Test()
+        {
+            var playlist = await this._playlistService.GetPlaylistGenresAsStringAsync(88);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
