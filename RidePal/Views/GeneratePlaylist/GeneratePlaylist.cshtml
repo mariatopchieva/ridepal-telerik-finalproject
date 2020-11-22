@@ -3,17 +3,29 @@
     ViewData["Title"] = "Generate Playlist";
 }
 
-<div class="contact" id="contact">
-    <div class="violet-overlay">
-        <div class="container">
-            <h2 class="text-center">Create a Playlist</h2>
-            <div class="contact-form">
-                <form>
-                    <input type="text" placeholder="Starting point">
-                    <input type="email" placeholder="End Point">
-                    <input type="submit" value="SEND">
-                </form>
-            </div>
+<div class="container align-items-md-center">
+    <form method="post" asp-action="EditUser">
+        <div class=”form-group”>
+            <label for="example">First name</label>
+            <input type="text" class="form-control" placeholder="Enter first name" name="FirstName">
         </div>
-    </div>
+        <div class=”form-group”>
+            <label for="example">Last name</label>
+            <input type="text" class="form-control" placeholder="Enter last name" name="LastName">
+        </div>
+        <div class=”form-group”>
+            <label for="example">Username</label>
+            <input type="text" class="form-control" placeholder="Enter username" name="Username">
+        </div>
+        <div class=”form-group”>
+            <label for="example">Email Address</label>
+            <input type="email" class="form-control" placeholder="Enter email" name="Email">
+        </div>
+        <div class=”form-group”>
+            <label for="example">Password</label>
+            <input type="password" class="form-control" placeholder="Enter password" name="Password">
+        </div>
+
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
 </div>

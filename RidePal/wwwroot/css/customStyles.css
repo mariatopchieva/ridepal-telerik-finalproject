@@ -1,23 +1,46 @@
 ﻿body {
-    background-color: lightgray;
+    background-image: url('../img/bg-images/light-dark.jpg');
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
+    height: 100%;
 }
 
-    body img {
-        width: 100%;
-        height: auto;
-    }
+/* navbar */
 
-.carousel img {
+nav.navbar {
+    position: absolute;
     top: 0;
     left: 0;
-    min-width: 100%;
-    height: 650px;
-    max-height: 650px;
-    width: auto;
+    background-color: transparent;
+    width: 100%;
+    z-index: 1000;
+    font-family: 'Open Sans', sans-serif;
 }
 
+    nav.navbar a, nav.navbar ul li a {
+        color: black !important;
+    }
+
+    nav.navbar ul li {
+        padding: 0 15px;
+    }
+
+/*carousel*/
+.carousel {
+    margin-top: 300px;
+}
+
+.carousel-inner {
+    height: 500px;
+}
+
+.carousel-caption {
+    color: black;
+    top: 200%;
+    text-align: left;
+}
+
+/*users table*/
 .table-responsive {
     margin: 30px 0;
 }
@@ -64,6 +87,21 @@
         left: 10px;
     }
 
+    .search-box button {
+        background: none;
+        border: none;
+        font-size: 19px;
+        top: 8px;
+        left: 10px;
+    }
+
+        .search-box button:active, button:focus {
+            background: none;
+            border: none;
+            outline: none !important;
+            box-shadow: none;
+        }
+
 table.table tr th, table.table tr td {
     border-color: #e9e9e9;
 }
@@ -90,7 +128,6 @@ table.table td:last-child {
 
 table.table td a {
     color: #a0a5b1;
-    /*display: inline-block;*/
     align-content: center;
 }
 
@@ -291,3 +328,38 @@ table.table td i {
             color: rgba(32, 41, 28, 0.8);
         }
 
+/*Edit user form*/
+#formcontainer {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+#editform {
+    background: rgba(58, 64, 64, 0.80);
+    position: relative;
+    border-radius: .5rem;
+    margin-top: 20%;
+    margin-bottom: 20%;
+    align-items: center;
+    z-index: 1;
+    color: white;
+}
+
+#centerField {
+    margin: auto;
+}
+
+/*home page items*/
+#topPl {
+    margin-top: 50px;
+}
+
+#featured {
+    margin-top: 50px;
+}
+
+/*create playlist form*/
+#createPlaylistForm {
+    margin: auto;
+}

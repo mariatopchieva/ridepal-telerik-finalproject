@@ -3,3 +3,40 @@
     ViewData["Title"] = "Edit User";
 }
 
+<div class="container" id="formcontainer">
+    <form id="editform" class="text-center p-5 col-sm-8" method="post" asp-action="EditUser">
+        <div class="form-group row justify-content-center m-auto">
+            <div class="col-xs-4 m-auto">
+                <label for="inputFirstname">First name</label>
+                <input type="text" class="form-control" id="Firstname" placeholder="First name" name="FirstName">
+            </div>
+            <div class="col-xs-4 m-auto">
+                <label for="inputLastname">Last name</label>
+                <input type="text" class="form-control" id="Lastname" placeholder="Last name" name="Lastname">
+            </div>
+        </div>
+
+        <div class="form-group row justify-content-center m-auto">
+            <div class="col-xs-4 m-auto">
+                <label for="inputUsername">Username</label>
+                <input type="text" class="form-control" id="inputUsername" placeholder="Username" name="Username">
+            </div>
+            <div class="col-xs-4 m-auto">
+                <label for="inputPassword">Password</label>
+                <input type="text" class="form-control" id="inputPassword" placeholder="Password" name="Password">
+            </div>
+        </div>
+        <div class="form-group row justify-content-center m-auto">
+            <div class="col-sm-6 text-center">
+                <label for="example">Email Address</label>
+                <input type="email" class="form-control" placeholder="Enter email" name="Email">
+            </div>
+        </div>
+        <div class="form-group row justify-content-center">
+            <div class="col-xs-4 text-center" style="margin-top: 10px">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a class="btn btn-warning waves-effect" asp-controller="Admin" asp-action="Index">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

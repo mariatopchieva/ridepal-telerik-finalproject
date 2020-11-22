@@ -27,9 +27,11 @@ namespace RidePal.Service
             this._signInManager = signInManager;
         }
 
-        public async Task<IList<User>> GetAllRegularUsers()
+        public async Task<IList<UserDTO>> GetAllRegularUsers()
         {
-            var users = await this.context.Users.ToListAsync();
+            var users = await this.context.Users
+                                        .Select(u => new UserDTO(u))
+                                        .ToListAsync();
 
             if (users == null)
             {
@@ -48,6 +50,16 @@ namespace RidePal.Service
             return userDto;
         }
 
+        public async Task<IList<UserDTO>> SearchByEmail(string email)
+        {
+            var userDTOs = await this.context.Users
+                                            .Where(user => user.Email.Contains(email))
+                                            .Select(u => new UserDTO(u))
+                                            .ToListAsync();
+
+            return userDTOs;
+        }
+
         public async Task<UserDTO> EditUser(UserDTO userDto)
         {
             if (userDto == null)
@@ -64,11 +76,11 @@ namespace RidePal.Service
 
             var hasher = new PasswordHasher<User>();
 
-            userDbEntry.FirstName = userDto.FirstName;
-            userDbEntry.LastName = userDto.LastName;
-            userDbEntry.Email = userDto.Email;
-            userDbEntry.UserName = userDto.UserName;
-            userDbEntry.PasswordHash = hasher.HashPassword(userDbEntry, userDto.Password);
+            if (userDto.FirstName != null) { userDbEntry.FirstName = userDto.FirstName; }
+            if (userDto.LastName != null) { userDbEntry.LastName = userDto.LastName; }
+            if (userDto.Email != null) { userDbEntry.Email = userDto.Email; }
+            if (userDto.UserName != null) { userDbEntry.UserName = userDto.UserName; }
+            if (userDto.Password != null) { userDbEntry.PasswordHash = hasher.HashPassword(userDbEntry, userDto.Password); }
 
             await this.context.SaveChangesAsync();
 

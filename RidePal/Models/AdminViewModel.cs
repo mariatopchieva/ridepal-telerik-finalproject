@@ -4,18 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RidePal.Data.Models;
+using RidePal.Service.DTO;
 
 namespace RidePal.Models
 {
     public class AdminViewModel
     {
-        private readonly IList<User> allUsers;
+        private readonly IList<UserDTO> allUsers;
 
         public AdminViewModel()
         {
-            this.AllUsers = new List<User>();
+            this.allUsers = new List<UserDTO>();
         }
 
-        public IList<User> AllUsers { get; set; }
+        public IList<UserDTO> AllUsers { get; set; }
     }
 }
