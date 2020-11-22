@@ -147,16 +147,41 @@ namespace RidePal.Service
             return true;
         }
 
+        public async Task<bool> ReverseDeletePlaylistAsync(long id)
+        {
+            var playlist = await this.context.Playlists.Where(playlist => playlist.Id == id)
+                                .FirstOrDefaultAsync();
+
+            if (playlist == null || playlist.IsDeleted == false)
+            {
+                return false;
+            }
+
+            playlist.IsDeleted = false;
+
+            await this.context.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<IEnumerable<PlaylistDTO>> GetPlaylistsOfUserAsync(int userId)
         {
+            var user = await this.context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException("Invalid user.");
+            }
+
             var playlistsDTO = await this.context.Playlists.Where(x => x.UserId == userId)
+                            .Where(x => x.IsDeleted == false)
                             .OrderByDescending(playlist => playlist.Rank)
                             .Select(playlist => new PlaylistDTO(playlist))
                             .ToListAsync();
 
             if (playlistsDTO == null)
             {
-                return null;
+                return null; //OR throw new ArgumentNullException("This user has not created any playlists yet.");
             }
             
             return playlistsDTO;
@@ -164,9 +189,9 @@ namespace RidePal.Service
 
         public async Task<long> GetHighestPlaytimeAsync()
         {
-            var playlist = await this
-                .context.Playlists
-                .Where(playlist => playlist.IsDeleted == false).OrderByDescending(x => x.PlaylistPlaytime).FirstOrDefaultAsync();
+            var playlist = await this.context.Playlists
+                                 .Where(playlist => playlist.IsDeleted == false)
+                                 .OrderByDescending(x => x.PlaylistPlaytime).FirstOrDefaultAsync();
 
             if (playlist == null)
             {
@@ -193,8 +218,8 @@ namespace RidePal.Service
         public async Task<string> GetPlaylistGenresAsStringAsync(int playlistId)
         {
             var genresId = await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlistId)
-                               .GroupBy(x => x.GenreId).Select(x => x.First())
-                               .Select(x => x.GenreId).ToListAsync();
+                                .Where(x => x.IsDeleted == false)
+                                .Select(x => x.GenreId).ToListAsync();
 
             if (genresId == null)
             {
@@ -206,6 +231,22 @@ namespace RidePal.Service
             string genresString = string.Join(", ", genreNames);
 
             return genresString;
+        }
+
+        public async Task<IEnumerable<TrackDTO>> GetPlaylistTracksAsync(int playlistId)
+        {
+            var playlistDTO = GetPlaylistByIdAsync(playlistId);
+
+            var tracksDTO = await this.context.PlaylistTracks.Where(x => x.PlaylistId == playlistId)
+                               .Select(x => x.Track).Select(track => new TrackDTO(track))
+                               .ToListAsync();
+
+            if (tracksDTO == null)
+            {
+                throw new ArgumentNullException("No tracks have been found.");
+            }
+
+            return tracksDTO;
         }
 
         //Test the three cases of this method
@@ -303,19 +344,44 @@ namespace RidePal.Service
             return playlistsDTO;
         }
 
+        public async Task<IEnumerable<PlaylistDTO>> SortPlaylistsByDurationAsync()
+        {
+            var playlistsDTO = await this.context.Playlists
+                                    .Where(playlist => playlist.IsDeleted == false)
+                                    .OrderByDescending(playlist => playlist.PlaylistPlaytime)
+                                    .Select(playlist => new PlaylistDTO(playlist))
+                                    .ToListAsync();
 
+            if (playlistsDTO == null)
+            {
+                throw new ArgumentNullException("No playlists have been found.");
+            }
 
+            return playlistsDTO;
+        }
 
+        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByNameAsync(string name)
+        {
+            return new List<PlaylistDTO>();
+        }
 
-        //Могат да се сортират и по Playtime
+        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByGenreAsync(List<string> genres)
+        {
+            return new List<PlaylistDTO>();
+        }
 
-        //Filter by name, genre and duration
+        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByDurationAsync(List<int> durationLimits)
+        {
+            return new List<PlaylistDTO>();
+        }
+
+        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync()
+        {
+            return new List<PlaylistDTO>();
+        }
 
         //Pagination
 
         //Add authorization restrictions => here? Edit/ delete Playlist => (admin)List all/ (user)My playlists
-
-        //Add all methods to IPlaylistService
-
     }
 }

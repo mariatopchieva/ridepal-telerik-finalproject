@@ -11,7 +11,7 @@ namespace RidePal.Models
 
         public ICollection<string> GenresNames { get; set; }
 
-        public ICollection<int> DurationRange { get; set; }
+        public ICollection<int> DurationLimits { get; set; }
 
     }
 }
