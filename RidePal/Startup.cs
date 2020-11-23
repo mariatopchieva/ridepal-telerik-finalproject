@@ -18,6 +18,7 @@ using RidePal.Service;
 using RidePal.Service.Contracts;
 using RidePal.Service.Providers;
 using RidePal.Service.Providers.Contracts;
+using HostedService;
 
 namespace RidePal
 {
@@ -77,6 +78,7 @@ namespace RidePal
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
+            services.AddHostedService<HostedDBSeedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

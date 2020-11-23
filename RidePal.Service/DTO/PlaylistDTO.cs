@@ -50,7 +50,6 @@ namespace RidePal.Service.DTO
         public string FilePath { get; set; }
         public string StartLocation { get; set; }
         public string Destination { get; set; }
-
         public ICollection<PlaylistTrack> Tracks { get; set; }
 
         public ICollection<PlaylistGenre> Genres { get; set; }
