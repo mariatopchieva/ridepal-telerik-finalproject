@@ -360,24 +360,69 @@ namespace RidePal.Service
             return playlistsDTO;
         }
 
-        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByNameAsync(string name)
+        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByNameAsync(string name, IEnumerable<PlaylistDTO> filteredPPlaylists)
         {
-            return new List<PlaylistDTO>();
+            var playlists = filteredPPlaylists.Where(x => x.Title.Contains(name))
+                                              .OrderByDescending(x => x.Rank).ToList();
+            
+            return playlists;
         }
 
-        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByGenreAsync(List<string> genres)
+        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByGenreAsync(List<string> genres, IEnumerable<PlaylistDTO> filteredPlaylists)
         {
-            return new List<PlaylistDTO>();
+            List<PlaylistDTO> finalList = new List<PlaylistDTO>();
+
+            foreach (var playlist in filteredPlaylists)
+            {
+                var genresId = await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id)
+                                .Where(x => x.IsDeleted == false)
+                                .Select(x => x.GenreId).ToListAsync();
+
+                var genreNames = this.context.Genres.Where(x => genresId.Contains(x.Id)).Select(x => x.Name).ToList();
+
+
+                if (genreNames.Intersect(genres).Any()) //test!!!
+                {
+                    finalList.Add(playlist);
+                }
+            }
+
+            return finalList;
         }
 
-        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByDurationAsync(List<int> durationLimits)
+        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByDurationAsync(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPPlaylists)
         {
-            return new List<PlaylistDTO>();
+            var playlists = filteredPPlaylists.Where(x => x.PlaylistPlaytime >= durationLimits[0] && x.PlaylistPlaytime <= durationLimits[1])
+                                              .ToList();
+            
+            return playlists;
         }
 
         public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits)
         {
-            return new List<PlaylistDTO>();
+            IEnumerable<PlaylistDTO> filteredPlaylistsDTO = GetAllPlaylistsAsync().Result;
+
+            if(name != null)
+            {
+                filteredPlaylistsDTO = FilterPlaylistsByNameAsync(name, filteredPlaylistsDTO).Result;
+            }
+
+            if(genres.Count > 0)
+            {
+                filteredPlaylistsDTO = FilterPlaylistsByGenreAsync(genres, filteredPlaylistsDTO).Result;
+            }
+
+            if(durationLimits.Count > 1) //check default values
+            {
+                filteredPlaylistsDTO = FilterPlaylistsByDurationAsync(durationLimits, filteredPlaylistsDTO).Result;
+            }
+            
+            if(filteredPlaylistsDTO == null)
+            {
+                throw new ArgumentNullException("No playlists meet the filter criteria."); //or no exception???
+            }
+
+            return filteredPlaylistsDTO; 
         }
 
         //Pagination

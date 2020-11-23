@@ -68,6 +68,8 @@ namespace RidePal.Controllers
                 var filteredName = filterCriteria.Name;
                 var filteredGenres = filterCriteria.GenresNames;
                 var filteredDuration = filterCriteria.DurationLimits;
+                //temporary until the slider range gets two values
+                filteredDuration.Insert(0, 0);
 
                 var playlistsDTO = await service.FilterPlaylistsMasterAsync(filteredName, filteredGenres, filteredDuration);
 
@@ -87,7 +89,7 @@ namespace RidePal.Controllers
                 {
                     Playlists = playlistsViewModels,
                     AllGenres = service.GetAllGenresAsync().Result.OrderBy(x => x.Name).ToList(),
-                    MaxDuration = service.GetHighestPlaytimeAsync().Result
+                    MaxDuration = service.GetHighestPlaytimeAsync().Result //what is the default max value?
                 };
 
                 return View(filteredPlaylistList);
