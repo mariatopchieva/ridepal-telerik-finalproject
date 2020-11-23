@@ -253,7 +253,7 @@ table.table td i {
 
 .card-img {
     position: relative;
-    height: 224px;
+    height: 180px;
     width: 100%;
     background-color: #fff;
     -webkit-transition: opacity .2s ease;
