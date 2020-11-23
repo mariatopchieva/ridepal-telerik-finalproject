@@ -90,8 +90,11 @@ namespace RidePal.Controllers
         public async Task<IActionResult> Test()
         {
             List<string> genres = new List<string> () { "jazz" };
+            List<int> durations = new List<int> { 0, 18767 };
             var playlists = await this._playlistService.GetAllPlaylistsAsync();
-            var playlist = await this._playlistService.FilterPlaylistsByGenreAsync(genres, playlists);
+            //var playlist1 = await this._playlistService.FilterPlaylistsByGenreAsync(genres, playlists);
+            //var playlist2 = await this._playlistService.FilterPlaylistsByNameAsync("Plovdiv", playlist1);
+            var playlist3 = await this._playlistService.FilterPlaylistsByDurationAsync(durations, playlists);
             return RedirectToAction(nameof(Index));
         }
     }

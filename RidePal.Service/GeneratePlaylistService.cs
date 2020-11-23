@@ -327,17 +327,6 @@ namespace RidePal.Service
             await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);
             await this.context.SaveChangesAsync();
 
-            foreach (var genre in genres) //добавяне на всеки PlaylistGenre към верния genre
-            {
-                foreach (var playlistGenre in playlistGenres)
-                {
-                    if (playlistGenre.Genre.Equals(genre))
-                        genre.Playlists.Add(playlistGenre);
-                }
-            }
-
-            await this.context.SaveChangesAsync();
-
             //public string FilePath { get; set; }
 
             return new PlaylistDTO(playlist);

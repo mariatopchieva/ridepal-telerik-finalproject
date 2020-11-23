@@ -125,8 +125,6 @@ namespace RidePal.Service
             await this.context.SaveChangesAsync();
 
             return new PlaylistDTO(playlist);
-
-            //update PlaylistGenre list-a na each genre (see Generate service)
         }
 
         public async Task<bool> DeletePlaylistAsync(long id)
@@ -297,7 +295,6 @@ namespace RidePal.Service
 
         public async Task<bool> RemovePlaylistFromFavoritesAsync(int playlistId, int userId)
         {
-
             var playlist = await context.Playlists.FirstOrDefaultAsync(p => p.Id == playlistId);
             var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -380,7 +377,6 @@ namespace RidePal.Service
 
                 var genreNames = this.context.Genres.Where(x => genresId.Contains(x.Id)).Select(x => x.Name).ToList();
 
-
                 if (genreNames.Intersect(genres).Any()) //test!!!
                 {
                     finalList.Add(playlist);
@@ -417,7 +413,7 @@ namespace RidePal.Service
                 filteredPlaylistsDTO = FilterPlaylistsByDurationAsync(durationLimits, filteredPlaylistsDTO).Result;
             }
             
-            if(filteredPlaylistsDTO == null)
+            if(filteredPlaylistsDTO == null) //къде да проверявам за Null => тук или при всеки от 3те метода?
             {
                 throw new ArgumentNullException("No playlists meet the filter criteria."); //or no exception???
             }
