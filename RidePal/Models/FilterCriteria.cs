@@ -12,7 +12,7 @@ namespace RidePal.Models
 
         public List<string> GenresNames { get; set; } = new List<string>();
 
-        public List<int> DurationLimits { get; set; } = new List<int>();
+        public List<int> DurationLimits { get; set; } = new List<int>() { 0};
 
     }
 }
