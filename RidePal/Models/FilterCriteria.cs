@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,9 +10,9 @@ namespace RidePal.Models
     {
         public string Name { get; set; }
 
-        public ICollection<string> GenresNames { get; set; }
+        public List<string> GenresNames { get; set; } = new List<string>();
 
-        public ICollection<int> DurationLimits { get; set; }
+        public List<int> DurationLimits { get; set; } = new List<int>();
 
     }
 }

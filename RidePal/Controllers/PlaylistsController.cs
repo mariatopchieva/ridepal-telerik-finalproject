@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RidePal.Data.Models;
 using RidePal.Models;
 using RidePal.Service.Contracts;
@@ -48,39 +49,52 @@ namespace RidePal.Controllers
                 playlistsViewModels.Add(currentPlaylistViewModel);
             }
 
-            FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel();
-            filteredPlaylistList.Playlists = playlistsViewModels;
-
-            //ViewData["Countries"] = new SelectList(_countryService.GetAllCountries().OrderBy(x => x.Name), "Id", "Name");
-            //ViewData["Styles"] = new SelectList(_styleService.GetAllStyles().Result.OrderBy(x => x.Name), "Id", "Name");
+            FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
+            {
+                Playlists = playlistsViewModels,
+                AllGenres = service.GetAllGenresAsync().Result.OrderBy(x => x.Name).ToList(),
+                MaxDuration = service.GetHighestPlaytimeAsync().Result
+            };
 
             return View(filteredPlaylistList);
         }
 
+        // POST: PlaylistsController
+        [HttpPost("/Index")]
+        public async Task<IActionResult> Index([Bind("Name,GenresNames,DurationLimits")] FilterCriteria filterCriteria)
+        {
+            if (ModelState.IsValid)
+            {
+                var filteredName = filterCriteria.Name;
+                var filteredGenres = filterCriteria.GenresNames;
+                var filteredDuration = filterCriteria.DurationLimits;
 
-        // Post: Index
-        //[HttpPost("/Index")]
-        //public async Task<IActionResult> Index([Bind("Country,Style")] FilterCriteria filterCriteria)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var filteredCountry = filterCriteria.Country;
-        //        var filteredStyle = filterCriteria.Style;
-        //        IEnumerable<BeerDTO> beers = await _service.FilterBeersWebAsync(filteredCountry, filteredStyle);
-        //        BeerFilterList beerFilterList = new BeerFilterList
-        //        {
-        //            ListBeers = beers,
-        //            FilterCriteria = filterCriteria
-        //        };
+                var playlistsDTO = await service.FilterPlaylistsMasterAsync(filteredName, filteredGenres, filteredDuration);
 
-        //        ViewData["Countries"] = new SelectList(_countryService.GetAllCountries().OrderBy(x => x.Name), "Id", "Name");
-        //        ViewData["Styles"] = new SelectList(_styleService.GetAllStyles().Result.OrderBy(x => x.Name), "Id", "Name");
+                if (playlistsDTO == null)
+                {
+                    return NotFound();
+                }
 
-        //        return View(beerFilterList);
-        //    }
+                var playlistsViewModels = new List<PlaylistViewModel>();
+                foreach (var playlist in playlistsDTO)
+                {
+                    var currentPlaylistViewModel = new PlaylistViewModel(playlist);
+                    playlistsViewModels.Add(currentPlaylistViewModel);
+                }
 
-        //    return RedirectToAction(nameof(Index));
-        //}
+                FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
+                {
+                    Playlists = playlistsViewModels,
+                    AllGenres = service.GetAllGenresAsync().Result.OrderBy(x => x.Name).ToList(),
+                    MaxDuration = service.GetHighestPlaytimeAsync().Result
+                };
+
+                return View(filteredPlaylistList);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
 
 
         // GET: PlaylistsController/Details/5

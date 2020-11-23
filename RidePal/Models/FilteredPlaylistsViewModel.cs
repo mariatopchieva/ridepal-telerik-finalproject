@@ -14,10 +14,15 @@ namespace RidePal.Models
         public FilteredPlaylistsViewModel()
         {
             this.Playlists = new List<PlaylistViewModel>();
+
             this.FilterCriteria = null;
         }
 
         public IEnumerable<PlaylistViewModel> Playlists { get; set; }
+
+        public IEnumerable<GenreDTO> AllGenres { get; set; } = new List<GenreDTO>();
+
+        public long MaxDuration { get; set; }
 
         public FilterCriteria FilterCriteria { get; set; }
     }

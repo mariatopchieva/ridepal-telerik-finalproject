@@ -375,7 +375,7 @@ namespace RidePal.Service
             return new List<PlaylistDTO>();
         }
 
-        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync()
+        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits)
         {
             return new List<PlaylistDTO>();
         }
@@ -383,5 +383,6 @@ namespace RidePal.Service
         //Pagination
 
         //Add authorization restrictions => here? Edit/ delete Playlist => (admin)List all/ (user)My playlists
+        //                                 => here? Add/ remove Playlist as Favorite => (user)Favorite playlists
     }
 }
