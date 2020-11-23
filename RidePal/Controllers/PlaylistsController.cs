@@ -49,12 +49,12 @@ namespace RidePal.Controllers
                 playlistsViewModels.Add(currentPlaylistViewModel);
             }
 
-            FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel();
-            filteredPlaylistList.Playlists = playlistsViewModels;
-            var genres = service.GetAllGenresAsync().Result.OrderBy(x => x.Name);
-            filteredPlaylistList.AllGenres = genres;
-
-            //ViewData["Genres"] = new SelectList(service.GetAllGenresAsync().Result.OrderBy(x => x.Name), "Id", "Name");
+            FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
+            {
+                Playlists = playlistsViewModels,
+                AllGenres = service.GetAllGenresAsync().Result.OrderBy(x => x.Name).ToList(),
+                MaxDuration = service.GetHighestPlaytimeAsync().Result
+            };
 
             return View(filteredPlaylistList);
         }
@@ -67,18 +67,30 @@ namespace RidePal.Controllers
             {
                 var filteredName = filterCriteria.Name;
                 var filteredGenres = filterCriteria.GenresNames;
+                var filteredDuration = filterCriteria.DurationLimits;
 
-                //IEnumerable<BeerDTO> beers = await _service.FilterBeersWebAsync(filteredCountry, filteredStyle);
-                //BeerFilterList beerFilterList = new BeerFilterList
-                //{
-                //    ListBeers = beers,
-                //    FilterCriteria = filterCriteria
-                //};
+                var playlistsDTO = await service.FilterPlaylistsMasterAsync(filteredName, filteredGenres, filteredDuration);
 
-                //ViewData["Countries"] = new SelectList(_countryService.GetAllCountries().OrderBy(x => x.Name), "Id", "Name");
-                //ViewData["Styles"] = new SelectList(_styleService.GetAllStyles().Result.OrderBy(x => x.Name), "Id", "Name");
+                if (playlistsDTO == null)
+                {
+                    return NotFound();
+                }
 
-                return View();
+                var playlistsViewModels = new List<PlaylistViewModel>();
+                foreach (var playlist in playlistsDTO)
+                {
+                    var currentPlaylistViewModel = new PlaylistViewModel(playlist);
+                    playlistsViewModels.Add(currentPlaylistViewModel);
+                }
+
+                FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
+                {
+                    Playlists = playlistsViewModels,
+                    AllGenres = service.GetAllGenresAsync().Result.OrderBy(x => x.Name).ToList(),
+                    MaxDuration = service.GetHighestPlaytimeAsync().Result
+                };
+
+                return View(filteredPlaylistList);
             }
 
             return RedirectToAction(nameof(Index));

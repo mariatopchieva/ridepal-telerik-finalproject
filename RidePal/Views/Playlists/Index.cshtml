@@ -16,29 +16,48 @@
     </div>
 }
 
-<form action="/action_page.php">
-    <div>
-        <label>Search:</label>
-        <input type="text" id="name" asp-for="FilterCriteria.Name"><br><br>
-    </div>
-    <div>
-        <label>Include:</label>
-        <br />
-        @foreach (var item in Model.AllGenres)
-        {
-            <span>
-                <label>@item.Name</label>
-                <input type="checkbox" id=@item.Id name=GenresNames>
+<div class="col-md-4">
+    <form asp-action="Index">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label>Search playlists:</label>
+            <input type="text" id="name" asp-for="FilterCriteria.Name"><br><br>
+        </div>
+        <div class="form-group">
+            <label>Include genres:</label>
+            <br />
+            @for (int i = 0; i < Model.AllGenres.Count(); i++)
+            {
+                <label>@Model.AllGenres.ElementAt(i).Name </label>
+                <input type="checkbox" id=Model.AllGenres[i].Id asp-for="FilterCriteria.GenresNames[i]" /> @*doesn't record checked boxes*@
                 <br />
-            </span>
-        }
-    </div>
-    <div>
-        <label for="customRange1">Filter playlists by duration</label>
-        <input type="range" class="custom-range" id="customRange1" asp-for="FilterCriteria.DurationLimits">
-    </div>
-    <input type="submit" value="Submit">
-</form>
+            }
+        </div>
+        @*<div class="form-group">
+            <label class="mt-3" for="customRange3">Filter playlists by duration</label>
+            <input type="range" class="custom-range" min="0" max="@Model.MaxDuration" step="1" id="customRange3" asp-for="FilterCriteria.DurationLimits">
+        </div>*@
+
+        <div class="form-group">
+            <label class="mt-3" for="customRange3">Filter playlists by duration</label>
+            <input id="rangeInput" type="range" min="0" max="@Model.MaxDuration" oninput="amount.value=rangeInput.value" asp-for="FilterCriteria.DurationLimits" />
+            <input id="amount" type="number" value="@Model.MaxDuration" min="0" max="@Model.MaxDuration" oninput="rangeInput.value=amount.value" />
+        </div>
+        <br />
+
+        @*<div data-role="rangeslider">
+            <label for="range-1a">Rangeslider:</label>
+            <input type="range" name="range-1a" id="range-1a" min="0" max="100" value="40" data-popup-enabled="true" data-show-value="true">
+            <label for="range-1b">Rangeslider:</label>
+            <input type="range" name="range-1b" id="range-1b" min="0" max="100" value="80" data-popup-enabled="true" data-show-value="true">
+        </div>*@
+
+        <div class="form-group">
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+</div>
+
 
 <div class="container-about">
     <div class="container">

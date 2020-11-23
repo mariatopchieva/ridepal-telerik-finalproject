@@ -20,7 +20,9 @@ namespace RidePal.Models
 
         public IEnumerable<PlaylistViewModel> Playlists { get; set; }
 
-        public IEnumerable<GenreDTO> AllGenres { get; set; }
+        public IEnumerable<GenreDTO> AllGenres { get; set; } = new List<GenreDTO>();
+
+        public long MaxDuration { get; set; }
 
         public FilterCriteria FilterCriteria { get; set; }
     }
