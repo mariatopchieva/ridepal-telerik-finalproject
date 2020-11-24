@@ -89,19 +89,19 @@ namespace RidePal.Controllers
 
         public async Task<IActionResult> Test()
         {
-            var add = await this._playlistService.AddPlaylistToFavoritesAsync(90, 1);
-            var remove = await this._playlistService.RemovePlaylistFromFavoritesAsync(90, 1);
-            var addAgain = await this._playlistService.AddPlaylistToFavoritesAsync(90, 1);
+            //var add = await this._playlistService.AddPlaylistToFavoritesAsync(90, 1);
+            //var remove = await this._playlistService.RemovePlaylistFromFavoritesAsync(90, 1);
+            //var addAgain = await this._playlistService.AddPlaylistToFavoritesAsync(90, 1);
 
 
-            //List<string> genres = new List<string> () { "jazz" };
-            //List<int> durations = new List<int> { 0, 18767 };
-            //var playlists = await this._playlistService.GetAllPlaylistsAsync();
-            //var playlist1 = this._playlistService.FilterPlaylistsByName("Plovdiv", playlists);
-            //var playlist2 = await this._playlistService.FilterPlaylistsByGenreAsync(genres, playlist1);
-            //var playlist3 = this._playlistService.FilterPlaylistsByDuration(durations, playlist2);
+            List<string> genres = new List<string>() { "jazz" };
+            List<int> durations = new List<int> { 0, 18767 };
+            var playlists = await this._playlistService.GetAllPlaylistsAsync();
+            var playlist1 = this._playlistService.FilterPlaylistsByName("Plovdiv", playlists);
+            var playlist2 = await this._playlistService.FilterPlaylistsByGenreAsync(genres, playlist1);
+            var playlist3 = this._playlistService.FilterPlaylistsByDuration(durations, playlist2);
 
-            //var playlistsMaster = await this._playlistService.FilterPlaylistsMasterAsync("Plovdiv", genres, durations);
+            var playlistsMaster = await this._playlistService.FilterPlaylistsMasterAsync("Plovdiv", genres, durations);
 
             return RedirectToAction(nameof(Index));
         }
