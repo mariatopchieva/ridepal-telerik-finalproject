@@ -14,6 +14,7 @@ namespace RidePal.Service
 {
     public class PlaylistService : IPlaylistService
     {
+        const int pageSize = 9;
         private readonly RidePalDbContext context;
         private readonly IDateTimeProvider dateTimeProvider;
 
@@ -104,7 +105,7 @@ namespace RidePal.Service
                                              .Where(x => genresToDelete.Contains(x.Genre.Name))
                                              .ForEachAsync(x => x.IsDeleted = true);
 
-            // update IsDeleted = false if the new genres do not include the old genres but they were created and deleted
+            // update IsDeleted = false if the new genres do not include the old genres but they were created and deleted before
             var genresToUndelete = new List<string>();
             foreach (var oldDeletedGenre in oldDeletedGenresStringList)
             {
@@ -130,7 +131,7 @@ namespace RidePal.Service
         public async Task<bool> DeletePlaylistAsync(int id)
         {
             var playlist = await this.context.Playlists.Where(playlist => playlist.IsDeleted == false)
-                .FirstOrDefaultAsync(playlist => playlist.Id == id);
+                                .FirstOrDefaultAsync(playlist => playlist.Id == id);
 
             if (playlist == null)
             {
@@ -263,17 +264,17 @@ namespace RidePal.Service
                 return false;
             }
 
-            var playlistLiked = await this.context.Favorites.Where(pf => pf.UserId == userId)
+            var playlistsLiked = await this.context.Favorites.Where(pf => pf.UserId == userId)
                                     .Where(pf => pf.IsFavorite == true).ToListAsync();
 
-            var playlistLikedAndDisliked = await this.context.Favorites.Where(pf => pf.UserId == userId) //PlaylistFavorite item created with False property
+            var playlistsLikedAndDisliked = await this.context.Favorites.Where(pf => pf.UserId == userId) //PlaylistFavorite item created with False property
                                     .Where(pf => pf.IsFavorite == false).ToListAsync();
 
-            if (playlistLiked.Any(pf => pf.PlaylistId == playlistId))
+            if (playlistsLiked.Any(pf => pf.PlaylistId == playlistId))
             {
                 return false; //the playlist has already been liked
             }
-            else if (playlistLikedAndDisliked.Any(pf => pf.PlaylistId == playlistId))
+            else if (playlistsLikedAndDisliked.Any(pf => pf.PlaylistId == playlistId))
             {
                 var playlistToSetAsFavorite = await this.context.Favorites.Where(pf => pf.UserId == userId)
                                                     .Where(pf => pf.PlaylistId == playlistId).FirstOrDefaultAsync();
@@ -313,9 +314,9 @@ namespace RidePal.Service
                 return false;
             }
 
-            var favoritesSetAsTrue = await GetFavoritePlaylistsOfUser(user.Id);
+            var playlistsLiked = await GetFavoritePlaylistsOfUser(user.Id);
 
-            if (favoritesSetAsTrue.Any(f => f.Id == playlistId))
+            if (playlistsLiked.Any(f => f.Id == playlistId))
             {
                 var playlistToRemove = await this.context.Favorites.Where(pf => pf.UserId == userId)
                                                     .Where(pf => pf.PlaylistId == playlistId).FirstOrDefaultAsync();
@@ -389,7 +390,7 @@ namespace RidePal.Service
 
                 var genreNames = this.context.Genres.Where(x => genresId.Contains(x.Id)).Select(x => x.Name).ToList();
 
-                if (genreNames.Intersect(genres).Any()) //test!!!
+                if (genreNames.Intersect(genres).Any())
                 {
                     finalList.Add(playlist);
                 }
@@ -432,6 +433,25 @@ namespace RidePal.Service
 
             return filteredPlaylistsDTO; 
         }
+
+        public int GetPageCount()
+        {
+            var count = this.context.Playlists.Count();
+
+            var totalPages = Math.Ceiling((double)count / pageSize);
+
+            return (int)totalPages;
+        }
+
+        public IEnumerable<PlaylistDTO> GetPlaylistsPerPage(int currentPage)
+        {
+            var playlists = GetAllPlaylistsAsync();
+
+            var resultPlaylistsDTO = currentPage == 1 ? playlists.Result.Take(pageSize) : playlists.Result.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+            return resultPlaylistsDTO;
+        }
+
 
         //Pagination
 

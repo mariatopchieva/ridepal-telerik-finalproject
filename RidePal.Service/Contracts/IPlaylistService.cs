@@ -43,5 +43,9 @@ namespace RidePal.Service.Contracts
         Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits);
 
         Task<IEnumerable<PlaylistDTO>> SortPlaylistsByDurationAsync();
+
+        int GetPageCount();
+
+        IEnumerable<PlaylistDTO> GetPlaylistsPerPage(int currentPage);
     }
 }

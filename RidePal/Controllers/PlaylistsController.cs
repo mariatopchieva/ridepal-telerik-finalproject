@@ -33,9 +33,9 @@ namespace RidePal.Controllers
 
         // GET: PlaylistsController
         [HttpGet("/Index")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] int currentPage = 1)
         {
-            IEnumerable<PlaylistDTO> playlistsDTO = await service.GetAllPlaylistsAsync();
+            IEnumerable<PlaylistDTO> playlistsDTO = service.GetPlaylistsPerPage(currentPage);
 
             if (playlistsDTO == null)
             {
@@ -53,7 +53,9 @@ namespace RidePal.Controllers
             {
                 Playlists = playlistsViewModels,
                 AllGenres = service.GetAllGenresAsync().Result.OrderBy(x => x.Name).ToList(),
-                MaxDuration = service.GetHighestPlaytimeAsync().Result
+                MaxDuration = service.GetHighestPlaytimeAsync().Result,
+                TotalPages = service.GetPageCount(),
+                CurrentPage = currentPage
             };
 
             return View(filteredPlaylistList);
