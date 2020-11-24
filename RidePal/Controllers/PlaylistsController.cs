@@ -101,7 +101,7 @@ namespace RidePal.Controllers
 
         // GET: PlaylistsController/Details/5
         [HttpGet("/Details/{id}")]
-        public async Task<IActionResult> Details(long? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
