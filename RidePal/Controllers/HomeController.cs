@@ -92,9 +92,12 @@ namespace RidePal.Controllers
             List<string> genres = new List<string> () { "jazz" };
             List<int> durations = new List<int> { 0, 18767 };
             var playlists = await this._playlistService.GetAllPlaylistsAsync();
-            //var playlist1 = await this._playlistService.FilterPlaylistsByGenreAsync(genres, playlists);
-            //var playlist2 = await this._playlistService.FilterPlaylistsByNameAsync("Plovdiv", playlist1);
-            var playlist3 = await this._playlistService.FilterPlaylistsByDurationAsync(durations, playlists);
+            var playlist1 = this._playlistService.FilterPlaylistsByName("Plovdiv", playlists);
+            var playlist2 = await this._playlistService.FilterPlaylistsByGenreAsync(genres, playlist1);
+            var playlist3 = this._playlistService.FilterPlaylistsByDuration(durations, playlist2);
+
+            var playlistsMaster = await this._playlistService.FilterPlaylistsMasterAsync("Plovdiv", genres, durations);
+
             return RedirectToAction(nameof(Index));
         }
     }

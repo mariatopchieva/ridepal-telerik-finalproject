@@ -357,9 +357,9 @@ namespace RidePal.Service
             return playlistsDTO;
         }
 
-        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByNameAsync(string name, IEnumerable<PlaylistDTO> filteredPPlaylists)
+        public IEnumerable<PlaylistDTO> FilterPlaylistsByName(string name, IEnumerable<PlaylistDTO> filteredPlaylists)
         {
-            var playlists = filteredPPlaylists.Where(x => x.Title.Contains(name))
+            var playlists = filteredPlaylists.Where(x => x.Title.Contains(name))
                                               .OrderByDescending(x => x.Rank).ToList();
             
             return playlists;
@@ -386,9 +386,9 @@ namespace RidePal.Service
             return finalList;
         }
 
-        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByDurationAsync(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPPlaylists)
+        public IEnumerable<PlaylistDTO> FilterPlaylistsByDuration(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPlaylists)
         {
-            var playlists = filteredPPlaylists.Where(x => x.PlaylistPlaytime >= durationLimits[0] && x.PlaylistPlaytime <= durationLimits[1])
+            var playlists = filteredPlaylists.Where(x => x.PlaylistPlaytime >= durationLimits[0] && x.PlaylistPlaytime <= durationLimits[1])
                                               .ToList();
             
             return playlists;
@@ -396,24 +396,24 @@ namespace RidePal.Service
 
         public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits)
         {
-            IEnumerable<PlaylistDTO> filteredPlaylistsDTO = GetAllPlaylistsAsync().Result;
+            var filteredPlaylistsDTO = await GetAllPlaylistsAsync();
 
             if(name != null)
             {
-                filteredPlaylistsDTO = FilterPlaylistsByNameAsync(name, filteredPlaylistsDTO).Result;
+                filteredPlaylistsDTO = FilterPlaylistsByName(name, filteredPlaylistsDTO).ToList();
             }
 
-            if(genres.Count > 0)
+            if (genres.Count > 0)
             {
-                filteredPlaylistsDTO = FilterPlaylistsByGenreAsync(genres, filteredPlaylistsDTO).Result;
+                filteredPlaylistsDTO = await FilterPlaylistsByGenreAsync(genres, filteredPlaylistsDTO);
             }
 
-            if(durationLimits.Count > 1) //check default values
+            if (durationLimits.Count > 1) //check default values
             {
-                filteredPlaylistsDTO = FilterPlaylistsByDurationAsync(durationLimits, filteredPlaylistsDTO).Result;
+                filteredPlaylistsDTO = FilterPlaylistsByDuration(durationLimits, filteredPlaylistsDTO).ToList();
             }
-            
-            if(filteredPlaylistsDTO == null) //къде да проверявам за Null => тук или при всеки от 3те метода?
+
+            if (filteredPlaylistsDTO == null) //къде да проверявам за Null => тук или при всеки от 3те метода?
             {
                 throw new ArgumentNullException("No playlists meet the filter criteria."); //or no exception???
             }
