@@ -26,6 +26,11 @@ namespace RidePal.Service
             this.imageService = imageService;
         }
 
+        /// <summary>
+        /// Performs search for a playlist by a given ID in the database 
+        /// </summary>
+        /// <param name="id">The ID of the playlist to search for</param>
+        /// <returns>If successful, returns a DTO of the found playlist</returns>
         public async Task<PlaylistDTO> GetPlaylistByIdAsync(int id)
         {
             var playlist = await this.context.Playlists
@@ -41,7 +46,10 @@ namespace RidePal.Service
 
             return playlistDTO;
         }
-
+        /// <summary>
+        /// Collects all playlists in the database and orders them in descending order by rank
+        /// </summary>
+        /// <returns>Collection of all playlists in the database</returns>
         public async Task<IEnumerable<PlaylistDTO>> GetAllPlaylistsAsync()
         {
             var playlistsDTO = await this.context.Playlists
@@ -58,6 +66,11 @@ namespace RidePal.Service
             return playlistsDTO;
         }
 
+        /// <summary>
+        /// Edits a playlist's title and/or genres by provided user's input
+        /// </summary>
+        /// <param name="editPlaylistDTO">DTO of the playlist with the new data</param>
+        /// <returns>DTO of the edited playlist</returns>
         public async Task<PlaylistDTO> EditPlaylistAsync(EditPlaylistDTO editPlaylistDTO)
         {
             if(editPlaylistDTO == null)
@@ -130,6 +143,11 @@ namespace RidePal.Service
             return new PlaylistDTO(playlist);
         }
 
+        /// <summary>
+        /// Deleted a playlist by setting its IsDeleted property to true
+        /// </summary>
+        /// <param name="id">ID of the playlist to delete</param>
+        /// <returns>True if successful, otherwise false</returns>
         public async Task<bool> DeletePlaylistAsync(int id)
         {
             var playlist = await this.context.Playlists.Where(playlist => playlist.IsDeleted == false)
@@ -148,6 +166,11 @@ namespace RidePal.Service
             return true;
         }
 
+        /// <summary>
+        /// Restores the previously deleted playlist by setting its IsDeleted property to false
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>True if successful, otherwise false</returns>
         public async Task<bool> ReverseDeletePlaylistAsync(int id)
         {
             var playlist = await this.context.Playlists.Where(playlist => playlist.Id == id)
@@ -165,6 +188,11 @@ namespace RidePal.Service
             return true;
         }
 
+        /// <summary>
+        /// Performs search in the database for all playlists created by a specified user
+        /// </summary>
+        /// <param name="userId">ID of the user</param>
+        /// <returns>Collection of DTOs of playlists</returns>
         public async Task<IEnumerable<PlaylistDTO>> GetPlaylistsOfUserAsync(int userId)
         {
             var user = await this.context.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
@@ -188,6 +216,10 @@ namespace RidePal.Service
             return playlistsDTO;
         }
 
+        /// <summary>
+        /// Performs search to find the longest playlist in the database
+        /// </summary>
+        /// <returns>The duration of the longest playlist in the database</returns>
         public async Task<long> GetHighestPlaytimeAsync()
         {
             var playlist = await this.context.Playlists
@@ -202,6 +234,10 @@ namespace RidePal.Service
             return (long)playlist.PlaylistPlaytime;
         }
 
+        /// <summary>
+        /// Performs search in the database to find all music genres
+        /// </summary>
+        /// <returns>Collection of DTOs of the found genres</returns>
         public async Task<IEnumerable<GenreDTO>> GetAllGenresAsync()
         {
             var genresDTO = await this.context.Genres
@@ -216,6 +252,11 @@ namespace RidePal.Service
             return genresDTO;
         }
 
+        /// <summary>
+        /// Upon a given playlist ID, collects its music genres and creates a string of their names
+        /// </summary>
+        /// <param name="playlistId">ID of the playlist</param>
+        /// <returns>String containing all genres in the playlist</returns>
         public async Task<string> GetPlaylistGenresAsStringAsync(int playlistId)
         {
             var genresId = await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlistId)
@@ -234,6 +275,11 @@ namespace RidePal.Service
             return genresString;
         }
 
+        /// <summary>
+        /// Collects and returns all tracks that belong to a certain playlist
+        /// </summary>
+        /// <param name="playlistId">ID of the playlist</param>
+        /// <returns>Collection of all tracks contained in the playlist</returns>
         public async Task<IEnumerable<TrackDTO>> GetPlaylistTracksAsync(int playlistId)
         {
             var playlistDTO = GetPlaylistByIdAsync(playlistId);
@@ -250,7 +296,12 @@ namespace RidePal.Service
             return tracksDTO;
         }
 
-        //Test the three cases of this method
+        /// <summary>
+        /// Tags a certain playlist as "liked" by a certain user
+        /// </summary>
+        /// <param name="playlistId">ID of the playlist</param>
+        /// <param name="userId">ID of the user</param>
+        /// <returns>True of successful, otherwise false</returns>
         public async Task<bool> AddPlaylistToFavoritesAsync(int playlistId, int userId)
         {
             var playlist = await this.context.Playlists
@@ -303,6 +354,12 @@ namespace RidePal.Service
             }
         }
 
+        /// <summary>
+        /// If a playlist has been previously tagged as "liked" by a certain user, the method removes that tag.
+        /// </summary>
+        /// <param name="playlistId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> RemovePlaylistFromFavoritesAsync(int playlistId, int userId)
         {
             var playlist = await GetPlaylistByIdAsync(playlistId);
@@ -334,6 +391,11 @@ namespace RidePal.Service
             }
         }
 
+        /// <summary>
+        /// Collects and returns all playlists that a user has liked (added to his Favorites collection)
+        /// </summary>
+        /// <param name="userId">ID of the user</param>
+        /// <returns>Collection of all playlists liked by the user</returns>
         public async Task<IEnumerable<PlaylistDTO>> GetFavoritePlaylistsOfUser(int userId)
         {
             var playlistFavorites = await this.context.Favorites.Where(pf => pf.UserId == userId)
@@ -356,6 +418,10 @@ namespace RidePal.Service
             return playlistsDTO;
         }
 
+        /// <summary>
+        /// Collects all playlists in the database and sorts them by duration in descending order 
+        /// </summary>
+        /// <returns>Collection of the sorted playlists</returns>
         public async Task<IEnumerable<PlaylistDTO>> SortPlaylistsByDurationAsync()
         {
             var playlistsDTO = await this.context.Playlists
@@ -372,6 +438,12 @@ namespace RidePal.Service
             return playlistsDTO;
         }
 
+        /// <summary>
+        /// Filters a given collection of playlists and returns only the ones that contain the provided string
+        /// </summary>
+        /// <param name="name">The string, which must be contained in the filtered playlists' titles</param>
+        /// <param name="filteredPlaylists">The initial collection of playlists</param>
+        /// <returns>Filtered collection of DTOs of playlists</returns>
         public IEnumerable<PlaylistDTO> FilterPlaylistsByName(string name, IEnumerable<PlaylistDTO> filteredPlaylists)
         {
             var playlists = filteredPlaylists.Where(x => x.Title.Contains(name))
@@ -380,6 +452,12 @@ namespace RidePal.Service
             return playlists;
         }
 
+        /// <summary>
+        /// Filters a given collection of playlists and returns only the ones that contain any of the provided music genres
+        /// </summary>
+        /// <param name="genres">Collection of the genres</param>
+        /// <param name="filteredPlaylists">The initial collection of playlists</param>
+        /// <returns>Filtered collection of DTOs of playlists</returns>
         public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByGenreAsync(List<string> genres, IEnumerable<PlaylistDTO> filteredPlaylists)
         {
             List<PlaylistDTO> finalList = new List<PlaylistDTO>();
@@ -401,6 +479,12 @@ namespace RidePal.Service
             return finalList;
         }
 
+        /// <summary>
+        /// Filters a given collection of playlists and returns only the ones with duration within a given range
+        /// </summary>
+        /// <param name="durationLimits">Upper and lower limit for the filtered playlists' duration</param>
+        /// <param name="filteredPlaylists">The initial collection of playlists</param>
+        /// <returns>Filtered collection of DTOs of playlists</returns>
         public IEnumerable<PlaylistDTO> FilterPlaylistsByDuration(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPlaylists)
         {
             var playlists = filteredPlaylists.Where(x => x.PlaylistPlaytime >= durationLimits[0] && x.PlaylistPlaytime <= durationLimits[1])
@@ -409,6 +493,13 @@ namespace RidePal.Service
             return playlists;
         }
 
+        /// <summary>
+        /// A parent method, which receives the filtration parameters of the user and calls the respective methods to filter the collection
+        /// </summary>
+        /// <param name="name">The string, which must be contained in the filtered playlists' titles</param>
+        /// <param name="genres">Collection of the genres</param>
+        /// <param name="durationLimits">Upper and lower limit for the filtered playlists' duration</param>
+        /// <returns>Filtered collection of DTOs of playlists</returns>
         public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits)
         {
             var filteredPlaylistsDTO = await GetAllPlaylistsAsync();
@@ -436,6 +527,10 @@ namespace RidePal.Service
             return filteredPlaylistsDTO; 
         }
 
+        /// <summary>
+        /// Calculates the total number of pages for the Playlists' Index page
+        /// </summary>
+        /// <returns>Total number of pages</returns>
         public int GetPageCount()
         {
             var count = this.context.Playlists.Count();
@@ -445,6 +540,11 @@ namespace RidePal.Service
             return (int)totalPages;
         }
 
+        /// <summary>
+        /// Prepares a collection of the exact number of playlists to load on the current page of the Playlists' Index view
+        /// </summary>
+        /// <param name="currentPage"></param>
+        /// <returns>Collection of DTOs of playlists to load on the current page</returns>
         public IEnumerable<PlaylistDTO> GetPlaylistsPerPage(int currentPage)
         {
             var playlists = GetAllPlaylistsAsync();
@@ -454,6 +554,11 @@ namespace RidePal.Service
             return resultPlaylistsDTO;
         }
 
+        /// <summary>
+        /// Attaches an image to a given playlist by assigning its filepath as a property of the playlist
+        /// </summary>
+        /// <param name="playlistDTO">The playlist to attach an image to</param>
+        /// <returns>DTO of the playlist with already attached image</returns>
         public async Task<PlaylistDTO> AttachImage(PlaylistDTO playlistDTO)
         {
             var playlist = await this.context.Playlists.FirstOrDefaultAsync(pl => pl.Title == playlistDTO.Title);
