@@ -33,10 +33,10 @@ namespace RidePal.Models
         public int JazzPercentage { get; set; }
 
         [DisplayName("Allow tracks from the same artist")]
-        public bool IsAllowedSameArtistTracks { get; set; }
+        public bool RepeatArtist { get; set; }
 
         [DisplayName("Use top tracks")]
-        public bool ArePreferredTopTracks { get; set; }
+        public bool TopTracks { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; }

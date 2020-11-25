@@ -21,14 +21,17 @@ namespace RidePal.Controllers
         private readonly IGeneratePlaylistService generateService;
         private readonly IAdminService adminService;
         private readonly UserManager<User> userManager;
+        private readonly IPixaBayImageService imageService;
 
         public PlaylistsController(IPlaylistService _service, IGeneratePlaylistService _generateService,
-            IAdminService _adminService, UserManager<User> _userManager)
+                                    IAdminService _adminService, UserManager<User> _userManager,
+                                    IPixaBayImageService imgService)
         {
             this.service = _service;
             this.generateService = _generateService;
             this.adminService = _adminService;
             this.userManager = _userManager;
+            this.imageService = imgService;
         }
 
         // GET: PlaylistsController
@@ -101,7 +104,7 @@ namespace RidePal.Controllers
 
         // GET: PlaylistsController/Details/5
         [HttpGet("/Details/{id}")]
-        public async Task<IActionResult> Details(long? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -110,11 +113,13 @@ namespace RidePal.Controllers
             }
 
             var playlist = await service.GetPlaylistByIdAsync(id.Value);
-            
+
             if (playlist == null)
             {
                 return NotFound();
             }
+
+            //var playlistView 
 
             return View("Details");
         }
@@ -130,17 +135,47 @@ namespace RidePal.Controllers
         // POST: PlaylistsController/Create
         [HttpPost("/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PlaylistName,StartLocationName,DestinationName,RepeatArtist,UseTopTracks,GenrePercentage,UserId")] 
-        GeneratePlaylistDTO generatePlaylistDTO)
+        public async Task<IActionResult> Create([Bind("Title," +
+                                                    "StartLocationName, DestinationName," +
+                                                    "RepeatArtist, TopTracks," +
+                                                    "MetalPercentage, RockPercentage, PopPercentage, JazzPercentage")]
+                                                    GeneratePlaylistViewModel genPlView)
         {
+            var userId = int.Parse(userManager.GetUserId(HttpContext.User));
+
+            var genres = new Dictionary<string, int>();
+            genres.Add("metal", genPlView.MetalPercentage);
+            genres.Add("rock", genPlView.RockPercentage);
+            genres.Add("pop", genPlView.PopPercentage);
+            genres.Add("jazz", genPlView.JazzPercentage);
+
             if (ModelState.IsValid)
             {
-                PlaylistDTO playlistDTO = await generateService.GeneratePlaylist(generatePlaylistDTO);
-                return RedirectToAction("Index", new { msg = TempData["Msg"] = "Playlist created." });
-                //return RedirectToAction(nameof(Index));
+                var genPlaylistDTO = new GeneratePlaylistDTO()
+                {
+                    PlaylistName = genPlView.Title,
+                    StartLocationName = genPlView.StartLocationName,
+                    DestinationName = genPlView.DestinationName,
+                    RepeatArtist = genPlView.RepeatArtist,
+                    UseTopTracks = genPlView.TopTracks,
+                    GenrePercentage = genres,
+                    UserId = userId
+                };
+
+                PlaylistDTO playlistDTO = await generateService.GeneratePlaylist(genPlaylistDTO);
+
+                if (playlistDTO == null)
+                {
+                    throw new ArgumentNullException("Something went wrong with playlist creation.");
+                }
+
+                var playlistDtoWithImg = await this.service.AttachImage(playlistDTO);
+
+
+                return RedirectToAction("Details", new { id = playlistDtoWithImg.Id});
             }
+
             return RedirectToAction("Index", new { error = TempData["Error"] = "Playlist creation failed." });
-            //return View();
         }
 
         // GET: PlaylistsController/Edit/5
@@ -187,6 +222,6 @@ namespace RidePal.Controllers
 
 
 
-        
+
     }
 }

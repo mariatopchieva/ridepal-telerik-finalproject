@@ -308,6 +308,7 @@ namespace RidePal.Service
             await this.context.SaveChangesAsync();
 
             var playlistFromDb = this.context.Playlists.FirstOrDefault(x => x.Title == playlist.Title);
+
             if(playlistFromDb == null)
             {
                 throw new ArgumentNullException("Playlist not found in the database.");

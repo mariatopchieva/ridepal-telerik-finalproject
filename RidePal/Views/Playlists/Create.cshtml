@@ -9,11 +9,11 @@
         <div class="form-group row justify-content-center m-auto">
             <div class="col-xs-4 m-auto">
                 <label for="inputStartPoint">Start</label>
-                <input type="text" class="form-control" id="Start" placeholder="Starting point" name="StartPoint">
+                <input type="text" class="form-control" id="Start" placeholder="Starting point" name="StartLocationName">
             </div>
             <div class="col-xs-4 m-auto">
                 <label for="inputEndPoint">End</label>
-                <input type="text" class="form-control" id="End" placeholder="End point" name="EndPoint">
+                <input type="text" class="form-control" id="End" placeholder="End point" name="DestinationName">
             </div>
         </div>
         <!--Title-->
@@ -24,52 +24,62 @@
             </div>
         </div>
 
+        <!--options group-->
+        <div class="form-group row justify-content-center m-4">
+            <div class="col-xs-4 m-auto custom-control-inline custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="repeat" name="RepeatArtist" value="true">
+                <label class="custom-control-label float-left" for="repeat">Repeat Artist</label>
+            </div>
+            <div class="col-xs-4 m-auto custom-control-inline custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="topTracks" name="TopTracks" value="true">
+                <label class="custom-control-label float-left" for="topTracks">Top Tracks</label>
+            </div>
+        </div>
+
         <!--Metal group-->
         <div class="form-group row justify-content-center m-4">
             <div class="col-xs-4 m-auto custom-control-inline custom-checkbox">
-                <input type="checkbox" class="custom-control-input" onChange="EnableMetal()" id="inputMetal" name="Metal">
+                <input type="checkbox" class="custom-control-input" onChange="myFunction()" id="inputMetal" name="IsSelectedMetal">
                 <label class="custom-control-label float-left" for="inputMetal">Metal</label>
             </div>
             <div class="col-xs-6 m-auto">
-                <input disabled type="range" min="0" max="100" step="10" onchange="updateTextInput(this.value);" class="form-control custom-range" id="inputMetalSlider" name="MetalSlider">
+                <input disabled type="range" min="0" max="100" step="10" onchange="updateTextInput(this.value);" class="form-control custom-range" id="inputMetalSlider" name="MetalPercentage">
                 <span class="font-weight-bold text-white ml-2 mt-1" id="metalSpan"></span>
             </div>
         </div>
         <!--rock group-->
         <div class="form-group row justify-content-center m-4">
             <div class="col-xs-4 m-auto custom-control-inline custom-checkbox">
-                <input type="checkbox" class="custom-control-input" onChange="myFunction()" id="inputRock" name="Rock">
+                <input type="checkbox" class="custom-control-input" onChange="myFunction()" id="inputRock" name="IsSelectedRock">
                 <label class="custom-control-label" for="inputRock">Rock</label>
             </div>
             <div class="col-xs-6 m-auto">
-                <input disabled type="range" min="0" max="100" step="10" class="form-control custom-range" id="inputRockSlider" name="RockSlider">
+                <input disabled type="range" min="0" max="100" step="10" class="form-control custom-range" id="inputRockSlider" name="RockPercentage">
                 <span class="font-weight-bold text-white ml-2 mt-1" id="rockSpan"></span>
             </div>
         </div>
         <!--Pop group-->
         <div class="form-group row justify-content-center m-4">
             <div class="col-xs-4 m-auto custom-control-inline custom-checkbox">
-                <input type="checkbox" class="custom-control-input" onChange="myFunction()" id="inputPop" name="Pop">
+                <input type="checkbox" class="custom-control-input" onChange="myFunction()" id="inputPop" name="IsSelectedPop">
                 <label class="custom-control-label" for="inputPop">Pop</label>
             </div>
             <div class="col-xs-6 m-auto">
-                <input disabled type="range" min="0" max="100" step="10" class="form-control custom-range" id="inputPopSlider" name="PopSlider">
+                <input disabled type="range" min="0" max="100" step="10" class="form-control custom-range" id="inputPopSlider" name="PopPercentage">
                 <span class="font-weight-bold text-white ml-2 mt-1" id="popSpan"></span>
             </div>
         </div>
         <!--Jazz group-->
         <div class="form-group row justify-content-center m-4">
             <div class="col-xs-4 m-auto custom-control-inline custom-checkbox">
-                <input type="checkbox" class="custom-control-input" onChange="myFunction()" id="inputJazz" name="Jazz">
+                <input type="checkbox" class="custom-control-input" onChange="myFunction()" id="inputJazz" name="IsSelectedJazz">
                 <label class="custom-control-label" for="inputJazz">Jazz</label>
             </div>
             <div class="col-xs-6 m-auto">
-                @*<label for="inputJazzSlider">Jazz</label>*@
-                <input disabled type="range" min="0" max="100" step="10" class="form-control custom-range" id="inputJazzSlider" name="JazzSlider">
+                <input disabled type="range" min="0" max="100" step="10" class="form-control custom-range" id="inputJazzSlider" name="JazzPercentage">
                 <span class="font-weight-bold text-white ml-2 mt-1" id="jazzSpan"></span>
             </div>
         </div>
-
 
         <div class="form-group row justify-content-center">
             <div class="col-xs-4 text-center" style="margin-top: 10px">

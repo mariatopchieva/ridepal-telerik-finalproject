@@ -1,95 +1,83 @@
-﻿using RidePal.Data.Context;
+﻿using Microsoft.AspNetCore.Hosting;
+using RidePal.Data.Context;
 using RidePal.Data.Models.PixaBayAPIModels;
+using RidePal.Service.Contracts;
 using RidePal.Service.DTO;
+using RidePal.Service.Providers;
 using RidePal.Service.Providers.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Net;
 using System.Net.Http;
-using System.Resources;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace RidePal.Service
 {
-    public class PixabayImageService
+    public class PixabayImageService : IPixaBayImageService
     {
         const string key = "19219313-933fd243a2660803c93258784";
-        private readonly RidePalDbContext context;
-        private readonly IDateTimeProvider dateTimeProvider;
-        private HttpClient client = new HttpClient();
-        private FileServiceProvider fileServiceProvider;
+        string startUrl = $"https://pixabay.com/api/?key={key}&q=music&image_type=photo&pretty=true&per_page=200";
 
-        public PixabayImageService(RidePalDbContext context, 
-                                IDateTimeProvider date, 
-                                FileServiceProvider fileService)
+        private HttpClient client = new HttpClient();
+        private IWebHostEnvironment _env;
+        private readonly IFileCheckProvider fileCheck;
+
+        //private IFileCheckProvider _fileCheck;
+
+        public PixabayImageService(IWebHostEnvironment env, IFileCheckProvider fileCheck)
         {
-            this.context = context;
-            this.dateTimeProvider = date;
-            this.fileServiceProvider = fileService;
+            this._env = env;
+            this.fileCheck = fileCheck;
+            //this
         }
 
-        public async Task GetFilePathPixabayImage(GeneratePlaylistDTO genPlaylistDTO)
+        public (string, string) GetFilePathForImage(PlaylistDTO PlaylistDTO)
         {
             //POST: GeneratePlaylist(GeneratePlaylistViewModel model) https://pastebin.com/QmduCCAm
             //we've received model as a parameter
-            var playlistImagesUploadFolder = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\assets\\img\\playlist");
+            var playlistImagesUploadFolder = Path.Combine(_env.WebRootPath, "assets\\img\\playlist");
 
-            this.fileServiceProvider.CreateFolder(playlistImagesUploadFolder);
+            this.fileCheck.CreateFolder(playlistImagesUploadFolder);
 
-            var newFileName = $"{Guid.NewGuid()}_{genPlaylistDTO.PlaylistName}";
+            var newFileName = $"{Guid.NewGuid()}_{PlaylistDTO.Title.Trim().Replace(" ", "_")}";
 
-            string fullFilePath = Path.Combine(playlistImagesUploadFolder, newFileName);
+            //string fullFilePath = Path.Combine(playlistImagesUploadFolder, newFileName)
 
-            string playlistDBImageLocationPath = $"/assets/img/playlist/{newFileName}";
+            string playlistDBImageLocationPath = $"/assets/img/playlist/{newFileName}.jpg";
 
-            var playlistDTO = new PlaylistDTO()
-            {
-                FilePath = playlistDBImageLocationPath
-            };
+            return (playlistDBImageLocationPath, $"{playlistImagesUploadFolder}\\{newFileName}");
 
-            using (var stream = new FileStream(fullFilePath, FileMode.Create))
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    //await playlistDTO.File.CopyToAsync(memoryStream);
-
-                    var x = memoryStream.ToArray();
-
-                    stream.Write(x, 0, x.Length);
-                }
-            }
         }
 
-        public async Task DownloadRandomImage(string queryString, string key)
+        public async Task<string> AssignImage(PlaylistDTO PlaylistDTO)
         {
-            var queryToUrl = queryString.TrimStart().TrimEnd().Replace(" ", "+").ToString();
-
-            string startUrl = $"https://pixabay.com/api/?key={key}&q={queryToUrl}&image_type=photo&pretty=true";
-
-            var response = await client.GetAsync(startUrl);
-
-            var jsonString = await response.Content.ReadAsStringAsync();
-
+            var jsonString = await client.GetAsync(startUrl).Result.Content.ReadAsStringAsync();
             var pixaBayImageCollection = JsonSerializer.Deserialize<PixaBayImageCollection>(jsonString);
+            int imgIndex = new Random().Next(0, pixaBayImageCollection.PixaBayImages.Count);
+            string imgUrl = pixaBayImageCollection.PixaBayImages[imgIndex].WebFormatURL;
+            (string, string) paths = GetFilePathForImage(PlaylistDTO);
+            string filePath = paths.Item1;
+            string physicalPath = paths.Item2;
 
-            var random = new Random(pixaBayImageCollection.PixaBayImages.Count).ToString();
-
-            var imgUrl = pixaBayImageCollection.PixaBayImages[int.Parse(random)];
-
-            using (HttpClient c = new HttpClient())
+            using (WebClient c = new WebClient())
             {
-                using (Stream s = await c.GetStreamAsync(imgUrl.ToString()))
+                byte[] imageData = c.DownloadData(imgUrl.ToString()) 
+                    ?? throw new ArgumentNullException("Image not found.");
+
+                using MemoryStream mem = new MemoryStream(imageData);
+                using (var yourImage = Image.FromStream(mem))
                 {
-                    // do any logic with the image stream, save it,...
+                    yourImage.Save($"{physicalPath}.jpg", ImageFormat.Jpeg);
                 }
             }
+
+            return filePath;
         }
 
-    }
-    public class FileServiceProvider //: IFileServiceProvider
-    {
         public bool FileExists(string filePath)
         {
             return System.IO.File.Exists(filePath.Trim());

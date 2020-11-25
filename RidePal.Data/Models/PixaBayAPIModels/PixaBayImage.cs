@@ -8,6 +8,6 @@ namespace RidePal.Data.Models.PixaBayAPIModels
     public class PixaBayImage
     {
         [JsonPropertyName("webformatURL")]
-        public string WebformatURL { get; set; }
+        public string WebFormatURL { get; set; }
     }
 }
