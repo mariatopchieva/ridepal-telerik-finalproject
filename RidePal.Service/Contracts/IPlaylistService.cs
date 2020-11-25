@@ -16,7 +16,7 @@ namespace RidePal.Service.Contracts
 
         Task<PlaylistDTO> AttachImage(PlaylistDTO PlaylistDTO);
 
-        Task<bool> DeletePlaylistAsync(long id);
+        Task<bool> DeletePlaylistAsync(int id);
 
         Task<bool> ReverseDeletePlaylistAsync(int id);
 
