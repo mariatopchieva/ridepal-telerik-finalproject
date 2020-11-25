@@ -33,8 +33,9 @@ namespace RidePal.Controllers
 
         // GET: PlaylistsController
         [HttpGet("/Index")]
-        public async Task<IActionResult> Index([FromQuery] int currentPage = 1)
+        public async Task<IActionResult> Index(int currentPage = 1)
         {
+
             IEnumerable<PlaylistDTO> playlistsDTO = service.GetPlaylistsPerPage(currentPage);
 
             if (playlistsDTO == null)

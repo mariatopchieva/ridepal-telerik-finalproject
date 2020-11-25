@@ -39,7 +39,7 @@
         </div>*@
 
         <div class="form-group">
-            <label class="mt-3" for="customRange3">Filter playlists by duration</label>
+            <label class="mt-3" for="customRange3">Duration</label>
             <input id="rangeInput" type="range" min="0" max="@Model.MaxDuration" oninput="amount.value=rangeInput.value" asp-for="FilterCriteria.DurationLimits" />
             <input id="amount" type="number" value="@Model.MaxDuration" min="0" max="@Model.MaxDuration" oninput="rangeInput.value=amount.value" />
         </div>
@@ -58,13 +58,14 @@
     </form>
 </div>
 
-
 <div class="container-about">
     <div class="container">
         <div class="page-header" id="about">
             <h2 class="text-center text-danger">Our playlists</h2>
             <br />
         </div>
+        <a asp-controller="Playlists" asp-action="Index" asp-route-currentPage="@(Model.CurrentPage+1)">Next</a>
+
         <div class="row">
             @foreach (var playlist in Model.Playlists)
             {
@@ -147,7 +148,7 @@
         <li class="page-item"><a class="page-link" href="#!">2</a></li>
         <li class="page-item"><a class="page-link" href="#!">3</a></li>*@
         <li class="page-item">
-            <a class="page-link" asp-route="@Model.CurrentPage + 1" aria-label="Next">
+            <a class="page-link" asp-controller="Playlists" asp-action="Index" asp-route-currentPage="@(Model.CurrentPage + 1)" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
             </a>
