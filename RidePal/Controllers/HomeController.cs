@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using RidePal.Models;
 using RidePal.Service;
 using RidePal.Service.Contracts;
+using RidePal.Service.DTO;
 
 namespace RidePal.Controllers
 {
@@ -89,9 +90,34 @@ namespace RidePal.Controllers
 
         public async Task<IActionResult> Test()
         {
-            List<string> genres = new List<string> () { "jazz" };
-            var playlists = await this._playlistService.GetAllPlaylistsAsync();
-            var playlist = await this._playlistService.FilterPlaylistsByGenreAsync(genres, playlists);
+            //var add = await this._playlistService.AddPlaylistToFavoritesAsync(90, 1);
+            //var remove = await this._playlistService.RemovePlaylistFromFavoritesAsync(90, 1);
+            //var addAgain = await this._playlistService.AddPlaylistToFavoritesAsync(90, 1);
+
+            //List<string> genres = new List<string>() { "jazz" };
+            //List<int> durations = new List<int> { 0, 18767 };
+            //var playlists = await this._playlistService.GetAllPlaylistsAsync();
+            //var playlist1 = this._playlistService.FilterPlaylistsByName("Plovdiv", playlists);
+            //var playlist2 = await this._playlistService.FilterPlaylistsByGenreAsync(genres, playlist1);
+            //var playlist3 = this._playlistService.FilterPlaylistsByDuration(durations, playlist2);
+            //var playlistsMaster = await this._playlistService.FilterPlaylistsMasterAsync("Plovdiv", genres, durations);
+
+            //    public int Id { get; set; }
+            //public string Title { get; set; }
+            //public Dictionary<string, int> GenrePercentage { get; set; }
+            //public User User { get; set; }
+            //public int UserId { get; set; }
+
+            //var editPlaylistDTO = new EditPlaylistDTO
+            //{
+            //    Id = 88,
+            //    Title = "To the mountain",
+            //    GenrePercentage = new Dictionary<string, int> { { "pop", 50 }, { "jazz", 50 } },
+            //    UserId = 2
+            //};
+
+            //var playlist = await this._playlistService.EditPlaylistAsync(editPlaylistDTO);
+
             return RedirectToAction(nameof(Index));
         }
     }

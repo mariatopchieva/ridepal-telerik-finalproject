@@ -14,6 +14,7 @@ namespace RidePal.Service
 {
     public class PlaylistService : IPlaylistService
     {
+        const int pageSize = 9;
         private readonly RidePalDbContext context;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly IPixaBayImageService imageService;
@@ -25,7 +26,7 @@ namespace RidePal.Service
             this.imageService = imageService;
         }
 
-        public async Task<PlaylistDTO> GetPlaylistByIdAsync(long id)
+        public async Task<PlaylistDTO> GetPlaylistByIdAsync(int id)
         {
             var playlist = await this.context.Playlists
                                 .Where(playlist => playlist.IsDeleted == false)
@@ -106,7 +107,7 @@ namespace RidePal.Service
                                              .Where(x => genresToDelete.Contains(x.Genre.Name))
                                              .ForEachAsync(x => x.IsDeleted = true);
 
-            // update IsDeleted = false if the new genres do not include the old genres but they were created and deleted
+            // update IsDeleted = false if the new genres do not include the old genres but they were created and deleted before
             var genresToUndelete = new List<string>();
             foreach (var oldDeletedGenre in oldDeletedGenresStringList)
             {
@@ -127,14 +128,12 @@ namespace RidePal.Service
             await this.context.SaveChangesAsync();
 
             return new PlaylistDTO(playlist);
-
-            //update PlaylistGenre list-a na each genre (see Generate service)
         }
 
-        public async Task<bool> DeletePlaylistAsync(long id)
+        public async Task<bool> DeletePlaylistAsync(int id)
         {
             var playlist = await this.context.Playlists.Where(playlist => playlist.IsDeleted == false)
-                .FirstOrDefaultAsync(playlist => playlist.Id == id);
+                                .FirstOrDefaultAsync(playlist => playlist.Id == id);
 
             if (playlist == null)
             {
@@ -149,7 +148,7 @@ namespace RidePal.Service
             return true;
         }
 
-        public async Task<bool> ReverseDeletePlaylistAsync(long id)
+        public async Task<bool> ReverseDeletePlaylistAsync(int id)
         {
             var playlist = await this.context.Playlists.Where(playlist => playlist.Id == id)
                                 .FirstOrDefaultAsync();
@@ -254,43 +253,50 @@ namespace RidePal.Service
         //Test the three cases of this method
         public async Task<bool> AddPlaylistToFavoritesAsync(int playlistId, int userId)
         {
-            var playlist = await context.Playlists.FirstOrDefaultAsync(p => p.Id == playlistId);
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var playlist = await this.context.Playlists
+                                .Where(playlist => playlist.IsDeleted == false)
+                                .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
+
+            var user = await this.context.Users
+                                .Where(u => u.IsDeleted == false)
+                                .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (playlist == null || user == null)
             {
                 return false;
             }
 
-            PlaylistFavorite item = new PlaylistFavorite
-            {
-                Playlist = playlist,
-                PlaylistId = playlist.Id,
-                IsFavorite = true,
-                UserId = user.Id,
-                User = user
-            };
-
-            var favoritesTrue = await this.context.Favorites.Where(pf => pf.UserId == userId)
+            var playlistsLiked = await this.context.Favorites.Where(pf => pf.UserId == userId)
                                     .Where(pf => pf.IsFavorite == true).ToListAsync();
 
-            var favoritesFalse = await this.context.Favorites.Where(pf => pf.UserId == userId)
+            var playlistsLikedAndDisliked = await this.context.Favorites.Where(pf => pf.UserId == userId) //PlaylistFavorite item created with False property
                                     .Where(pf => pf.IsFavorite == false).ToListAsync();
 
-            if (favoritesTrue.Any(f => f.Id == item.Id))
+            if (playlistsLiked.Any(pf => pf.PlaylistId == playlistId))
             {
                 return false; //the playlist has already been liked
             }
-            else if (favoritesFalse.Any(f => f.Id == item.Id))
+            else if (playlistsLikedAndDisliked.Any(pf => pf.PlaylistId == playlistId))
             {
-                var playlistToSetFavorite = await this.context.Favorites.FirstOrDefaultAsync(pf => pf.Id == item.Id);
-                playlistToSetFavorite.IsFavorite = true;
+                var playlistToSetAsFavorite = await this.context.Favorites.Where(pf => pf.UserId == userId)
+                                                    .Where(pf => pf.PlaylistId == playlistId).FirstOrDefaultAsync();
+
+                playlistToSetAsFavorite.IsFavorite = true;
 
                 await context.SaveChangesAsync();
                 return true;
             }
             else
             {
+                PlaylistFavorite item = new PlaylistFavorite
+                {
+                    Playlist = playlist,
+                    PlaylistId = playlist.Id,
+                    IsFavorite = true,
+                    UserId = user.Id,
+                    User = user
+                };
+
                 await context.Favorites.AddAsync(item);
                 await context.SaveChangesAsync();
                 return true;
@@ -299,20 +305,24 @@ namespace RidePal.Service
 
         public async Task<bool> RemovePlaylistFromFavoritesAsync(int playlistId, int userId)
         {
+            var playlist = await GetPlaylistByIdAsync(playlistId);
 
-            var playlist = await context.Playlists.FirstOrDefaultAsync(p => p.Id == playlistId);
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await this.context.Users
+                                .Where(u => u.IsDeleted == false)
+                                .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (playlist == null || user == null)
             {
                 return false;
             }
 
-            var favoritesSetAsTrue = await GetFavoritePlaylistsOfUser(user.Id);
+            var playlistsLiked = await GetFavoritePlaylistsOfUser(user.Id);
 
-            if (favoritesSetAsTrue.Any(f => f.Id == playlistId))
+            if (playlistsLiked.Any(f => f.Id == playlistId))
             {
-                var playlistToRemove = await this.context.Favorites.FirstOrDefaultAsync(pf => pf.PlaylistId == playlistId);
+                var playlistToRemove = await this.context.Favorites.Where(pf => pf.UserId == userId)
+                                                    .Where(pf => pf.PlaylistId == playlistId).FirstOrDefaultAsync();
+
                 playlistToRemove.IsFavorite = false;
 
                 await context.SaveChangesAsync();
@@ -362,9 +372,9 @@ namespace RidePal.Service
             return playlistsDTO;
         }
 
-        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByNameAsync(string name, IEnumerable<PlaylistDTO> filteredPPlaylists)
+        public IEnumerable<PlaylistDTO> FilterPlaylistsByName(string name, IEnumerable<PlaylistDTO> filteredPlaylists)
         {
-            var playlists = filteredPPlaylists.Where(x => x.Title.Contains(name))
+            var playlists = filteredPlaylists.Where(x => x.Title.Contains(name))
                                               .OrderByDescending(x => x.Rank).ToList();
             
             return playlists;
@@ -382,8 +392,7 @@ namespace RidePal.Service
 
                 var genreNames = this.context.Genres.Where(x => genresId.Contains(x.Id)).Select(x => x.Name).ToList();
 
-
-                if (genreNames.Intersect(genres).Any()) //test!!!
+                if (genreNames.Intersect(genres).Any())
                 {
                     finalList.Add(playlist);
                 }
@@ -392,9 +401,9 @@ namespace RidePal.Service
             return finalList;
         }
 
-        public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByDurationAsync(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPPlaylists)
+        public IEnumerable<PlaylistDTO> FilterPlaylistsByDuration(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPlaylists)
         {
-            var playlists = filteredPPlaylists.Where(x => x.PlaylistPlaytime >= durationLimits[0] && x.PlaylistPlaytime <= durationLimits[1])
+            var playlists = filteredPlaylists.Where(x => x.PlaylistPlaytime >= durationLimits[0] && x.PlaylistPlaytime <= durationLimits[1])
                                               .ToList();
             
             return playlists;
@@ -402,29 +411,47 @@ namespace RidePal.Service
 
         public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits)
         {
-            IEnumerable<PlaylistDTO> filteredPlaylistsDTO = GetAllPlaylistsAsync().Result;
+            var filteredPlaylistsDTO = await GetAllPlaylistsAsync();
 
             if(name != null)
             {
-                filteredPlaylistsDTO = FilterPlaylistsByNameAsync(name, filteredPlaylistsDTO).Result;
+                filteredPlaylistsDTO = FilterPlaylistsByName(name, filteredPlaylistsDTO).ToList();
             }
 
-            if(genres.Count > 0)
+            if (genres.Count > 0)
             {
-                filteredPlaylistsDTO = FilterPlaylistsByGenreAsync(genres, filteredPlaylistsDTO).Result;
+                filteredPlaylistsDTO = await FilterPlaylistsByGenreAsync(genres, filteredPlaylistsDTO);
             }
 
-            if(durationLimits.Count > 1) //check default values
+            if (durationLimits.Count > 1) //check default values
             {
-                filteredPlaylistsDTO = FilterPlaylistsByDurationAsync(durationLimits, filteredPlaylistsDTO).Result;
+                filteredPlaylistsDTO = FilterPlaylistsByDuration(durationLimits, filteredPlaylistsDTO).ToList();
             }
-            
-            if(filteredPlaylistsDTO == null)
+
+            if (filteredPlaylistsDTO == null) //къде да проверявам за Null => тук или при всеки от 3те метода?
             {
                 throw new ArgumentNullException("No playlists meet the filter criteria."); //or no exception???
             }
 
             return filteredPlaylistsDTO; 
+        }
+
+        public int GetPageCount()
+        {
+            var count = this.context.Playlists.Count();
+
+            var totalPages = Math.Ceiling((double)count / pageSize);
+
+            return (int)totalPages;
+        }
+
+        public IEnumerable<PlaylistDTO> GetPlaylistsPerPage(int currentPage)
+        {
+            var playlists = GetAllPlaylistsAsync();
+
+            var resultPlaylistsDTO = currentPage == 1 ? playlists.Result.Take(pageSize) : playlists.Result.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+            return resultPlaylistsDTO;
         }
 
         public async Task<PlaylistDTO> AttachImage(PlaylistDTO playlistDTO)

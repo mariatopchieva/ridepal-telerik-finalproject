@@ -36,9 +36,10 @@ namespace RidePal.Controllers
 
         // GET: PlaylistsController
         [HttpGet("/Index")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int currentPage = 1)
         {
-            IEnumerable<PlaylistDTO> playlistsDTO = await service.GetAllPlaylistsAsync();
+
+            IEnumerable<PlaylistDTO> playlistsDTO = service.GetPlaylistsPerPage(currentPage);
 
             if (playlistsDTO == null)
             {
@@ -56,7 +57,9 @@ namespace RidePal.Controllers
             {
                 Playlists = playlistsViewModels,
                 AllGenres = service.GetAllGenresAsync().Result.OrderBy(x => x.Name).ToList(),
-                MaxDuration = service.GetHighestPlaytimeAsync().Result
+                MaxDuration = service.GetHighestPlaytimeAsync().Result,
+                TotalPages = service.GetPageCount(),
+                CurrentPage = currentPage
             };
 
             return View(filteredPlaylistList);
@@ -71,10 +74,32 @@ namespace RidePal.Controllers
                 var filteredName = filterCriteria.Name;
                 var filteredGenres = filterCriteria.GenresNames;
                 var filteredDuration = filterCriteria.DurationLimits;
+                List<string> genres = new List<string>();
+
+                if(filteredGenres[0] == "true") //трябва да се върже с GetAllGenres, понеже ако се увеличат, тук филтрирам само 4
+                {
+                    genres.Add("jazz");
+                }
+
+                if (filteredGenres[1] == "true")
+                {
+                    genres.Add("metal");
+                }
+
+                if (filteredGenres[2] == "true")
+                {
+                    genres.Add("pop");
+                }
+
+                if (filteredGenres[3] == "true")
+                {
+                    genres.Add("rock");
+                }
+
                 //temporary until the slider range gets two values
                 filteredDuration.Insert(0, 0);
 
-                var playlistsDTO = await service.FilterPlaylistsMasterAsync(filteredName, filteredGenres, filteredDuration);
+                var playlistsDTO = await service.FilterPlaylistsMasterAsync(filteredName, genres, filteredDuration);
 
                 if (playlistsDTO == null)
                 {
@@ -100,7 +125,6 @@ namespace RidePal.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
 
         // GET: PlaylistsController/Details/5
         [HttpGet("/Details/{id}")]

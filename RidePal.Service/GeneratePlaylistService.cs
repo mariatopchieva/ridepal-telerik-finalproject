@@ -160,7 +160,7 @@ namespace RidePal.Service
             double minPlaytime = travelDuration - 300;
             double maxPlaytime = travelDuration + 300;
             
-            if(playtime > maxPlaytime) //remove a song with length between lower and upper limit
+            if(playtime > maxPlaytime)
             {
                 Random randomGenerator = new Random();
                 double reducedPlaytime = playtime;
@@ -180,60 +180,7 @@ namespace RidePal.Service
                 }
             }
 
-            double newPlaytime = CalculatePlaytime(playlist);
-
-            if (newPlaytime < minPlaytime) //add a song with length between lower and upper limit; 
-            {
-                double lowerLimit = minPlaytime - newPlaytime;
-                double upperLimit = lowerLimit + 600;
-
-                //song must not be repeated; artist not repeated and be within genre preference
-                string genre;
-
-                if (genrePercentage["jazz"] != 0)
-                {
-                    genre = "jazz";
-                }
-                else
-                {
-                    if (genrePercentage["pop"] != 0)
-                    {
-                        genre = "pop";
-                    }
-                    else
-                    {
-                        if (genrePercentage["metal"] != 0)
-                        {
-                            genre = "metal";
-                        }
-                        else
-                        {
-                            genre = "rock";
-                        }
-                    }
-                }
-
-                var tracksPerGenre = context.Tracks.Where(x => x.Genre.Name == genre).ToList();
-                var tracksUniqueArtists = tracksPerGenre.GroupBy(y => y.ArtistId).Select(z => z.First()).ToList();
-
-                for (int i = tracksUniqueArtists.Count - 1; i > 1; i--)
-                {
-                    if (tracksUniqueArtists[i].TrackDuration > lowerLimit && tracksUniqueArtists[i].TrackDuration < upperLimit
-                        && !playlist.Contains(tracksUniqueArtists[i]))
-                    {
-                        playlist.Add(tracksUniqueArtists[i]);
-
-                        break;
-                    }
-                }
-
-                //ако не намери песен с такава дължина от този жанр, ще върне твърде кратък плейлист => change genre?
-                return playlist;
-            }
-            else
-            {
-                return playlist;
-            }
+            return playlist;
         }
 
         public string GetPlaytimeString(int playlistPlaytime)
@@ -327,19 +274,6 @@ namespace RidePal.Service
             await this.context.PlaylistTracks.AddRangeAsync(playlistTracks);
             await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);
             await this.context.SaveChangesAsync();
-
-            foreach (var genre in genres) //добавяне на всеки PlaylistGenre към верния genre
-            {
-                foreach (var playlistGenre in playlistGenres)
-                {
-                    if (playlistGenre.Genre.Equals(genre))
-                        genre.Playlists.Add(playlistGenre);
-                }
-            }
-
-            await this.context.SaveChangesAsync();
-
-            //public string FilePath { get; set; }
 
             return new PlaylistDTO(playlist);
         }

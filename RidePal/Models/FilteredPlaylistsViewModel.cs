@@ -25,6 +25,11 @@ namespace RidePal.Models
         public long MaxDuration { get; set; }
 
         public FilterCriteria FilterCriteria { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public int CurrentPage { get; set; }
+
     }
 }
 

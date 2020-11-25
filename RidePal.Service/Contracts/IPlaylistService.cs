@@ -8,7 +8,7 @@ namespace RidePal.Service.Contracts
 {
     public interface IPlaylistService
     {
-        Task<PlaylistDTO> GetPlaylistByIdAsync(long id);
+        Task<PlaylistDTO> GetPlaylistByIdAsync(int id);
 
         Task<IEnumerable<PlaylistDTO>> GetAllPlaylistsAsync();
 
@@ -18,7 +18,7 @@ namespace RidePal.Service.Contracts
 
         Task<bool> DeletePlaylistAsync(long id);
 
-        Task<bool> ReverseDeletePlaylistAsync(long id);
+        Task<bool> ReverseDeletePlaylistAsync(int id);
 
         Task<IEnumerable<PlaylistDTO>> GetPlaylistsOfUserAsync(int userId);
 
@@ -36,14 +36,18 @@ namespace RidePal.Service.Contracts
 
         Task<IEnumerable<PlaylistDTO>> GetFavoritePlaylistsOfUser(int userId);
 
-        Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByNameAsync(string name, IEnumerable<PlaylistDTO> filteredPPlaylists);
+        IEnumerable<PlaylistDTO> FilterPlaylistsByName(string name, IEnumerable<PlaylistDTO> filteredPlaylists);
 
-        Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByGenreAsync(List<string> genres, IEnumerable<PlaylistDTO> filteredPPlaylists);
+        Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByGenreAsync(List<string> genres, IEnumerable<PlaylistDTO> filteredPlaylists);
 
-        Task<IEnumerable<PlaylistDTO>> FilterPlaylistsByDurationAsync(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPPlaylists);
+        IEnumerable<PlaylistDTO> FilterPlaylistsByDuration(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPlaylists);
 
         Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits);
 
         Task<IEnumerable<PlaylistDTO>> SortPlaylistsByDurationAsync();
+
+        int GetPageCount();
+
+        IEnumerable<PlaylistDTO> GetPlaylistsPerPage(int currentPage);
     }
 }
