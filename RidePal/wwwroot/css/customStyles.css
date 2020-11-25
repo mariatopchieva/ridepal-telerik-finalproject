@@ -350,6 +350,28 @@ table.table td i {
     margin: auto;
 }
 
+/*Playlist Index form*/
+#filterFormContainer {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+#filterForm {
+    background: rgba(58, 64, 64, 0.80);
+    position: relative;
+    border-radius: .5rem;
+    margin-top: 20%;
+    margin-bottom: 20%;
+    align-items: center;
+    z-index: 1;
+    color: white;
+}
+
+#filterCenterField {
+    margin: auto;
+}
+
 /*home page items*/
 #topPl {
     margin-top: 50px;

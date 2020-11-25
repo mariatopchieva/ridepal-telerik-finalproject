@@ -469,10 +469,5 @@ namespace RidePal.Service
 
             return playlistDTO;
         }
-
-        //Pagination
-
-        //Add authorization restrictions => here? Edit/ delete Playlist => (admin)List all/ (user)My playlists
-        //                                 => here? Add/ remove Playlist as Favorite => (user)Favorite playlists
     }
 }

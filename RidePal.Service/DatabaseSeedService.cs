@@ -124,7 +124,7 @@ namespace RidePal.Service
                 {
                     StartLocationName = "Sofia",
                     DestinationName = "Ihtiman",
-                    PlaylistName = "Ihtiman",
+                    PlaylistName = "Metal and mix",
                     RepeatArtist = true,
                     UseTopTracks = true,
                     GenrePercentage = new Dictionary<string, int>()
@@ -143,7 +143,7 @@ namespace RidePal.Service
                         }
 
                     },
-                    UserId = 2
+                    UserId = 1
                 },
                 new GeneratePlaylistDTO()
                 {
@@ -174,7 +174,7 @@ namespace RidePal.Service
                 {
                     StartLocationName = "Sofia",
                     DestinationName = "Plovdiv",
-                    PlaylistName = "Plovdiv",
+                    PlaylistName = "Home",
                     RepeatArtist = true,
                     UseTopTracks = false,
                     GenrePercentage = new Dictionary<string, int>()
@@ -193,13 +193,13 @@ namespace RidePal.Service
                         }
 
                     },
-                    UserId = 2
+                    UserId = 1
                 },
                 new GeneratePlaylistDTO()
                 {
                     StartLocationName = "Sofia",
                     DestinationName = "Harmanli",
-                    PlaylistName = "Harmanli",
+                    PlaylistName = "Harmanli trip",
                     RepeatArtist = false,
                     UseTopTracks = false,
                     GenrePercentage = new Dictionary<string, int>()
@@ -224,7 +224,7 @@ namespace RidePal.Service
                 {
                     StartLocationName = "Targovishte",
                     DestinationName = "Plovdiv",
-                    PlaylistName = "Targovishte Plovdiv",
+                    PlaylistName = "To Targovishte",
                     RepeatArtist = false,
                     UseTopTracks = true,
                     GenrePercentage = new Dictionary<string, int>()
@@ -249,7 +249,7 @@ namespace RidePal.Service
                 {
                     StartLocationName = "Kardzhali",
                     DestinationName = "Plovdiv",
-                    PlaylistName = "Kardzhali Plovdiv",
+                    PlaylistName = "Plovdiv Kardzhali",
                     RepeatArtist = true,
                     UseTopTracks = true,
                     GenrePercentage = new Dictionary<string, int>()
@@ -268,13 +268,13 @@ namespace RidePal.Service
                         }
 
                     },
-                    UserId = 2
+                    UserId = 1
                 },
                 new GeneratePlaylistDTO()
                 {
                     StartLocationName = "Sofia",
                     DestinationName = "Svoge",
-                    PlaylistName = "Svoge",
+                    PlaylistName = "Fest mix",
                     RepeatArtist = false,
                     UseTopTracks = true,
                     GenrePercentage = new Dictionary<string, int>()
@@ -299,7 +299,7 @@ namespace RidePal.Service
                 {
                     StartLocationName = "Sofia",
                     DestinationName = "Lukovit",
-                    PlaylistName = "Lukovit",
+                    PlaylistName = "Metal & Rock",
                     RepeatArtist = true,
                     UseTopTracks = true,
                     GenrePercentage = new Dictionary<string, int>()
@@ -318,13 +318,13 @@ namespace RidePal.Service
                         }
 
                     },
-                    UserId = 2
+                    UserId = 1
                 },
                 new GeneratePlaylistDTO()
                 {
                     StartLocationName = "Sofia",
                     DestinationName = "Svilengrad",
-                    PlaylistName = "Svilengrad",
+                    PlaylistName = "Pop Svilengrad",
                     RepeatArtist = false,
                     UseTopTracks = false,
                     GenrePercentage = new Dictionary<string, int>()
@@ -343,13 +343,13 @@ namespace RidePal.Service
                         }
 
                     },
-                    UserId = 2
+                    UserId = 1
                 },
                 new GeneratePlaylistDTO()
                 {
                     StartLocationName = "Sofia",
                     DestinationName = "Samokov",
-                    PlaylistName = "Samokov",
+                    PlaylistName = "Small trip pop and jazz",
                     RepeatArtist = true,
                     UseTopTracks = false,
                     GenrePercentage = new Dictionary<string, int>()
@@ -374,7 +374,7 @@ namespace RidePal.Service
                 {
                     StartLocationName = "Burgas",
                     DestinationName = "Varna",
-                    PlaylistName = "Burgas Varna",
+                    PlaylistName = "Seaside trip",
                     RepeatArtist = false,
                     UseTopTracks = true,
                     GenrePercentage = new Dictionary<string, int>()
@@ -393,15 +393,140 @@ namespace RidePal.Service
                         }
 
                     },
-                    UserId = 2
+                    UserId = 1
                 },
                 new GeneratePlaylistDTO()
                 {
                     StartLocationName = "Varna",
                     DestinationName = "Burgas",
-                    PlaylistName = "Varna Burgas",
+                    PlaylistName = "Varna Burgas trip",
                     RepeatArtist = true,
                     UseTopTracks = false,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 50
+                        },
+                        {
+                            "metal", 10
+                        },
+                        {
+                            "pop", 30
+                        },
+                        {
+                            "jazz", 10
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Malko Tarnovo",
+                    PlaylistName = "Jazz time",
+                    RepeatArtist = true,
+                    UseTopTracks = false,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 0
+                        },
+                        {
+                            "metal", 0
+                        },
+                        {
+                            "pop", 0
+                        },
+                        {
+                            "jazz", 100
+                        }
+
+                    },
+                    UserId = 1
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Plovdiv",
+                    DestinationName = "Svilengrad",
+                    PlaylistName = "Border",
+                    RepeatArtist = true,
+                    UseTopTracks = true,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 50
+                        },
+                        {
+                            "metal", 0
+                        },
+                        {
+                            "pop", 50
+                        },
+                        {
+                            "jazz", 0
+                        }
+
+                    },
+                    UserId = 1
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Ruse",
+                    DestinationName = "Samokov",
+                    PlaylistName = "Danube",
+                    RepeatArtist = true,
+                    UseTopTracks = false,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 0
+                        },
+                        {
+                            "metal", 50
+                        },
+                        {
+                            "pop", 50
+                        },
+                        {
+                            "jazz", 0
+                        }
+
+                    },
+                    UserId = 2
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Burgas",
+                    DestinationName = "Varna",
+                    PlaylistName = "Birthday seaside trip",
+                    RepeatArtist = false,
+                    UseTopTracks = true,
+                    GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 20
+                        },
+                        {
+                            "metal", 20
+                        },
+                        {
+                            "pop", 20
+                        },
+                        {
+                            "jazz", 40
+                        }
+
+                    },
+                    UserId = 1
+                },
+                new GeneratePlaylistDTO()
+                {
+                    StartLocationName = "Sofia",
+                    DestinationName = "Elin Pelin",
+                    PlaylistName = "Work",
+                    RepeatArtist = false,
+                    UseTopTracks = true,
                     GenrePercentage = new Dictionary<string, int>()
                     {
                         {
