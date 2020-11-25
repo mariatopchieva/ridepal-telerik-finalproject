@@ -16,11 +16,13 @@ namespace RidePal.Service
     {
         private readonly RidePalDbContext context;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly IPixaBayImageService imageService;
 
-        public PlaylistService(RidePalDbContext _context, IDateTimeProvider _dateTimeProvider)
+        public PlaylistService(RidePalDbContext _context, IDateTimeProvider _dateTimeProvider, IPixaBayImageService imageService)
         {
             this.context = _context;
             this.dateTimeProvider = _dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
+            this.imageService = imageService;
         }
 
         public async Task<PlaylistDTO> GetPlaylistByIdAsync(long id)
@@ -378,6 +380,22 @@ namespace RidePal.Service
         public async Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits)
         {
             return new List<PlaylistDTO>();
+        }
+
+        public async Task<PlaylistDTO> AttachImage(PlaylistDTO playlistDTO)
+        {
+            var playlist = await this.context.Playlists.FirstOrDefaultAsync(pl => pl.Title == playlistDTO.Title);
+
+            if (playlist == null)
+            {
+                throw new ArgumentNullException("Playlist not found.");
+            }
+
+            playlist.FilePath = await this.imageService.AssignImage(playlistDTO);
+
+            await this.context.SaveChangesAsync();
+
+            return playlistDTO;
         }
 
         //Pagination

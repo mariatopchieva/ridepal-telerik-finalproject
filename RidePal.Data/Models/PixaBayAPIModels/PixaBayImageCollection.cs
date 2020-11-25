@@ -7,7 +7,7 @@ namespace RidePal.Data.Models.PixaBayAPIModels
 {
     public class PixaBayImageCollection
     {
-        [JsonPropertyName("data")]
-        public IList<PixaBayImage> PixaBayImages { get; set; }
+        [JsonPropertyName("hits")]
+        public List<PixaBayImage> PixaBayImages { get; set; }
     }
 }

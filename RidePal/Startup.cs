@@ -19,6 +19,7 @@ using RidePal.Service.Contracts;
 using RidePal.Service.Providers;
 using RidePal.Service.Providers.Contracts;
 using HostedService;
+using RidePal.Utils.Registration;
 
 namespace RidePal
 {
@@ -72,13 +73,19 @@ namespace RidePal
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
-            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
-            services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
-            services.AddScoped<IPlaylistService, PlaylistService>();
-            services.AddScoped<IAdminService, AdminService>();
-            services.AddScoped<IStatisticsService, StatisticsService>();
-            services.AddHostedService<HostedDBSeedService>();
+            services.RegisterBusinessServices();
+            services.RegisterProviders();
+
+            //services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
+            //services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+            //services.AddScoped<IFileCheckProvider, FileCheckProvider>();
+            //services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
+            //services.AddScoped<IPlaylistService, PlaylistService>();
+            //services.AddScoped<IAdminService, AdminService>();
+            //services.AddScoped<IStatisticsService, StatisticsService>();
+            //services.AddScoped<IPixaBayImageService, PixabayImageService>();
+            //services.AddHostedService<HostedDBSeedService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

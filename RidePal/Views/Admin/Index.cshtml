@@ -14,62 +14,6 @@
     </div>
 }
 
-@*<table class="table">
-        <thead>
-            <tr>
-                <th>
-                    <p>Id</p>
-                </th>
-                <th>
-                    <p>Username</p>
-                </th>
-                <th>
-                    <p>IsBanned</p>
-                </th>
-                <th>
-                    <p>IsDeleted</p>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.AllUsers)
-            {
-                <tr>
-                    <td>
-                        @item.Id
-                    </td>
-                    <td>
-                        @item.UserName
-                    </td>
-                    <td>
-                        @item.IsBanned
-                    </td>
-                    <td>
-                        @item.IsDeleted
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        <form class="form" method="post" asp-action="BanUser" style="margin-bottom: 30px; margin-left: 20px">
-                            <input type="hidden" name="UserId" value="@item.Id" />
-                            <div class="form__buttons buttons">
-                                <button type="submit">Ban user</button>
-                            </div>
-                        </form>
-                        <form class="form" method="post" asp-action="UnbanUser" style="margin-bottom:30px">
-
-                            <input type="hidden" name="UserId" value="@item.Id" />
-                            <div class="form__buttons buttons">
-                                <button type="submit">Unban user</button>
-                            </div>
-                        </form>
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
-
 <div class="container">
     <div class="table-responsive">
         <div class="table-wrapper">

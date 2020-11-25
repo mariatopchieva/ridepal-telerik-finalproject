@@ -10,6 +10,7 @@ namespace RidePal.Service.DTO
         public string StartLocationName { get; set; }
         public string DestinationName { get; set; }
         public string PlaylistName { get; set; }
+        public string FilePath { get; set; }
         public bool RepeatArtist { get; set; }
         public bool UseTopTracks { get; set; }
         public Dictionary<string, int> GenrePercentage { get; set; }
