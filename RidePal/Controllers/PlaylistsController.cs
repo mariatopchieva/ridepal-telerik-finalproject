@@ -41,7 +41,7 @@ namespace RidePal.Controllers
         // GET: PlaylistsController
         //[HttpGet("/Index")]
         [HttpGet]
-        public async Task<IActionResult> Index(int currentPage = 1)
+        public IActionResult Index(int currentPage = 1)
         {
 
             IEnumerable<PlaylistDTO> playlistsDTO = service.GetPlaylistsPerPage(currentPage);
@@ -51,12 +51,7 @@ namespace RidePal.Controllers
                 return NotFound();
             }
 
-            var playlistsViewModels = new List<PlaylistViewModel>();
-            foreach (var playlist in playlistsDTO)
-            {
-                var currentPlaylistViewModel = new PlaylistViewModel(playlist);
-                playlistsViewModels.Add(currentPlaylistViewModel);
-            }
+            var playlistsViewModels = playlistsDTO.Select(plDto => new PlaylistViewModel(plDto));
 
             FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
             {
@@ -292,6 +287,74 @@ namespace RidePal.Controllers
         {
             var playlist = await this.service.DeletePlaylistAsync(playlistId);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToFav(int plId)
+        {
+            var userId = int.Parse(userManager.GetUserId(HttpContext.User));
+
+            bool result = await this.service.AddPlaylistToFavoritesAsync(plId, userId);
+
+            if (result == true)
+            {
+                return RedirectToAction("Details", new { id = plId, msg = TempData["Msg"] = "Playlist added to favorites." });
+            }
+
+            return RedirectToAction("Details", new { id = plId, error = TempData["Error"] = "Playlist is already in your favorites list." });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromFav(int plId)
+        {
+            var userId = int.Parse(userManager.GetUserId(HttpContext.User));
+
+            bool result = await this.service.RemovePlaylistFromFavoritesAsync(plId, userId);
+
+            if (result == true)
+            {
+                return RedirectToAction("Details", new { id = plId, msg = TempData["Msg"] = "Playlist removed from favorites." });
+            }
+
+            return RedirectToAction("Details", new { id = plId, error = TempData["Error"] = "Playlist is not in your favorites list." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Favorites(int currentPage = 1)
+        {
+            var userId = int.Parse(userManager.GetUserId(HttpContext.User));
+
+            var result = await this.service.GetFavoritePlaylistsOfUser(userId);
+
+            var playlistsViewModels = result.Select(x => new PlaylistViewModel(x));
+
+            FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
+            {
+                Playlists = playlistsViewModels,
+                TotalPages = service.GetPageCount(),
+                CurrentPage = currentPage
+            };
+
+            return View(filteredPlaylistList);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UserPlaylists(int currentPage = 1)
+        {
+            var userId = int.Parse(userManager.GetUserId(HttpContext.User));
+
+            var result = await this.service.GetPlaylistsOfUserAsync(userId);
+
+            var playlistsViewModels = result.Select(x => new PlaylistViewModel(x));
+
+            FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
+            {
+                Playlists = playlistsViewModels,
+                TotalPages = service.GetPageCount(),
+                CurrentPage = currentPage
+            };
+
+            return View(filteredPlaylistList);
         }
     }
 }

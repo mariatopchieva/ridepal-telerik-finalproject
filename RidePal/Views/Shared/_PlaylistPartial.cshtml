@@ -21,9 +21,9 @@
 
     <div class="card-content">
         <a class="hover" asp-controller="Playlists" asp-action="Details" asp-route-id="@Model.Id">
-            <h1 class="text-center">@Model.Title</h1>
-            <h4 class="text-center">@Model.GenreString</h4>
-            <p class="text-center">@Model.PlaytimeString</p>
+            <h1 class="card-text text-center">@Model.Title</h1>
+            <h5 class="card-text text-center">Rank: @Model.Rank</h5>
+            <h5 class="card-text text-center">Playtime: @Model.PlaytimeString</h5>
         </a>
     </div>
 </div>

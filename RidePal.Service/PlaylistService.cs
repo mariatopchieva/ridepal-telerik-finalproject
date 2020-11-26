@@ -310,54 +310,84 @@ namespace RidePal.Service
         /// <returns>True of successful, otherwise false</returns>
         public async Task<bool> AddPlaylistToFavoritesAsync(int playlistId, int userId)
         {
-            var playlist = await this.context.Playlists
-                                .Where(playlist => playlist.IsDeleted == false)
-                                .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
+            var result = await this.context.Favorites
+                                            .FirstOrDefaultAsync(fav => fav.PlaylistId == playlistId 
+                                            && fav.UserId == userId);
 
-            var user = await this.context.Users
-                                .Where(u => u.IsDeleted == false)
-                                .FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (playlist == null || user == null)
+            if (result != null)
             {
-                return false;
-            }
-
-            var playlistsLiked = await this.context.Favorites.Where(pf => pf.UserId == userId)
-                                    .Where(pf => pf.IsFavorite == true).ToListAsync();
-
-            var playlistsLikedAndDisliked = await this.context.Favorites.Where(pf => pf.UserId == userId) //PlaylistFavorite item created with False property
-                                    .Where(pf => pf.IsFavorite == false).ToListAsync();
-
-            if (playlistsLiked.Any(pf => pf.PlaylistId == playlistId))
-            {
-                return false; //the playlist has already been liked
-            }
-            else if (playlistsLikedAndDisliked.Any(pf => pf.PlaylistId == playlistId))
-            {
-                var playlistToSetAsFavorite = await this.context.Favorites.Where(pf => pf.UserId == userId)
-                                                    .Where(pf => pf.PlaylistId == playlistId).FirstOrDefaultAsync();
-
-                playlistToSetAsFavorite.IsFavorite = true;
-
-                await context.SaveChangesAsync();
-                return true;
-            }
-            else
-            {
-                PlaylistFavorite item = new PlaylistFavorite
+                if (result.IsFavorite == true)
                 {
-                    Playlist = playlist,
-                    PlaylistId = playlist.Id,
-                    IsFavorite = true,
-                    UserId = user.Id,
-                    User = user
-                };
+                    return false;
+                }
+                else
+                {
+                    result.IsFavorite = true;
+                    await context.SaveChangesAsync();
 
-                await context.Favorites.AddAsync(item);
-                await context.SaveChangesAsync();
-                return true;
+                    return true;
+                }
             }
+
+            PlaylistFavorite item = new PlaylistFavorite
+            {
+                PlaylistId = playlistId,
+                IsFavorite = true,
+                UserId = userId
+            };
+
+            await context.Favorites.AddAsync(item);
+            await context.SaveChangesAsync();
+
+            return true;
+            //var playlist = await this.context.Playlists
+            //                                    .FirstOrDefaultAsync(playlist => playlist.Id == playlistId 
+            //                                     && playlist.IsDeleted == false);
+
+            //var user = await this.context.Users
+            //                                .FirstOrDefaultAsync(u => u.Id == userId 
+            //                                && u.IsDeleted == false);
+
+            //if (playlist == null || user == null)
+            //{
+            //    throw new ArgumentNullException("The user or playlist were not found.");
+            //}
+
+            //var playlistsLiked = await this.context.Favorites.Where(pf => pf.UserId == userId)
+            //                        .Where(pf => pf.IsFavorite == true).ToListAsync();
+
+            //var playlistsLikedAndDisliked = await this.context.Favorites.Where(pf => pf.UserId == userId) //PlaylistFavorite item created with False property
+            //                        .Where(pf => pf.IsFavorite == false).ToListAsync();
+
+            //if (playlistsLiked.Any(pf => pf.PlaylistId == playlistId))
+            //{
+            //    return false; //the playlist has already been liked
+            //}
+            //else if (playlistsLikedAndDisliked.Any(pf => pf.PlaylistId == playlistId))
+            //{
+            //    var playlistToSetAsFavorite = await this.context.Favorites.Where(pf => pf.UserId == userId)
+            //                                        .Where(pf => pf.PlaylistId == playlistId).FirstOrDefaultAsync();
+
+            //    playlistToSetAsFavorite.IsFavorite = true;
+
+            //    await context.SaveChangesAsync();
+            //    return true;
+            //}
+            //else
+            //{
+            //    PlaylistFavorite item = new PlaylistFavorite
+            //    {
+            //        Playlist = playlist,
+            //        PlaylistId = playlist.Id,
+            //        IsFavorite = true,
+            //        UserId = user.Id,
+            //        User = user
+            //    };
+
+            //    await context.Favorites.AddAsync(item);
+            //    await context.SaveChangesAsync();
+            //    return true;
+            //}
         }
 
         /// <summary>
@@ -368,33 +398,22 @@ namespace RidePal.Service
         /// <returns></returns>
         public async Task<bool> RemovePlaylistFromFavoritesAsync(int playlistId, int userId)
         {
-            var playlist = await GetPlaylistByIdAsync(playlistId);
-
-            var user = await this.context.Users
-                                .Where(u => u.IsDeleted == false)
-                                .FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (playlist == null || user == null)
+            var result = await this.context.Favorites
+                                           .FirstOrDefaultAsync(fav => fav.PlaylistId == playlistId
+                                           && fav.UserId == userId);
+            if (result == null)
+            {
+                return false;
+            }
+            if (result.IsFavorite == false)
             {
                 return false;
             }
 
-            var playlistsLiked = await GetFavoritePlaylistsOfUser(user.Id);
+            result.IsFavorite = false;
+            await context.SaveChangesAsync();
 
-            if (playlistsLiked.Any(f => f.Id == playlistId))
-            {
-                var playlistToRemove = await this.context.Favorites.Where(pf => pf.UserId == userId)
-                                                    .Where(pf => pf.PlaylistId == playlistId).FirstOrDefaultAsync();
-
-                playlistToRemove.IsFavorite = false;
-
-                await context.SaveChangesAsync();
-                return true;
-            }
-            else
-            {
-                return false; 
-            }
+            return true;
         }
 
         /// <summary>

@@ -8,22 +8,33 @@
 /* navbar */
 
 nav.navbar {
-    position: absolute;
     top: 0;
     left: 0;
     background-color: transparent;
     width: 100%;
-    z-index: 1000;
     font-family: 'Open Sans', sans-serif;
 }
 
     nav.navbar a, nav.navbar ul li a {
         color: black !important;
+        font-size: 18px;
     }
 
     nav.navbar ul li {
         padding: 0 15px;
     }
+
+dropdown-menu-content {
+    display: none;
+    position: absolute;
+    background: none;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+dropdown:focus{
+    border: none;
+}
 
 /*carousel*/
 .carousel {
@@ -38,6 +49,7 @@ nav.navbar {
     color: black;
     top: 200%;
     text-align: left;
+    font-size: 48px;
 }
 
 /*users table*/
@@ -185,21 +197,27 @@ table.table td i {
     border-radius: .5rem;
 }
 
+/*featured */
+
+
 /*statistics style*/
 .counter {
-    /*background-color: #eaecf0;*/
+    background: rgba(58, 64, 64, 0.4);
     text-align: center;
+    border-radius: 0.5rem;
+    margin-bottom: 100px;
 }
 
 .tracks, .artists, .playlists, .users {
-    margin-top: 70px;
-    margin-bottom: 70px;
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
 
 .counter-count {
+    background: rgba(58, 64, 64, 0.8);
     font-size: 18px;
-    background-color: #00b3e7;
     border-radius: 50%;
+    border-color: black;
     position: relative;
     color: #ffffff;
     text-align: center;
@@ -215,7 +233,7 @@ table.table td i {
 
 .tracks-p, .artists-p, .users-p, .playlists-p {
     font-size: 24px;
-    color: #000000;
+    color: wheat;
     line-height: 34px;
 }
 
@@ -228,7 +246,7 @@ table.table td i {
     box-shadow: 0 -1px 1px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     -webkit-transition: all .2s ease;
     transition: all .2s ease;
-    background: #fff;
+    background: rgba(58, 64, 64, 0.6);
     position: relative;
     overflow: hidden;
 }
@@ -300,7 +318,6 @@ table.table td i {
 .card-content {
     width: 100%;
     min-height: 104px;
-    background-color: #fff;
     border-top: 1px solid #E9E9EB;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
@@ -328,6 +345,9 @@ table.table td i {
             color: rgba(32, 41, 28, 0.8);
         }
 
+.card-text {
+    color: white;
+}
 /*custom form for edit user and create playlist*/
 #formcontainer {
     display: flex;
@@ -402,23 +422,23 @@ table.table td i {
     margin: auto;
 }
 
-.track-list::-webkit-scrollbar {
-    width: 12px;
-}
+    .track-list::-webkit-scrollbar {
+        width: 12px;
+    }
 
-.track-list::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    border-radius: 10px;
-}
+    .track-list::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+    }
 
-.track-list::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-}
+    .track-list::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    }
 
     .track-list li {
         display: block;
-        background-color: #f4f4f4;
+        /*background-color: #f4f4f4;*/
         border: solid 0px #f6eccd;
         margin-bottom: 5px;
         -webkit-box-shadow: 0 2px 1px -1px rgba(0,0,0,0.1);
@@ -427,7 +447,7 @@ table.table td i {
     }
 
         .track-list li .track-details {
-            color: black;
+            color: white;
             font-size: 25px;
             font-family: 'Cantarell', sans-serif;
             "Lucida Sans Unicode", "Lucida Grande", sans-serif;
@@ -435,13 +455,9 @@ table.table td i {
             text-align: center;
         }
 
-.filename-holder {
-    /*padding-bottom: 10px;*/
-}
-
-.track-list li .track-details span {
-    display: inline-block;
-}
+            .track-list li .track-details span {
+                display: inline-block;
+            }
 
 .track-filename {
     display: block;
@@ -454,47 +470,49 @@ audio {
     width: 100%;
 }
 
-/*Form blurred background*/
-.blurred-bg {
-    background-image: url($blurred-img);
-    background-repeat: no-repeat;
-    @include background-size(cover);
-    background-attachment: fixed;
-    &.tinted
+    audio::-webkit-media-controls-panel {
+        background: rgba(58, 64, 64, 0.4);
+    }
 
-{
-    @include background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
+/*Favorite button*/
+i.fav {
+    color: red;
 }
 
-&.shaded {
-    @include background-image( linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url($blurred-img) );
+i.unfav {
+    color: black;
 }
 
-}
-
-.box {
-    width: 500px;
-    height: 300px;
-    left: -webkit-calc(50% - 250px);
-    top: 20%;
-    position: absolute;
+.myButton {
+    box-shadow: inset 0px 1px 3px 0px #91b8b3;
+    /*background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+    background-color: #768d87;*/
+    background-color: transparent;
     border-radius: 5px;
-    @include box-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 20px;
-    text-align: center;
-    @include box-sizing(border-box);
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
-    display: flex;
-    transition: box-shadow 0.3s ease;
-    &:active
-
-{
-    cursor: move;
-    @include box-shadow(0 20px 50px rgba(0, 0, 0, 0.9));
+    border: 1px solid #566963;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 11px 20px;
+    text-decoration: none;
+    text-shadow: 0px -1px 0px #2b665e;
+    margin: 20px auto 20px auto;
+    width: 50%;
 }
 
-.content {
-    margin: auto;
-}
-}
+    .myButton:hover {
+        background: linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
+        background-color: #6c7c7c;
+    }
+
+    .myButton:active {
+        position: relative;
+        top: 1px;
+    }
+
+    .myButton a:hover {
+        color: #ffffff;
+    }
