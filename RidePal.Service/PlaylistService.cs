@@ -238,16 +238,22 @@ namespace RidePal.Service
         {
             var playlistDTO = GetPlaylistByIdAsync(playlistId);
 
-            var tracksDTO = await this.context.PlaylistTracks.Where(x => x.PlaylistId == playlistId)
-                               .Select(x => x.Track).Select(track => new TrackDTO(track))
-                               .ToListAsync();
+            var tracksDTOs = await this.context.PlaylistTracks
+                                .Where(x => x.PlaylistId == playlistId)
+                                .Select(x => x.Track).Select(track => new TrackDTO(track))
+                                .ToListAsync();
 
-            if (tracksDTO == null)
+            if (tracksDTOs == null)
             {
                 throw new ArgumentNullException("No tracks have been found.");
             }
 
-            return tracksDTO;
+            foreach (var track in tracksDTOs)
+            {
+                track.Artist = this.context.Artists.FirstOrDefault(a => a.Id == track.ArtistId);
+            }
+
+            return tracksDTOs;
         }
 
         //Test the three cases of this method

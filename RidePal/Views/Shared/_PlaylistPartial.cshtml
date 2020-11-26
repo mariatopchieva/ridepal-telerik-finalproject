@@ -1,6 +1,6 @@
 ﻿@model PlaylistViewModel
 @{
-    //assets / img / playlist / 75db30f5 - 99c1 - 4fac - a9cc - d046c6ba3f24_testing.jpg
+
 }
 <div class="card hover">
     <div class="card-img">
@@ -20,9 +20,10 @@
     </div>
 
     <div class="card-content">
-        <a href="#!">
-            <h2>@Model.Title</h2>
-            <p>@Model.Genres</p>
+        <a class="hover" asp-controller="Playlists" asp-action="Details" asp-route-id="@Model.Id">
+            <h1 class="text-center">@Model.Title</h1>
+            <h4 class="text-center">@Model.GenreString</h4>
+            <p class="text-center">@Model.PlaytimeString</p>
         </a>
     </div>
 </div>

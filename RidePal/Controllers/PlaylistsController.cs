@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Media;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +18,7 @@ using RidePal.Service.DTO;
 
 namespace RidePal.Controllers
 {
-    [Route("/[controller]")]
+    //[Route("/[controller]")]
     public class PlaylistsController : Controller
     {
         private readonly IPlaylistService service;
@@ -35,7 +39,8 @@ namespace RidePal.Controllers
         }
 
         // GET: PlaylistsController
-        [HttpGet("/Index")]
+        //[HttpGet("/Index")]
+        [HttpGet]
         public async Task<IActionResult> Index(int currentPage = 1)
         {
 
@@ -66,7 +71,8 @@ namespace RidePal.Controllers
         }
 
         // POST: PlaylistsController
-        [HttpPost("/Index")]
+        //[HttpPost("/Index")]
+        [HttpPost]
         public async Task<IActionResult> Index([Bind("Name,GenresNames,DurationLimits")] FilterCriteria filterCriteria)
         {
             if (ModelState.IsValid)
@@ -76,7 +82,7 @@ namespace RidePal.Controllers
                 var filteredDuration = filterCriteria.DurationLimits;
                 List<string> genres = new List<string>();
 
-                if(filteredGenres[0] == "true") //трябва да се върже с GetAllGenres, понеже ако се увеличат, тук филтрирам само 4
+                if (filteredGenres[0] == "true") //трябва да се върже с GetAllGenres, понеже ако се увеличат, тук филтрирам само 4
                 {
                     genres.Add("jazz");
                 }
@@ -127,7 +133,8 @@ namespace RidePal.Controllers
         }
 
         // GET: PlaylistsController/Details/5
-        [HttpGet("/Details/{id}")]
+       // [HttpGet("/Details/{id}")]
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -144,12 +151,16 @@ namespace RidePal.Controllers
             }
 
             //var playlistView 
+            var playlistView = new PlaylistViewModel(playlist);
+            playlistView.TrackList = await service.GetPlaylistTracksAsync(playlist.Id);
+            playlistView.GenreString = await service.GetPlaylistGenresAsStringAsync(playlist.Id);
 
-            return View("Details");
+            return View(playlistView);
         }
 
         // GET: PlaylistsController/Create
-        [HttpGet("/Create")]
+        //[HttpGet("/Create")]
+        [HttpGet]
         [Authorize(Roles = "Admin, User")]
         public ActionResult Create()
         {
@@ -157,7 +168,8 @@ namespace RidePal.Controllers
         }
 
         // POST: PlaylistsController/Create
-        [HttpPost("/Create")]
+        //[HttpPost("/Create")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title," +
                                                     "StartLocationName, DestinationName," +
@@ -196,7 +208,7 @@ namespace RidePal.Controllers
                 var playlistDtoWithImg = await this.service.AttachImage(playlistDTO);
 
 
-                return RedirectToAction("Details", new { id = playlistDtoWithImg.Id});
+                return RedirectToAction("Details", new { id = playlistDtoWithImg.Id });
             }
 
             return RedirectToAction("Index", new { error = TempData["Error"] = "Playlist creation failed." });
@@ -243,7 +255,6 @@ namespace RidePal.Controllers
                 return View();
             }
         }
-
 
 
 

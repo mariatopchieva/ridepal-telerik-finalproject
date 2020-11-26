@@ -13,10 +13,12 @@ namespace RidePal.Service
     public class StatisticsService : IStatisticsService
     {
         private RidePalDbContext context;
+        private readonly IPlaylistService playlistService;
 
-        public StatisticsService(RidePalDbContext context)
+        public StatisticsService(RidePalDbContext context, IPlaylistService plService)
         {
             this.context = context;
+            this.playlistService = plService;
         }
 
         public async Task<int> TrackCount()
@@ -52,12 +54,16 @@ namespace RidePal.Service
         public async Task<IList<PlaylistDTO>> TopPlaylists()
         {
             var topPlaylistDTOs = await this.context.Playlists
-                                            .Include(pl => pl.User)
                                             .Where(pl => pl.IsDeleted == false)
                                             .OrderBy(pl => pl.Rank)
                                             .Take(3)
                                             .Select(pl => new PlaylistDTO(pl))
                                             .ToListAsync();
+
+            foreach (var pl in topPlaylistDTOs)
+            {
+                pl.GenreString = await this.playlistService.GetPlaylistGenresAsStringAsync(pl.Id);
+            }
 
             return topPlaylistDTOs;
         }

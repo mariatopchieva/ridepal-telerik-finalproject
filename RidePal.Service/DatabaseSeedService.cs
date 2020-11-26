@@ -31,7 +31,7 @@ namespace RidePal.Service
 
         public async Task DownloadTrackData(string incomingGenre)
         {
-            string startUrl = $"http://api.deezer.com/search/playlist?q={incomingGenre}";
+            string startUrl = $"https://api.deezer.com/search/playlist?q={incomingGenre}";
 
             var response = await client.GetAsync(startUrl);
 

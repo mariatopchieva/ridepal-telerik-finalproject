@@ -69,18 +69,21 @@
 </div>
 
 <!--top playlists-->
-<div class="container">
-    <div class="page-header" id="topPl">
-        <h2 class="text-center">Top playlists</h2>
-        <br />
+@if (Model.TopPlaylists != null)
+{
+    <div class="container">
+        <div class="page-header" id="topPl">
+            <h2 class="text-center">Top playlists</h2>
+            <br />
+        </div>
+        <div class="row justify-content-center">
+            @foreach (var playlist in Model.TopPlaylists)
+            {
+                <partial name="_PlaylistPartial" model="playlist" />
+            }
+        </div>
     </div>
-    <div class="row justify-content-center">
-        @foreach (var playlist in Model.TopPlaylists)
-        {
-            <partial name="_PlaylistPartial" model="playlist" />
-        }
-    </div>
-</div>
+}
 
 <!--featured artists-->
 <div class="container">

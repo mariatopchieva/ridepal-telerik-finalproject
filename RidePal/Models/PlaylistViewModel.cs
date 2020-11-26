@@ -24,6 +24,7 @@ namespace RidePal.Models
             this.Destination = playlistDTO.Destination;
             this.Tracks = playlistDTO.Tracks;
             this.Genres = playlistDTO.Genres;
+            this.GenreString = playlistDTO.GenreString;
             this.Favorites = playlistDTO.Favorites;
             this.TracksCount = playlistDTO.TracksCount;
             this.GenresCount = playlistDTO.GenresCount;
@@ -61,7 +62,11 @@ namespace RidePal.Models
 
         public ICollection<PlaylistGenre> Genres { get; set; }
 
+        public string GenreString { get; set; }
+
         public ICollection<PlaylistFavorite> Favorites { get; set; }
+
+        public IEnumerable<TrackDTO> TrackList { get; set; }
 
         [DisplayName("Number of tracks")]
         public int TracksCount { get; set; }

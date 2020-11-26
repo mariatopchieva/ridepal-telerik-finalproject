@@ -100,6 +100,6 @@ $(document).ready(
         $valueSpan.html($value.val());
         $value.on('input change', () => {
 
-            $valueSpan.html($value.val());
+            $valueSpan.html($value.val() + " min");
         });
     });

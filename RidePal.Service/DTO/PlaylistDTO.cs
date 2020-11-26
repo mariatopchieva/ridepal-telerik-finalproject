@@ -56,6 +56,8 @@ namespace RidePal.Service.DTO
 
         public ICollection<PlaylistFavorite> Favorites { get; set; }
 
+        public string GenreString { get; set; }
+
         [DisplayName("Number of tracks")]
         public int TracksCount { get; set; }
 
