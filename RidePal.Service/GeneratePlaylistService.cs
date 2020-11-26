@@ -32,10 +32,16 @@ namespace RidePal.Service
             this.dateTimeProvider = _dateTimeProvider;
         }
 
+        /// <summary>
+        /// Using the method's parameters, a request URL is constructed and sent to an external API: Bing Maps. 
+        /// From there, a response is received, which contains the expected travel duration between the start location and destination. 
+        /// </summary>
+        /// <param name="startLocationName">The name of the start location</param>
+        /// <param name="destinationName">The name of the destination</param>
+        /// <returns>The travel duration in seconds</returns>
         public async Task<double> GetTravelDuration(string startLocationName, string destinationName)
         {
             string bingMapsRequestUrl = $"https://dev.virtualearth.net/REST/v1/Routes/Driving?wp.0={startLocationName}&wp.1={destinationName}&avoid=minimizeTolls&travelMode=driving&key={key}";
-
 
             using (var response = await client.GetAsync(bingMapsRequestUrl))
             {
@@ -48,7 +54,17 @@ namespace RidePal.Service
                 .Select(resource => resource.travelDuration).First();
         }
 
-        
+        /// <summary>
+        /// An algorithm, which generates playlists upon user's input: title, calculated travel duration,
+        /// preferences about music genres and an option for repeating or not tracks of the same artist.
+        /// The algorithm corresponds to a user's preference for choosing top-ranked tracks from the selected music genres 
+        /// in combination with randomization of the playlist generation.
+        /// </summary>
+        /// <param name="genre">Preferred music genre</param>
+        /// <param name="travelDuration">The travel duration for which a playlist must be created (in seconds)</param>
+        /// <param name="genrePercentage">Percentage of the specified music genre from the whole playlist duration</param>
+        /// <param name="repeatArtist">Bool, which states whether a repetition of songs of the same artist is allowed</param>
+        /// <returns>Collection of tracks</returns>
         public async Task<IEnumerable<Track>> GetTopTracks(string genre, double travelDuration,
             Dictionary<string, int> genrePercentage, bool repeatArtist)
         {
@@ -101,7 +117,16 @@ namespace RidePal.Service
             return playlist;
         }
 
-
+        /// <summary>
+        /// An algorithm, which generates playlists upon user's input: title, calculated travel duration,
+        /// preferences about music genres and an option for repeating or not tracks of the same artist.
+        /// The algorithm chooses random tracks from the preferred music genres.
+        /// </summary>
+        /// <param name="genre">Preferred music genre</param>
+        /// <param name="travelDuration">The travel duration for which a playlist must be created (in seconds)</param>
+        /// <param name="genrePercentage">Percentage of the specified music genre from the whole playlist duration</param>
+        /// <param name="repeatArtist">Bool, which states whether a repetition of songs of the same artist is allowed</param>
+        /// <returns>Collection of tracks</returns>
         public async Task<IEnumerable<Track>> GetTracks(string genre, double travelDuration, //ADD AWAIT
             Dictionary<string, int> genrePercentage, bool repeatArtist)
         {
@@ -138,6 +163,11 @@ namespace RidePal.Service
             return playlist;
         }
 
+        /// <summary>
+        /// Calculates the total playtime of the playlist by summing the playtime of all its tracks
+        /// </summary>
+        /// <param name="playlist">The collection of tracks of the playlist</param>
+        /// <returns>The total amount of seconds</returns>
         public double CalculatePlaytime(List<Track> playlist)
         {
             double playtime = (double)playlist.Select(track => track.TrackDuration).Sum();
@@ -145,6 +175,11 @@ namespace RidePal.Service
             return playtime;
         }
 
+        /// <summary>
+        /// Calculates the playlist's rank as an average of the ranks of its tracks
+        /// </summary>
+        /// <param name="playlist">The collection of tracks of the playlist</param>
+        /// <returns>The calculated rank of the playlist</returns>
         public int CalculateRank(List<Track> playlist)
         {
             int rank = (int)playlist.Select(track => track.TrackRank).Average();
@@ -152,12 +187,19 @@ namespace RidePal.Service
             return rank;
         }
 
-
+        /// <summary>
+        /// Finetunes the playlist so that its playtime does not exceed the travel duration with more than 5 mins
+        /// Removes randomly selected tracks until this condition is achieved.
+        /// </summary>
+        /// <param name="travelDuration">The travel duration for which a playlist must be created (in seconds)</param>
+        /// <param name="playlist">The incoming collection of tracks to be finetuned</param>
+        /// <param name="genrePercentage">Percentage of the specified music genre from the whole playlist duration</param>
+        /// <returns>Finalized collection of tracks for the playlist</returns>
         public IEnumerable<Track> FinetunePlaytime(double travelDuration, List<Track> playlist, 
             Dictionary<string, int> genrePercentage)
         {
             double playtime = CalculatePlaytime(playlist);
-            double minPlaytime = travelDuration - 300;
+            double minPlaytime = travelDuration - 300; //not used
             double maxPlaytime = travelDuration + 300;
             
             if(playtime > maxPlaytime)
@@ -183,6 +225,11 @@ namespace RidePal.Service
             return playlist;
         }
 
+        /// <summary>
+        /// Generates a string for user-friendly view of the playlist's playtime
+        /// </summary>
+        /// <param name="playlistPlaytime">The playlist's playtime in seconds</param>
+        /// <returns>String of the playlist's playtime in a specific format</returns>
         public string GetPlaytimeString(int playlistPlaytime)
         {
             StringBuilder sb = new StringBuilder();
@@ -211,6 +258,12 @@ namespace RidePal.Service
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Generates playlist corresponding to user's input and calls supporting methods to generate a collection of tracks, 
+        /// finetune its duration, and set different properties of the playlist. Then the playlist is saved in the database.
+        /// </summary>
+        /// <param name="playlistDTO">DTO with all user's input needed for playlist generation</param>
+        /// <returns>DTO of the created playlist</returns>
         public async Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO)
         {
             double travelDuration = await GetTravelDuration(playlistDTO.StartLocationName, playlistDTO.DestinationName);

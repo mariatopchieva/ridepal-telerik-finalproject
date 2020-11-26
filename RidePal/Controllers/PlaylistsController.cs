@@ -215,48 +215,83 @@ namespace RidePal.Controllers
         }
 
         // GET: PlaylistsController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet("/Edit")]
+        [Authorize(Roles = "Admin, User")]
+        public async Task<IActionResult> Edit(int? playlistId)
         {
-            return View();
+            if (playlistId == null)
+            {
+                throw new ArgumentNullException("No playlist ID provided.");
+            }
+
+            var playlistDTO = await this.service.GetPlaylistByIdAsync(playlistId.Value);
+
+            if (playlistDTO == null)
+            {
+                throw new ArgumentNullException("No such playlist was found in the database.");
+            }
+
+            return View(new PlaylistViewModel(playlistDTO));
         }
 
         // POST: PlaylistsController/Edit/5
-        [HttpPost]
+        [HttpPost("/Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int playlistId, [Bind("Id,Title,GenrePercentage")] EditPlaylistDTO editedPlaylist)
         {
-            try
+            //genrePercentage e Dictionary => ako го сменим с List<string>, трябва да edit-нем EditPlaylist() в PlaylistService
+            
+            var userId = int.Parse(userManager.GetUserId(HttpContext.User));
+
+            if (playlistId != editedPlaylist.Id)
             {
+                throw new ArgumentException("Playlist ID mismatch.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var playlistDTO = this.service.EditPlaylistAsync(editedPlaylist).Result;
+                }
+                catch
+                {
+                    throw new ArgumentException("The playlist was not edited.");
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: PlaylistsController/Delete/5
-        public ActionResult Delete(int id)
+        [HttpGet("/Delete/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int? playlistId)
         {
-            return View();
+            if (playlistId == null)
+            {
+                throw new ArgumentNullException("No playlist ID provided.");
+            }
+
+            var playlist = await this.service.GetPlaylistByIdAsync(playlistId.Value);
+
+            if (playlist == null)
+            {
+                throw new ArgumentNullException("No such playlist was found in the database.");
+            }
+
+            return View(new PlaylistViewModel(playlist));
         }
 
         // POST: PlaylistsController/Delete/5
-        [HttpPost]
+        [HttpPost("/DeleteConfirmed"), ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int playlistId)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var playlist = await this.service.DeletePlaylistAsync(playlistId);
+            return RedirectToAction(nameof(Index));
         }
-
-
-
     }
 }

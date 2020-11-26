@@ -19,18 +19,21 @@ namespace RidePal.Controllers
         private readonly IGeneratePlaylistService _generatePlaylistService;
         private readonly IPlaylistService _playlistService;
         private readonly IStatisticsService _statistics;
+        private readonly IPixaBayImageService _imageService;
 
         public HomeController(ILogger<HomeController> logger, 
                                 IDatabaseSeedService seedService, 
                                 IGeneratePlaylistService generatePlaylistService,
                                 IPlaylistService playlistService,
-                                IStatisticsService stats)
+                                IStatisticsService stats,
+                                IPixaBayImageService imageService)
         {
             this._logger = logger;
             this._seedService = seedService;
             this._generatePlaylistService = generatePlaylistService;
             this._playlistService = playlistService;
             this._statistics = stats;
+            this._imageService = imageService;
         }
 
         public IActionResult Index()
@@ -88,6 +91,15 @@ namespace RidePal.Controllers
             return View("Index");
         }
 
+        public IActionResult AttachImages()
+        {
+            var playlistDTO = this._playlistService.GetPlaylistByIdAsync(139).Result;
+
+            var playlistDTOWithImg = this._playlistService.AttachImage(playlistDTO);
+
+            return View("Index");
+        }
+
         public async Task<IActionResult> Test()
         {
             //var add = await this._playlistService.AddPlaylistToFavoritesAsync(90, 1);
@@ -117,6 +129,34 @@ namespace RidePal.Controllers
             //};
 
             //var playlist = await this._playlistService.EditPlaylistAsync(editPlaylistDTO);
+
+            var playlist = new GeneratePlaylistDTO()
+            {
+                StartLocationName = "Sofia",
+                DestinationName = "Ihtiman",
+                PlaylistName = "Ihtiman",
+                RepeatArtist = true,
+                UseTopTracks = true,
+                GenrePercentage = new Dictionary<string, int>()
+                    {
+                        {
+                            "rock", 20
+                        },
+                        {
+                            "metal", 40
+                        },
+                        {
+                            "pop", 20
+                        },
+                        {
+                            "jazz", 20
+                        }
+
+                    },
+                UserId = 2
+            };
+
+            var returnedPlaylist = await this._generatePlaylistService.GeneratePlaylist(playlist);
 
             return RedirectToAction(nameof(Index));
         }
