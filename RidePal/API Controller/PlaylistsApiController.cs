@@ -117,14 +117,14 @@ namespace RidePal
                 UserId = userId
             };
 
-            var updatedPlaylistDTO = this.playlistService.EditPlaylistAsync(playlist).Result;
+            var result = this.playlistService.EditPlaylistAsync(playlist).Result;
 
-            if (playlist == null)
+            if (result == false)
             {
                 return BadRequest();
             }
 
-            return Ok(updatedPlaylistDTO);
+            return Ok();
         }
 
         //DELETE api/playlistsapi/:id
