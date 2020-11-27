@@ -220,7 +220,7 @@ namespace RidePal.Service
         /// Performs search to find the longest playlist in the database
         /// </summary>
         /// <returns>The duration of the longest playlist in the database</returns>
-        public async Task<long> GetHighestPlaytimeAsync()
+        public async Task<int> GetHighestPlaytimeAsync()
         {
             var playlist = await this.context.Playlists
                                  .Where(playlist => playlist.IsDeleted == false)
@@ -231,7 +231,9 @@ namespace RidePal.Service
                 return 0;
             }
 
-            return (long)playlist.PlaylistPlaytime;
+            var minutes = (int)(Math.Ceiling(playlist.PlaylistPlaytime / 60.0));
+
+            return minutes;
         }
 
         /// <summary>
@@ -597,7 +599,7 @@ namespace RidePal.Service
 
             await this.context.SaveChangesAsync();
 
-            return playlistDTO;
+            return new PlaylistDTO(playlist);
         }
     }
 }

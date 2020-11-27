@@ -132,8 +132,8 @@ namespace RidePal.Controllers
 
             var playlist = new GeneratePlaylistDTO()
             {
-                StartLocationName = "Sofia",
-                DestinationName = "Ihtiman",
+                StartLocation = "Sofia",
+                Destination = "Ihtiman",
                 PlaylistName = "Ihtiman",
                 RepeatArtist = true,
                 UseTopTracks = true,

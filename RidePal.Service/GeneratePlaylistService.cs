@@ -39,9 +39,9 @@ namespace RidePal.Service
         /// <param name="startLocationName">The name of the start location</param>
         /// <param name="destinationName">The name of the destination</param>
         /// <returns>The travel duration in seconds</returns>
-        public async Task<double> GetTravelDuration(string startLocationName, string destinationName)
+        public async Task<double> GetTravelDuration(string startLocation, string destination)
         {
-            string bingMapsRequestUrl = $"https://dev.virtualearth.net/REST/v1/Routes/Driving?wp.0={startLocationName}&wp.1={destinationName}&avoid=minimizeTolls&travelMode=driving&key={key}";
+            string bingMapsRequestUrl = $"https://dev.virtualearth.net/REST/v1/Routes/Driving?wp.0={startLocation}&wp.1={destination}&avoid=minimizeTolls&travelMode=driving&key={key}";
 
             using (var response = await client.GetAsync(bingMapsRequestUrl))
             {
@@ -266,7 +266,7 @@ namespace RidePal.Service
         /// <returns>DTO of the created playlist</returns>
         public async Task<PlaylistDTO> GeneratePlaylist(GeneratePlaylistDTO playlistDTO)
         {
-            double travelDuration = await GetTravelDuration(playlistDTO.StartLocationName, playlistDTO.DestinationName);
+            double travelDuration = await GetTravelDuration(playlistDTO.StartLocation, playlistDTO.Destination);
 
             List<Track> tracks = new List<Track>();
 
@@ -295,8 +295,8 @@ namespace RidePal.Service
                 Title = playlistDTO.PlaylistName,
                 UseTopTracks = playlistDTO.UseTopTracks,
                 RepeatArtist = playlistDTO.RepeatArtist,
-                StartLocation = playlistDTO.StartLocationName,
-                Destination = playlistDTO.DestinationName,
+                StartLocation = playlistDTO.StartLocation,
+                Destination = playlistDTO.Destination,
                 TravelDuration = travelDuration,
                 PlaylistPlaytime = playtime,
                 PlaytimeString = GetPlaytimeString((int)playtime),
