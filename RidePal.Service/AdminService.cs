@@ -151,5 +151,18 @@ namespace RidePal.Service
 
             return true;
         }
+
+        /// <summary>
+        /// Provides a collection of the playlists with deleted status in playlistDTO form
+        /// </summary>
+        /// <param></param>
+        /// <returns>Collection of playlistDTOs</returns>
+        public async Task<IList<PlaylistDTO>> GetDeletedPlaylists()
+        {
+            var deletedPls = await this.context.Playlists.Where(pl => pl.IsDeleted == true)
+                                                        .Select(pl => new PlaylistDTO(pl)).ToListAsync();
+
+            return deletedPls;
+        }
     }
 }

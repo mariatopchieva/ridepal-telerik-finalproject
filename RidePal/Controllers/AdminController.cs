@@ -16,12 +16,12 @@ namespace RidePal.Controllers
     {
         private readonly ILogger<AdminController> _logger;
         private readonly IDatabaseSeedService _seedService;
-        private readonly IGeneratePlaylistService _playlistService;
+        private readonly IPlaylistService _playlistService;
         private readonly IAdminService adminService;
 
         public AdminController(ILogger<AdminController> logger,
                                 IDatabaseSeedService seedService,
-                                IGeneratePlaylistService playlistService,
+                                IPlaylistService playlistService,
                                 IAdminService adminService)
         {
             this._logger = logger;
@@ -140,6 +140,31 @@ namespace RidePal.Controllers
             }
 
             return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User unban failed!" });
+        }
+
+        [HttpGet]
+        public IActionResult DeletedPlaylists(int currentPage = 1)
+        {
+
+            IEnumerable<PlaylistDTO> playlistsDTO = this.adminService.GetDeletedPlaylists().Result;
+
+            if (playlistsDTO == null)
+            {
+                return NotFound();
+            }
+
+            var playlistsViewModels = playlistsDTO.Select(plDto => new PlaylistViewModel(plDto));
+
+            FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
+            {
+                Playlists = playlistsViewModels,
+                AllGenres = _playlistService.GetAllGenresAsync().Result.OrderBy(x => x.Name).ToList(),
+                MaxDuration = _playlistService.GetHighestPlaytimeAsync().Result,
+                TotalPages = _playlistService.GetPageCount(),
+                CurrentPage = currentPage
+            };
+
+            return View(filteredPlaylistList);
         }
     }
 }

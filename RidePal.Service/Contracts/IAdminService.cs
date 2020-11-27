@@ -17,5 +17,6 @@ namespace RidePal.Service.Contracts
         Task<UserDTO> EditUser(UserDTO userDto);
         Task<UserDTO> GetUserById(int userId);
         Task<IList<UserDTO>> SearchByEmail(string email);
+        Task<IList<PlaylistDTO>> GetDeletedPlaylists();
     }
 }

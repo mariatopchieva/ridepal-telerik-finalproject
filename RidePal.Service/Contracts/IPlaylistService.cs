@@ -9,16 +9,17 @@ namespace RidePal.Service.Contracts
     public interface IPlaylistService
     {
         Task<PlaylistDTO> GetPlaylistByIdAsync(int id);
+        Task<PlaylistDTO> AdminGetPlaylistByIdAsync(int id);
 
         Task<IEnumerable<PlaylistDTO>> GetAllPlaylistsAsync();
 
-        Task<PlaylistDTO> EditPlaylistAsync(EditPlaylistDTO editPlaylistDTO);
+        Task<bool> EditPlaylistAsync(EditPlaylistDTO editPlaylistDTO);
 
         Task<PlaylistDTO> AttachImage(PlaylistDTO PlaylistDTO);
 
         Task<bool> DeletePlaylistAsync(int id);
 
-        Task<bool> ReverseDeletePlaylistAsync(int id);
+        Task<bool> UndoDeletePlaylistAsync(int id);
 
         Task<IEnumerable<PlaylistDTO>> GetPlaylistsOfUserAsync(int userId);
 

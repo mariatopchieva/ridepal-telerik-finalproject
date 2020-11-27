@@ -8,13 +8,13 @@
 @if (TempData["Msg"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show mt-5" role="alert">
-        @TempData["Msg"].ToString();
+        @TempData["Msg"];
     </div>
 }
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show mt-5" role="alert">
-        @TempData["Error"].ToString();
+        @TempData["Error"];
     </div>
 }
 <div id="formcontainer">
@@ -58,6 +58,25 @@
             <p>@Model.Rank</p>
             <h4>Duration:</h4>
             <h3>@Model.PlaytimeString</h3>
+            <div class="col justify-content-center text-center pt-5">
+                <!--edit delete button-->
+                <a class="myButton d-flex justify-content-center" type="submit" asp-action="Edit" asp-route-playlistId="@Model.Id">
+                    <i class="material-icons left fav">edit</i>
+                </a>
+                <form asp-action="Delete" asp-route-pId="@Model.Id" method="post">
+                    <button class="myButton d-flex justify-content-center" type="submit">
+                        <i class="material-icons right fav">delete</i>
+                    </button>
+                </form>
+                @if (User.IsInRole("Admin"))
+                {
+                    <form asp-action="UndoDelete" asp-route-pId="@Model.Id" method="post">
+                        <button class="myButton d-flex justify-content-center" type="submit">
+                            <i class="material-icons right unfav">delete</i>
+                        </button>
+                    </form>
+                }
+            </div>
         </div>
     </div>
 </div>

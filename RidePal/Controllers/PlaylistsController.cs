@@ -128,7 +128,7 @@ namespace RidePal.Controllers
         }
 
         // GET: PlaylistsController/Details/5
-       // [HttpGet("/Details/{id}")]
+        // [HttpGet("/Details/{id}")]
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
@@ -138,7 +138,16 @@ namespace RidePal.Controllers
                 return NotFound();
             }
 
-            var playlist = await service.GetPlaylistByIdAsync(id.Value);
+            PlaylistDTO playlist;
+
+            if (User.IsInRole("Admin"))
+            {
+                playlist = await service.AdminGetPlaylistByIdAsync(id.Value);
+            }
+            else
+            {
+                playlist = await service.GetPlaylistByIdAsync(id.Value);
+            }
 
             if (playlist == null)
             {
@@ -216,14 +225,14 @@ namespace RidePal.Controllers
         {
             if (playlistId == null)
             {
-                throw new ArgumentNullException("No playlist ID provided.");
+                return NotFound();
             }
 
             var playlistDTO = await this.service.GetPlaylistByIdAsync(playlistId.Value);
 
             if (playlistDTO == null)
             {
-                throw new ArgumentNullException("No such playlist was found in the database.");
+                return NotFound();
             }
 
             return View(new PlaylistViewModel(playlistDTO));
@@ -232,62 +241,79 @@ namespace RidePal.Controllers
         // POST: PlaylistsController/Edit/5
         [HttpPost("/Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int playlistId, [Bind("Id,Title,GenrePercentage")] EditPlaylistDTO editedPlaylist)
+        public ActionResult Edit(int pId, string inputTitle, int inputMetal, int inputRock, int inputPop, int inputJazz)
         {
             //genrePercentage e Dictionary => ako го сменим с List<string>, трябва да edit-нем EditPlaylist() в PlaylistService
-            
-            var userId = int.Parse(userManager.GetUserId(HttpContext.User));
+            var genres = new Dictionary<string, int>();
+            genres.Add("metal", inputMetal);
+            genres.Add("rock", inputRock);
+            genres.Add("pop", inputPop);
+            genres.Add("jazz", inputJazz);
 
-            if (playlistId != editedPlaylist.Id)
+            var editedPlaylist = new EditPlaylistDTO()
             {
-                throw new ArgumentException("Playlist ID mismatch.");
-            }
+                Id = pId,
+                Title = inputTitle,
+                GenrePercentage = genres
+            };
 
-            if (ModelState.IsValid)
+            var result = this.service.EditPlaylistAsync(editedPlaylist).Result;
+
+            if (result == false)
             {
-                try
-                {
-                    var playlistDTO = this.service.EditPlaylistAsync(editedPlaylist).Result;
-                }
-                catch
-                {
-                    throw new ArgumentException("The playlist was not edited.");
-                }
-
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = pId, err = TempData["Error"] = "Playlist not edited" });
             }
-
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", new { id = pId, msg = TempData["Msg"] = "Playlist edited" });
         }
 
-        // GET: PlaylistsController/Delete/5
-        [HttpGet("/Delete/{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int? playlistId)
+        // Post: PlaylistsController/Delete/5
+        [HttpPost("/Delete/{pId}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<IActionResult> Delete(int? pId)
         {
-            if (playlistId == null)
+            if (pId == null)
             {
-                throw new ArgumentNullException("No playlist ID provided.");
+                return NotFound();
             }
 
-            var playlist = await this.service.GetPlaylistByIdAsync(playlistId.Value);
+            bool result = await this.service.DeletePlaylistAsync(pId.Value);
 
-            if (playlist == null)
+            if (result == true)
             {
-                throw new ArgumentNullException("No such playlist was found in the database.");
+                return RedirectToAction("Index", "Playlists", new { msg = TempData["Msg"] = "Playlist deleted." });
             }
 
-            return View(new PlaylistViewModel(playlist));
+            return RedirectToAction("Details", new { id = pId, error = TempData["Error"] = "Delete action failed." });
+        }
+
+        // Post: PlaylistsController/UndoDelete/5
+        [HttpPost("/UndoDelete/{pId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UndoDelete(int? pId)
+        {
+            if (pId == null)
+            {
+                return NotFound();
+            }
+
+            bool result = await this.service.UndoDeletePlaylistAsync(pId.Value);
+
+            if (result == true)
+            {
+                return RedirectToAction("Details", new { id = pId, msg = TempData["Msg"] = "Playlist delete undone." });
+            }
+
+            return RedirectToAction("Details", new { id = pId, error = TempData["Error"] = "Delete action failed." });
         }
 
         // POST: PlaylistsController/Delete/5
-        [HttpPost("/DeleteConfirmed"), ActionName("DeleteConfirmed")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int playlistId)
-        {
-            var playlist = await this.service.DeletePlaylistAsync(playlistId);
-            return RedirectToAction(nameof(Index));
-        }
+        //[HttpPost("/DeleteConfirmed"), ActionName("DeleteConfirmed")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Delete(int playlistId)
+        //{
+        //    var playlist = await this.service.DeletePlaylistAsync(playlistId);
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         [HttpPost]
         public async Task<IActionResult> AddToFav(int plId)

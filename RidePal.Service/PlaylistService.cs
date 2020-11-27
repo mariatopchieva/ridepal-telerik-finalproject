@@ -46,6 +46,27 @@ namespace RidePal.Service
 
             return playlistDTO;
         }
+
+        /// <summary>
+        /// Performs search for a playlist by a given ID in the database 
+        /// </summary>
+        /// <param name="id">The ID of the playlist to search for</param>
+        /// <returns>If successful, returns a DTO of the found playlist</returns>
+        public async Task<PlaylistDTO> AdminGetPlaylistByIdAsync(int id)
+        {
+            var playlist = await this.context.Playlists
+                                            .FirstOrDefaultAsync(playlist => playlist.Id == id);
+
+            if (playlist == null)
+            {
+                throw new ArgumentNullException("No such playlist was found in the database.");
+            }
+
+            var playlistDTO = new PlaylistDTO(playlist);
+
+            return playlistDTO;
+        }
+
         /// <summary>
         /// Collects all playlists in the database and orders them in descending order by rank
         /// </summary>
@@ -71,76 +92,147 @@ namespace RidePal.Service
         /// </summary>
         /// <param name="editPlaylistDTO">DTO of the playlist with the new data</param>
         /// <returns>DTO of the edited playlist</returns>
-        public async Task<PlaylistDTO> EditPlaylistAsync(EditPlaylistDTO editPlaylistDTO)
+        public async Task<bool> EditPlaylistAsync(EditPlaylistDTO editPlaylistDTO)
         {
-            if(editPlaylistDTO == null)
+            if (editPlaylistDTO == null)
             {
                 throw new ArgumentNullException("No playlist data provided.");
             }
 
-            var playlist = await this.context.Playlists.Where(playlist => playlist.IsDeleted == false)
-                                .FirstOrDefaultAsync(playlist => playlist.Id == editPlaylistDTO.Id);
+            var playlist = await this.context.Playlists
+                .FirstOrDefaultAsync(playlist => playlist.Id == editPlaylistDTO.Id)
+                ?? throw new ArgumentNullException("Playlist not found.");
 
-            if (playlist == null)
+            var genresToAdd = editPlaylistDTO.GenrePercentage.Where(g => g.Value > 0).Select(g => g.Key).ToList();
+
+            var allGenres = await this.context.Genres.ToListAsync();
+            var playlistGenreEntries = await this.context.PlaylistGenres
+                                                                .Include(plg => plg.Genre)
+                                                                .Where(plg => plg.PlaylistId == editPlaylistDTO.Id)
+                                                                .ToListAsync();
+
+
+            foreach (var genre in playlistGenreEntries)
             {
-                throw new ArgumentNullException("Playlist not found in the database.");
-            }
-
-            var oldPlaylistGenres = this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id).Where(x => x.IsDeleted == false);
-            var oldGenresStringList = oldPlaylistGenres.Select(x => x.Genre.Name).ToList();
-
-            var oldDeletedGenres = this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id).Where(x => x.IsDeleted == true);
-            var oldDeletedGenresStringList = oldDeletedGenres.Select(x => x.Genre.Name).ToList();
-
-            var newGenresStringList = editPlaylistDTO.GenrePercentage.Where(x => x.Value > 0).Select(y => y.Key).ToList();
-            int newGenresCount = newGenresStringList.Count();
-
-            // create new PlaylistGenres for the new genres that have not been created yet 
-            var genresToCreate = new List<string>();
-            foreach (var newGenre in newGenresStringList)
-            {
-                if(!oldGenresStringList.Contains(newGenre))
+                if (genresToAdd.FirstOrDefault(g => g == genre.Genre.Name) != null)
                 {
-                    genresToCreate.Add(newGenre);
+                    if (genre.IsDeleted == true)
+                    {
+                        genre.IsDeleted = false;
+                    }
+                }
+                else
+                {
+                    genre.IsDeleted = true;
                 }
             }
-            List<Genre> newGenres = this.context.Genres.Where(x => genresToCreate.Contains(x.Name)).ToList();
-            List<PlaylistGenre> playlistGenres = newGenres.Select(x => new PlaylistGenre(x.Id, editPlaylistDTO.Id)).ToList();
 
-            // update IsDeleted = true if the new genres do not include the old genres
-            var genresToDelete = new List<string>();
-            foreach (var oldGenre in oldGenresStringList)
+            List<PlaylistGenre> newEntries = new List<PlaylistGenre>();
+            foreach (var item in genresToAdd)
             {
-                if (!newGenresStringList.Contains(oldGenre))
+                if (!playlistGenreEntries.Select(pge => pge.Genre.Name).Contains(item))
                 {
-                    genresToDelete.Add(oldGenre);
+                    var genreId = allGenres.FirstOrDefault(g => g.Name == item).Id;
+                    newEntries.Add(new PlaylistGenre(genreId, editPlaylistDTO.Id));
                 }
             }
-            await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id)
-                                             .Where(x => genresToDelete.Contains(x.Genre.Name))
-                                             .ForEachAsync(x => x.IsDeleted = true);
 
-            // update IsDeleted = false if the new genres do not include the old genres but they were created and deleted before
-            var genresToUndelete = new List<string>();
-            foreach (var oldDeletedGenre in oldDeletedGenresStringList)
-            {
-                if (newGenresStringList.Contains(oldDeletedGenre))
-                {
-                    genresToUndelete.Add(oldDeletedGenre);
-                }
-            }
-            await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id)
-                                             .Where(x => genresToUndelete.Contains(x.Genre.Name))
-                                             .ForEachAsync(x => x.IsDeleted = false);
-
-            playlist.Title = editPlaylistDTO.Title;
-            playlist.GenresCount = newGenresCount;
+            if (editPlaylistDTO.Title != null) { playlist.Title = editPlaylistDTO.Title; }
+            if (genresToAdd != null) { playlist.GenresCount = genresToAdd.Count(); }
             playlist.ModifiedOn = this.dateTimeProvider.GetDateTime();
+            await this.context.AddRangeAsync(newEntries);
 
-            await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);
             await this.context.SaveChangesAsync();
 
-            return new PlaylistDTO(playlist);
+            var playlistFromDB = this.context.Playlists
+                .Include(p => p.Genres)
+                .FirstOrDefaultAsync(playlist => playlist.Id == editPlaylistDTO.Id).Result
+                ?? throw new ArgumentNullException("Playlist from database not found.");
+
+            if (editPlaylistDTO.Title != null && playlistFromDB.Title != editPlaylistDTO.Title)
+            {
+                return false;
+            }
+            var playlistFromDbGenreNames = await GetPlaylistGenresAsStringAsync(playlist.Id);
+
+            foreach (var gen in genresToAdd)
+            {
+                if (!playlistFromDbGenreNames.Contains(gen))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+            //var playlist = await this.context.Playlists.FirstOrDefaultAsync(playlist => playlist.Id == editPlaylistDTO.Id);
+
+            //if (playlist == null)
+            //{
+            //    throw new ArgumentNullException("Playlist not found in the database.");
+            //}
+
+
+            //var oldPlaylistGenres = this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id).Where(x => x.IsDeleted == false);
+            //var oldGenresStringList = oldPlaylistGenres.Select(x => x.Genre.Name).ToList();
+
+            //var oldDeletedGenres = this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id).Where(x => x.IsDeleted == true);
+            //var oldDeletedGenresStringList = oldDeletedGenres.Select(x => x.Genre.Name).ToList();
+
+            //var newGenresStringList = editPlaylistDTO.GenrePercentage.Where(x => x.Value > 0).Select(y => y.Key).ToList();
+            //int newGenresCount = newGenresStringList.Count();
+
+            // create new PlaylistGenres for the new genres that have not been created yet 
+            //var genresToCreate = new List<string>();
+            //foreach (var newGenre in newGenresStringList)
+            //{
+            //    if (!oldGenresStringList.Contains(newGenre))
+            //    {
+            //        genresToCreate.Add(newGenre);
+            //    }
+            //}
+            //List<Genre> newGenres = this.context.Genres.Where(x => genresToCreate.Contains(x.Name)).ToList();
+            //List<PlaylistGenre> playlistGenres = newGenres.Select(x => new PlaylistGenre(x.Id, editPlaylistDTO.Id)).ToList();
+
+            // update IsDeleted = true if the new genres do not include the old genres
+            //var genresToDelete = new List<string>();
+            //foreach (var oldGenre in oldGenresStringList)
+            //{
+            //    if (!newGenresStringList.Contains(oldGenre))
+            //    {
+            //        genresToDelete.Add(oldGenre);
+            //    }
+            //}
+
+            //await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id)
+            //                                 .Where(x => genresToDelete.Contains(x.Genre.Name))
+            //                                 .ForEachAsync(x => x.IsDeleted = true);
+
+            // update IsDeleted = false if the new genres do not include the old genres but they were created and deleted before
+            //var genresToUndelete = new List<string>();
+            //foreach (var oldDeletedGenre in oldDeletedGenresStringList)
+            //{
+            //    if (newGenresStringList.Contains(oldDeletedGenre))
+            //    {
+            //        genresToUndelete.Add(oldDeletedGenre);
+            //    }
+            //}
+            //await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id)
+            //                                 .Where(x => genresToUndelete.Contains(x.Genre.Name))
+            //                                 .ForEachAsync(x => x.IsDeleted = false);
+
+            //playlist.Title = editPlaylistDTO.Title;
+            //playlist.GenresCount = newGenresCount;
+            //playlist.ModifiedOn = this.dateTimeProvider.GetDateTime();
+
+            //await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);
+            //await this.context.SaveChangesAsync();
+
+            //var plFromDB = context.Playlists
+            //                            .FirstOrDefaultAsync(pl => pl.Id == editPlaylistDTO.Id)
+            //                            ?? throw new ArgumentNullException("Playlist not found.");
+
+
+            //return new PlaylistDTO(playlist);
         }
 
         /// <summary>
@@ -171,7 +263,7 @@ namespace RidePal.Service
         /// </summary>
         /// <param name="id"></param>
         /// <returns>True if successful, otherwise false</returns>
-        public async Task<bool> ReverseDeletePlaylistAsync(int id)
+        public async Task<bool> UndoDeletePlaylistAsync(int id)
         {
             var playlist = await this.context.Playlists.Where(playlist => playlist.Id == id)
                                 .FirstOrDefaultAsync();
@@ -212,7 +304,7 @@ namespace RidePal.Service
             {
                 return null; //OR throw new ArgumentNullException("This user has not created any playlists yet.");
             }
-            
+
             return playlistsDTO;
         }
 
@@ -311,7 +403,7 @@ namespace RidePal.Service
         public async Task<bool> AddPlaylistToFavoritesAsync(int playlistId, int userId)
         {
             var result = await this.context.Favorites
-                                            .FirstOrDefaultAsync(fav => fav.PlaylistId == playlistId 
+                                            .FirstOrDefaultAsync(fav => fav.PlaylistId == playlistId
                                             && fav.UserId == userId);
 
             if (result != null)
@@ -473,7 +565,7 @@ namespace RidePal.Service
         {
             var playlists = filteredPlaylists.Where(x => x.Title.Contains(name))
                                               .OrderByDescending(x => x.Rank).ToList();
-            
+
             return playlists;
         }
 
@@ -514,7 +606,7 @@ namespace RidePal.Service
         {
             var playlists = filteredPlaylists.Where(x => x.PlaylistPlaytime >= durationLimits[0] && x.PlaylistPlaytime <= durationLimits[1])
                                               .ToList();
-            
+
             return playlists;
         }
 
@@ -529,7 +621,7 @@ namespace RidePal.Service
         {
             var filteredPlaylistsDTO = await GetAllPlaylistsAsync();
 
-            if(name != null)
+            if (name != null)
             {
                 filteredPlaylistsDTO = FilterPlaylistsByName(name, filteredPlaylistsDTO).ToList();
             }
@@ -549,7 +641,7 @@ namespace RidePal.Service
                 throw new ArgumentNullException("No playlists meet the filter criteria."); //or no exception???
             }
 
-            return filteredPlaylistsDTO; 
+            return filteredPlaylistsDTO;
         }
 
         /// <summary>

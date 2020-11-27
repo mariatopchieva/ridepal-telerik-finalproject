@@ -43,8 +43,16 @@
                 </li>
                 @if (User.IsInRole("Admin"))
                 {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Admin" asp-action="Index">Users</a>
+                    <li class="drop-item">
+                        <div class="btn-group">
+                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                AdminPanel
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="nav-link" asp-controller="Admin" asp-action="DeletedPlaylists">DeletedPls</a>
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">Users</a>
+                            </div>
+                        </div>
                     </li>
                 }
                 <partial name="_LoginPartial" />
