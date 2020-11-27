@@ -46,6 +46,10 @@ namespace RidePal.Service.Contracts
 
         int GetPageCount();
 
+        int GetPageCountOfCollection(int userId, string collectionName);
+
         IEnumerable<PlaylistDTO> GetPlaylistsPerPage(int currentPage);
+
+        IEnumerable<PlaylistDTO> GetPlaylistsPerPageOfCollection(int currentPage, int userId, string collectionName);
     }
 }

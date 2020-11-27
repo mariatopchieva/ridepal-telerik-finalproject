@@ -320,41 +320,45 @@ namespace RidePal.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Favorites(int currentPage = 1)
+        public IActionResult Favorites(int currentPage = 1)
         {
             var userId = int.Parse(userManager.GetUserId(HttpContext.User));
 
-            var result = await this.service.GetFavoritePlaylistsOfUser(userId);
+            var playlistsDTO = service.GetPlaylistsPerPageOfCollection(currentPage, userId, "favorites");
 
-            var playlistsViewModels = result.Select(x => new PlaylistViewModel(x));
+            var totalPages = service.GetPageCountOfCollection(userId, "favorites");
 
-            FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
+            var playlistsViewModels = playlistsDTO.Select(x => new PlaylistViewModel(x));
+
+            PlaylistCollectionViewModel playlistList = new PlaylistCollectionViewModel()
             {
                 Playlists = playlistsViewModels,
-                TotalPages = service.GetPageCount(),
+                TotalPages = totalPages,
                 CurrentPage = currentPage
             };
 
-            return View(filteredPlaylistList);
+            return View(playlistList);
         }
 
         [HttpGet]
-        public async Task<IActionResult> UserPlaylists(int currentPage = 1)
+        public IActionResult UserPlaylists(int currentPage = 1)
         {
             var userId = int.Parse(userManager.GetUserId(HttpContext.User));
 
-            var result = await this.service.GetPlaylistsOfUserAsync(userId);
+            var playlistsDTO = service.GetPlaylistsPerPageOfCollection(currentPage, userId, "myPlaylists");
 
-            var playlistsViewModels = result.Select(x => new PlaylistViewModel(x));
+            var totalPages = service.GetPageCountOfCollection(userId, "myPlaylists");
 
-            FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
+            var playlistsViewModels = playlistsDTO.Select(x => new PlaylistViewModel(x));
+
+            PlaylistCollectionViewModel playlistList = new PlaylistCollectionViewModel()
             {
                 Playlists = playlistsViewModels,
-                TotalPages = service.GetPageCount(),
+                TotalPages = totalPages,
                 CurrentPage = currentPage
             };
 
-            return View(filteredPlaylistList);
+            return View(playlistList);
         }
     }
 }
