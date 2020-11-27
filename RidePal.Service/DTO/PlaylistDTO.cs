@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace RidePal.Service.DTO
 {
@@ -23,6 +24,8 @@ namespace RidePal.Service.DTO
             this.GenresCount = playlist.GenresCount;
             this.Favorites = playlist.Favorites;
             this.FilePath = playlist.FilePath;
+            this.StartLocation = playlist.StartLocation;
+            this.Destination = playlist.Destination;
         }
 
         public PlaylistDTO()
@@ -34,6 +37,7 @@ namespace RidePal.Service.DTO
 
         public int UserId { get; set; }
 
+        [JsonIgnore]
         public User User { get; set; }
 
         public string Title { get; set; }
@@ -50,10 +54,15 @@ namespace RidePal.Service.DTO
         public string FilePath { get; set; }
         public string StartLocation { get; set; }
         public string Destination { get; set; }
+
+        [JsonIgnore]
         public ICollection<PlaylistTrack> Tracks { get; set; }
+
+        [JsonIgnore]
 
         public ICollection<PlaylistGenre> Genres { get; set; }
 
+        [JsonIgnore]
         public ICollection<PlaylistFavorite> Favorites { get; set; }
 
         [DisplayName("Number of tracks")]

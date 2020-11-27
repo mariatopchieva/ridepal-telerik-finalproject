@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RidePal.Data.Context;
 
 namespace RidePal.Data.Migrations
 {
     [DbContext(typeof(RidePalDbContext))]
-    partial class RidePalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201127114415_UserToken")]
+    partial class UserToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -377,14 +379,14 @@ namespace RidePal.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "83fa9cc4-fb57-4634-abb8-fdb59f39e90e",
+                            ConcurrencyStamp = "26f56013-cd1f-40b6-ad63-af6cd601eb18",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "0f23125a-3f5a-45ec-9150-2e729c3e1c2f",
+                            ConcurrencyStamp = "2c5b3124-21e5-472e-a77a-28608be5c673",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -530,7 +532,7 @@ namespace RidePal.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b5fb33f2-1610-4327-bea2-5b6e2d0e1ed5",
+                            ConcurrencyStamp = "0705ae6d-dab6-4c9b-9568-3b78eb8afda8",
                             Email = "admin@ridepal.com",
                             EmailConfirmed = false,
                             IsBanned = false,
@@ -538,9 +540,9 @@ namespace RidePal.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@RIDEPAL.COM",
                             NormalizedUserName = "ADMIN@RIDEPAL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHc9l00KiIsP3TG2pdUVWfaKWyEq3oAvLG/UwiFOgHxKnxCVdDNuLwsNwjNV2PhAqg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGHjR+s4x63tBkENtwBlM9l85G3nnMS5aoudvqf23aRZ5O3s/U0Js9lhSrnx9RdQgw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "df93ffa5-bb07-4eee-ac0e-7b31f960d7d6",
+                            SecurityStamp = "feeab815-a2c2-42e1-909e-613de017952b",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -548,7 +550,7 @@ namespace RidePal.Data.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bb27947e-7082-4fc8-ba2e-f68587d12169",
+                            ConcurrencyStamp = "622c87a5-64e3-4ef9-8da5-58e66bdcf724",
                             Email = "user@ridepal.com",
                             EmailConfirmed = false,
                             IsBanned = false,
@@ -556,9 +558,9 @@ namespace RidePal.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@RIDEPAL.COM",
                             NormalizedUserName = "USER@RIDEPAL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAELkBHXqdon6Z4APA3qc83poqMoSRuAGAxXr+OjUZzXumokQmep9N8AZOMHvLTml6vQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEA1Xn5gH4ZCI9l9Z3dq9BmC/l2SqxTmLYYTu197giVkB6ZP8Mz3kpS+qLjYuaePj5A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "93c02bbd-3e6d-4763-b061-ffeac7cac559",
+                            SecurityStamp = "58843524-eb40-44b9-9836-aa1a5eee3725",
                             TwoFactorEnabled = false,
                             UserName = "user"
                         });

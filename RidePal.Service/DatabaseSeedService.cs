@@ -138,8 +138,8 @@ namespace RidePal.Service
             {
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Ihtiman",
+                    StartLocation = "Sofia",
+                    Destination = "Ihtiman",
                     PlaylistName = "Metal and mix",
                     RepeatArtist = true,
                     UseTopTracks = true,
@@ -163,8 +163,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Varna",
+                    StartLocation = "Sofia",
+                    Destination = "Varna",
                     PlaylistName = "To the sea",
                     RepeatArtist = false,
                     UseTopTracks = true,
@@ -188,8 +188,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Plovdiv",
+                    StartLocation = "Sofia",
+                    Destination = "Plovdiv",
                     PlaylistName = "Home",
                     RepeatArtist = true,
                     UseTopTracks = false,
@@ -213,8 +213,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Harmanli",
+                    StartLocation = "Sofia",
+                    Destination = "Harmanli",
                     PlaylistName = "Harmanli trip",
                     RepeatArtist = false,
                     UseTopTracks = false,
@@ -238,8 +238,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Targovishte",
-                    DestinationName = "Plovdiv",
+                    StartLocation = "Targovishte",
+                    Destination = "Plovdiv",
                     PlaylistName = "To Targovishte",
                     RepeatArtist = false,
                     UseTopTracks = true,
@@ -263,8 +263,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Kardzhali",
-                    DestinationName = "Plovdiv",
+                    StartLocation = "Kardzhali",
+                    Destination = "Plovdiv",
                     PlaylistName = "Plovdiv Kardzhali",
                     RepeatArtist = true,
                     UseTopTracks = true,
@@ -288,8 +288,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Svoge",
+                    StartLocation = "Sofia",
+                    Destination = "Svoge",
                     PlaylistName = "Fest mix",
                     RepeatArtist = false,
                     UseTopTracks = true,
@@ -313,8 +313,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Lukovit",
+                    StartLocation = "Sofia",
+                    Destination = "Lukovit",
                     PlaylistName = "Metal & Rock",
                     RepeatArtist = true,
                     UseTopTracks = true,
@@ -338,8 +338,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Svilengrad",
+                    StartLocation = "Sofia",
+                    Destination = "Svilengrad",
                     PlaylistName = "Pop Svilengrad",
                     RepeatArtist = false,
                     UseTopTracks = false,
@@ -363,8 +363,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Samokov",
+                    StartLocation = "Sofia",
+                    Destination = "Samokov",
                     PlaylistName = "Small trip pop and jazz",
                     RepeatArtist = true,
                     UseTopTracks = false,
@@ -388,8 +388,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Burgas",
-                    DestinationName = "Varna",
+                    StartLocation = "Burgas",
+                    Destination = "Varna",
                     PlaylistName = "Seaside trip",
                     RepeatArtist = false,
                     UseTopTracks = true,
@@ -413,8 +413,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Varna",
-                    DestinationName = "Burgas",
+                    StartLocation = "Varna",
+                    Destination = "Burgas",
                     PlaylistName = "Varna Burgas trip",
                     RepeatArtist = true,
                     UseTopTracks = false,
@@ -438,8 +438,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Malko Tarnovo",
+                    StartLocation = "Sofia",
+                    Destination = "Malko Tarnovo",
                     PlaylistName = "Jazz time",
                     RepeatArtist = true,
                     UseTopTracks = false,
@@ -463,8 +463,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Plovdiv",
-                    DestinationName = "Svilengrad",
+                    StartLocation = "Plovdiv",
+                    Destination = "Svilengrad",
                     PlaylistName = "Border",
                     RepeatArtist = true,
                     UseTopTracks = true,
@@ -488,8 +488,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Ruse",
-                    DestinationName = "Samokov",
+                    StartLocation = "Ruse",
+                    Destination = "Samokov",
                     PlaylistName = "Danube",
                     RepeatArtist = true,
                     UseTopTracks = false,
@@ -513,8 +513,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Burgas",
-                    DestinationName = "Varna",
+                    StartLocation = "Burgas",
+                    Destination = "Varna",
                     PlaylistName = "Birthday seaside trip",
                     RepeatArtist = false,
                     UseTopTracks = true,
@@ -538,8 +538,8 @@ namespace RidePal.Service
                 },
                 new GeneratePlaylistDTO()
                 {
-                    StartLocationName = "Sofia",
-                    DestinationName = "Elin Pelin",
+                    StartLocation = "Sofia",
+                    Destination = "Elin Pelin",
                     PlaylistName = "Work",
                     RepeatArtist = false,
                     UseTopTracks = true,

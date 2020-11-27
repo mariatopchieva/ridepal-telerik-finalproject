@@ -103,3 +103,16 @@ $(document).ready(
             $valueSpan.html($value.val());
         });
     });
+
+//slider duration
+$(document).ready(
+    function () {
+
+        const $valueSpan = $('#durationSpan');
+        const $value = $('#durationSlider');
+        $valueSpan.html($value.val());
+        $value.on('input change', () => {
+
+            $valueSpan.html($value.val());
+        });
+    });

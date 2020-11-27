@@ -35,8 +35,6 @@ namespace RidePal.Data.Models
         public bool RepeatArtist { get; set; }
         public bool UseTopTracks { get; set; }
 
-        //[Required]
-        //[Display(Name = "File")]
         public string FilePath { get; set; }
 
     }

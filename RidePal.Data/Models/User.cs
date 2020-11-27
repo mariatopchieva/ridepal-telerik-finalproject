@@ -22,5 +22,6 @@ namespace RidePal.Data.Models
 
         public ICollection<PlaylistFavorite> Favorites { get; set; }
 
+        public string Token { get; set; }
     }
 }
