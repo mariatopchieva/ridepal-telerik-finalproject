@@ -640,6 +640,31 @@ namespace RidePal.Service
         }
 
         /// <summary>
+        /// Calculates the total number of pages for the views of My playlists and Favorite playlists
+        /// </summary>
+        /// <returns>Total number of pages</returns>
+        public int GetPageCountOfCollection(int userId, string collectionName)
+        {
+            List<PlaylistDTO> collection = new List<PlaylistDTO>();
+
+            if(collectionName == "myPlaylists")
+            {
+                collection = GetPlaylistsOfUserAsync(userId).Result.ToList();
+            }
+            
+            if(collectionName == "favorites")
+            {
+                collection = GetFavoritePlaylistsOfUser(userId).Result.ToList();
+            }
+
+            var count = collection.Count();
+
+            var totalPages = Math.Ceiling((double)count / pageSize);
+
+            return (int)totalPages;
+        }
+
+        /// <summary>
         /// Prepares a collection of the exact number of playlists to load on the current page of the Playlists' Index view
         /// </summary>
         /// <param name="currentPage"></param>
@@ -649,6 +674,30 @@ namespace RidePal.Service
             var playlists = GetAllPlaylistsAsync();
 
             var resultPlaylistsDTO = currentPage == 1 ? playlists.Result.Take(pageSize) : playlists.Result.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+            return resultPlaylistsDTO;
+        }
+
+        /// <summary>
+        /// Prepares a collection of the exact number of playlists to load on the current pages of the views of My playlists and Favorite playlists
+        /// </summary>
+        /// <param name="currentPage"></param>
+        /// <returns>Collection of DTOs of playlists to load on the current page</returns>
+        public IEnumerable<PlaylistDTO> GetPlaylistsPerPageOfCollection(int currentPage, int userId, string collectionName)
+        {
+            List<PlaylistDTO> collection = new List<PlaylistDTO>();
+
+            if (collectionName == "myPlaylists")
+            {
+                collection = GetPlaylistsOfUserAsync(userId).Result.ToList();
+            }
+
+            if (collectionName == "favorites")
+            {
+                collection = GetFavoritePlaylistsOfUser(userId).Result.ToList();
+            }
+
+            var resultPlaylistsDTO = currentPage == 1 ? collection.Take(pageSize) : collection.Skip((currentPage - 1) * pageSize).Take(pageSize);
 
             return resultPlaylistsDTO;
         }
