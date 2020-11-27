@@ -194,8 +194,8 @@ namespace RidePal.Controllers
                 var genPlaylistDTO = new GeneratePlaylistDTO()
                 {
                     PlaylistName = genPlView.Title,
-                    StartLocationName = genPlView.StartLocationName,
-                    DestinationName = genPlView.DestinationName,
+                    StartLocation = genPlView.StartLocationName,
+                    Destination = genPlView.DestinationName,
                     RepeatArtist = genPlView.RepeatArtist,
                     UseTopTracks = genPlView.TopTracks,
                     GenrePercentage = genres,

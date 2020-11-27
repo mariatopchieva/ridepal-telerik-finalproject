@@ -20,6 +20,11 @@ using RidePal.Service.Providers;
 using RidePal.Service.Providers.Contracts;
 using HostedService;
 using RidePal.Utils.Registration;
+using RidePal.Service.ApiHelpers;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 
 namespace RidePal
 {
@@ -39,17 +44,33 @@ namespace RidePal
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            //services.Configure<IdentityOptions>(options =>
-            //{
-            //    options.Password.RequireDigit = true;
-            //    options.Password.RequiredLength = 6;
-            //    options.Password.RequireLowercase = false;
-            //    options.Password.RequireNonAlphanumeric = false;
-            //    options.Password.RequiredUniqueChars = 0;
-            //    options.Password.RequireUppercase = false;
-            //}).AddIdentity<User, Role>(option => option.SignIn.RequireConfirmedAccount = true)
-            //    .AddEntityFrameworkStores<RidePalDbContext>()
-            //    .AddDefaultTokenProviders();
+            //REST API services and configurations --beginning 
+            // configure strongly typed settings objects
+            var appSettingsSection = this.Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
+            services.AddAuthentication(config =>
+            {
+                config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(config =>
+                {
+                    config.RequireHttpsMetadata = false;
+                    config.SaveToken = true;
+                    config.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
+            //REST API Authentication services and configurations --end
 
             services.AddIdentity<User, Role>(o => {
                 // configure identity options
@@ -67,25 +88,16 @@ namespace RidePal
                 options.Cookie.Name = "Identity.Cookie";
             });
 
+            services.AddScoped<IAPIUserService, APIUserService>();
+
             //services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = false)
-                //.AddEntityFrameworkStores<RidePalDbContext>();
+            //.AddEntityFrameworkStores<RidePalDbContext>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
 
             services.RegisterBusinessServices();
             services.RegisterProviders();
-
-            //services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
-            //services.AddScoped<IDateTimeProvider, DateTimeProvider>();
-            //services.AddScoped<IFileCheckProvider, FileCheckProvider>();
-            //services.AddScoped<IGeneratePlaylistService, GeneratePlaylistService>();
-            //services.AddScoped<IPlaylistService, PlaylistService>();
-            //services.AddScoped<IAdminService, AdminService>();
-            //services.AddScoped<IStatisticsService, StatisticsService>();
-            //services.AddScoped<IPixaBayImageService, PixabayImageService>();
-            //services.AddHostedService<HostedDBSeedService>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

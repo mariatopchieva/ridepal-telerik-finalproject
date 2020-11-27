@@ -23,7 +23,7 @@ namespace RidePal.Service.Contracts
 
         Task<IEnumerable<PlaylistDTO>> GetPlaylistsOfUserAsync(int userId);
 
-        Task<long> GetHighestPlaytimeAsync();
+        Task<int> GetHighestPlaytimeAsync();
 
         Task<IEnumerable<GenreDTO>> GetAllGenresAsync();
 
@@ -44,8 +44,6 @@ namespace RidePal.Service.Contracts
         IEnumerable<PlaylistDTO> FilterPlaylistsByDuration(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPlaylists);
 
         Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits);
-
-        Task<IEnumerable<PlaylistDTO>> SortPlaylistsByDurationAsync();
 
         int GetPageCount();
 

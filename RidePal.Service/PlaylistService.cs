@@ -312,7 +312,7 @@ namespace RidePal.Service
         /// Performs search to find the longest playlist in the database
         /// </summary>
         /// <returns>The duration of the longest playlist in the database</returns>
-        public async Task<long> GetHighestPlaytimeAsync()
+        public async Task<int> GetHighestPlaytimeAsync()
         {
             var playlist = await this.context.Playlists
                                  .Where(playlist => playlist.IsDeleted == false)
@@ -323,7 +323,9 @@ namespace RidePal.Service
                 return 0;
             }
 
-            return (long)playlist.PlaylistPlaytime;
+            var minutes = (int)(Math.Ceiling(playlist.PlaylistPlaytime / 60.0));
+
+            return minutes;
         }
 
         /// <summary>
@@ -536,26 +538,6 @@ namespace RidePal.Service
         }
 
         /// <summary>
-        /// Collects all playlists in the database and sorts them by duration in descending order 
-        /// </summary>
-        /// <returns>Collection of the sorted playlists</returns>
-        public async Task<IEnumerable<PlaylistDTO>> SortPlaylistsByDurationAsync()
-        {
-            var playlistsDTO = await this.context.Playlists
-                                    .Where(playlist => playlist.IsDeleted == false)
-                                    .OrderByDescending(playlist => playlist.PlaylistPlaytime)
-                                    .Select(playlist => new PlaylistDTO(playlist))
-                                    .ToListAsync();
-
-            if (playlistsDTO == null)
-            {
-                throw new ArgumentNullException("No playlists have been found.");
-            }
-
-            return playlistsDTO;
-        }
-
-        /// <summary>
         /// Filters a given collection of playlists and returns only the ones that contain the provided string
         /// </summary>
         /// <param name="name">The string, which must be contained in the filtered playlists' titles</param>
@@ -689,7 +671,7 @@ namespace RidePal.Service
 
             await this.context.SaveChangesAsync();
 
-            return playlistDTO;
+            return new PlaylistDTO(playlist);
         }
     }
 }
