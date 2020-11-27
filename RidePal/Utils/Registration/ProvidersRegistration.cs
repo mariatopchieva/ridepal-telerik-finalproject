@@ -14,6 +14,9 @@ namespace RidePal.Utils.Registration
             services.AddScoped<IDateTimeProvider, DateTimeProvider>();
             services.AddScoped<IFileCheckProvider, FileCheckProvider>();
 
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen();
+
             return services;
         }
     }
