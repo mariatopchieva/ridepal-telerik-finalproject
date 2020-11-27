@@ -10,6 +10,5 @@ namespace RidePal.Service.Contracts
     public interface IAPIUserService
     {
         APIUserDTO Authenticate(string username, string password);
-        //IEnumerable<User> GetAll();
     }
 }
