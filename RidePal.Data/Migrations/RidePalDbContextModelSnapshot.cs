@@ -377,14 +377,14 @@ namespace RidePal.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "83fa9cc4-fb57-4634-abb8-fdb59f39e90e",
+                            ConcurrencyStamp = "38f3690d-1974-4e99-94dd-db53fbf3112b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "0f23125a-3f5a-45ec-9150-2e729c3e1c2f",
+                            ConcurrencyStamp = "f455cede-e5e8-46ef-aceb-af0fbb2d741a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -530,7 +530,7 @@ namespace RidePal.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b5fb33f2-1610-4327-bea2-5b6e2d0e1ed5",
+                            ConcurrencyStamp = "01945a2f-d107-4a54-b075-7d5625526a4b",
                             Email = "admin@ridepal.com",
                             EmailConfirmed = false,
                             IsBanned = false,
@@ -538,9 +538,9 @@ namespace RidePal.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@RIDEPAL.COM",
                             NormalizedUserName = "ADMIN@RIDEPAL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHc9l00KiIsP3TG2pdUVWfaKWyEq3oAvLG/UwiFOgHxKnxCVdDNuLwsNwjNV2PhAqg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFkQ8/R4lT1zTcK5ncATT5evT0B2kesVct7R3nMJ2HmkfWRVBPiG6vS8WssJrWE4hw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "df93ffa5-bb07-4eee-ac0e-7b31f960d7d6",
+                            SecurityStamp = "95b53340-505a-41ec-a556-50df56193654",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -548,7 +548,7 @@ namespace RidePal.Data.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bb27947e-7082-4fc8-ba2e-f68587d12169",
+                            ConcurrencyStamp = "cd9dc912-0cfa-40b4-a676-3c04f96e8018",
                             Email = "user@ridepal.com",
                             EmailConfirmed = false,
                             IsBanned = false,
@@ -556,9 +556,9 @@ namespace RidePal.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@RIDEPAL.COM",
                             NormalizedUserName = "USER@RIDEPAL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAELkBHXqdon6Z4APA3qc83poqMoSRuAGAxXr+OjUZzXumokQmep9N8AZOMHvLTml6vQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAWNtHzHatbeEYSpoj6mSJP76bOtXYiR3zo2F9qTgXItP/9MFKBet2bV6vG5UocPGA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "93c02bbd-3e6d-4763-b061-ffeac7cac559",
+                            SecurityStamp = "ffd41e9d-d323-41e6-b81f-05f92470c5f7",
                             TwoFactorEnabled = false,
                             UserName = "user"
                         });

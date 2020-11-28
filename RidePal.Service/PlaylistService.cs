@@ -586,7 +586,8 @@ namespace RidePal.Service
         /// <returns>Filtered collection of DTOs of playlists</returns>
         public IEnumerable<PlaylistDTO> FilterPlaylistsByDuration(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPlaylists)
         {
-            var playlists = filteredPlaylists.Where(x => x.PlaylistPlaytime >= durationLimits[0] && x.PlaylistPlaytime <= durationLimits[1])
+            var maxDuration = durationLimits[1] * 60;
+            var playlists = filteredPlaylists.Where(x => x.PlaylistPlaytime >= durationLimits[0] && x.PlaylistPlaytime <= maxDuration)
                                               .ToList();
 
             return playlists;

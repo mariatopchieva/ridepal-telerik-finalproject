@@ -35,8 +35,8 @@ namespace RidePal
             this.userManager = _userManager;
         }
 
-        // GetAll / GetById / GeneratePlaylist / EditPlaylist / DeletePlaylist
         //GET api/playlistsapi
+        [AllowAnonymous]
         [HttpGet("")]
         public IActionResult GetAllPlaylists()
         {

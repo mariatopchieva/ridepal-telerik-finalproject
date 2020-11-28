@@ -59,7 +59,8 @@ namespace RidePal.Data.Migrations
                     FirstName = table.Column<string>(maxLength: 50, nullable: true),
                     LastName = table.Column<string>(maxLength: 50, nullable: true),
                     IsBanned = table.Column<bool>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false)
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Token = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -221,7 +222,9 @@ namespace RidePal.Data.Migrations
                     Title = table.Column<string>(maxLength: 50, nullable: false),
                     PlaylistPlaytime = table.Column<double>(nullable: false),
                     TravelDuration = table.Column<double>(nullable: false),
-                    Rank = table.Column<double>(nullable: false),
+                    Rank = table.Column<int>(nullable: false),
+                    StartLocation = table.Column<string>(nullable: true),
+                    Destination = table.Column<string>(nullable: true),
                     TracksCount = table.Column<int>(nullable: false),
                     GenresCount = table.Column<int>(nullable: false),
                     PlaytimeString = table.Column<string>(nullable: true),
@@ -312,6 +315,10 @@ namespace RidePal.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
                     GenreId = table.Column<long>(nullable: false),
                     PlaylistId = table.Column<int>(nullable: false)
                 },
@@ -359,17 +366,17 @@ namespace RidePal.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "96e6c779-8b92-4394-a684-36907edcbddc", "Admin", "ADMIN" },
-                    { 2, "9c392f15-e0e0-4339-a37a-9d170f83e9fc", "User", "USER" }
+                    { 1, "38f3690d-1974-4e99-94dd-db53fbf3112b", "Admin", "ADMIN" },
+                    { 2, "f455cede-e5e8-46ef-aceb-af0fbb2d741a", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsBanned", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsBanned", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Token", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "53b29fc4-ca54-4cf3-844c-7e538ea9f60f", "admin@ridepal.com", false, null, false, false, null, false, null, "ADMIN@RIDEPAL.COM", "ADMIN@RIDEPAL.COM", "AQAAAAEAACcQAAAAEFWJ96gVoe1GM+IJ+GKDSev3oXiy1JDZqzJjuBXSsjVIKf2q1P+RG0kYc7NpsnXtyA==", null, false, "bc539ca0-8228-4668-aa96-306c00b8eb3a", false, "admin" },
-                    { 2, 0, "b41dae0e-1d3f-4ab8-aa29-76b9fef2a9d8", "user@ridepal.com", false, null, false, false, null, false, null, "USER@RIDEPAL.COM", "USER@RIDEPAL.COM", "AQAAAAEAACcQAAAAECH8JDAmDnmU6kBwcVxGUkTRbYPWx5kAGy0tdgcoxHqSeYEgnhPdwUbCp8vaISQOWw==", null, false, "9472a4be-7c8a-4c8f-b926-cc9b823daf29", false, "user" }
+                    { 1, 0, "01945a2f-d107-4a54-b075-7d5625526a4b", "admin@ridepal.com", false, null, false, false, null, false, null, "ADMIN@RIDEPAL.COM", "ADMIN@RIDEPAL.COM", "AQAAAAEAACcQAAAAEFkQ8/R4lT1zTcK5ncATT5evT0B2kesVct7R3nMJ2HmkfWRVBPiG6vS8WssJrWE4hw==", null, false, "95b53340-505a-41ec-a556-50df56193654", null, false, "admin" },
+                    { 2, 0, "cd9dc912-0cfa-40b4-a676-3c04f96e8018", "user@ridepal.com", false, null, false, false, null, false, null, "USER@RIDEPAL.COM", "USER@RIDEPAL.COM", "AQAAAAEAACcQAAAAEAWNtHzHatbeEYSpoj6mSJP76bOtXYiR3zo2F9qTgXItP/9MFKBet2bV6vG5UocPGA==", null, false, "ffd41e9d-d323-41e6-b81f-05f92470c5f7", null, false, "user" }
                 });
 
             migrationBuilder.InsertData(
