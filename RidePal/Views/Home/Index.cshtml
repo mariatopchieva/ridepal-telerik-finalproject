@@ -1,8 +1,98 @@
-﻿@{
+﻿@model HomeViewModel
+@{
+    Layout = "_Layout";
     ViewData["Title"] = "Home Page";
 }
+<!--Carousel-->
+<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="carousel-caption">
+                <h1><span>Enjoy</span></h1>
+                <h3>your favorite tracks.</h3>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-caption">
+                <h1><span>Pass</span></h1>
+                <h3>the time while waiting</h3>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-caption">
+                <h1><span>Pick</span></h1>
+                <h3>a start and an end point and create your own playlist</h3>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!--top playlists-->
+@if (Model.TopPlaylists != null)
+{
+    <div class="container">
+        <div class="page-header" id="topPl">
+            <h2 class="text-center">Top playlists</h2>
+            <br />
+        </div>
+        <div class="row justify-content-center">
+            @foreach (var playlist in Model.TopPlaylists)
+            {
+                <partial name="_PlaylistPartial" model="playlist" />
+            }
+        </div>
+    </div>
+}
+
+<!--featured artists-->
+<div class="artistContainer">
+    <div class="page-header" id="featured">
+        <h2 class="text-center">Featured artists</h2>
+        <br />
+    </div>
+    <div class="row">
+        @foreach (var artist in Model.FeaturedArtists)
+        {
+            <div class="col-md-4 text-center">
+                <img class="img-responsive" style="border-radius:50%; width:250px; height:250px;" src="@artist.ArtistPictureURL" />
+                <h3>@artist.ArtistName</h3>
+                <br />
+            </div>
+        }
+    </div>
+</div>
+
+<!--Statistics-->
+<div class="counter">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="tracks">
+                    <p class="counter-count">@Model.TrackCount</p>
+                    <p class="tracks-p">Tracks</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="artists">
+                    <p class="counter-count">@Model.ArtistCount</p>
+                    <p class="artists-p">Artists</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="playlists">
+                    <p class="counter-count">@Model.PlaylistCount</p>
+                    <p class="playlists-p">Playlists</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="users">
+                    <p class="counter-count">@Model.UserCount</p>
+                    <p class="users-p">Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

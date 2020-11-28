@@ -1,0 +1,29 @@
+﻿@model PlaylistViewModel
+@{
+
+}
+<div class="card hover">
+    <div class="card-img">
+        @if (Model.FilePath != null)
+        {
+            <img class="card-img" src="@Model.FilePath" />
+        }
+        else
+        {
+            <img class="card-img" src="img/music-placeholder.jpg" />
+        }
+        <div class="overlay">
+            <div class="overlay-content">
+                <a class="hover" asp-controller="Playlists" asp-action="Details" asp-route-id="@Model.Id">View Playlist</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-content">
+        <a class="hover" asp-controller="Playlists" asp-action="Details" asp-route-id="@Model.Id">
+            <h1 class="card-text text-center">@Model.Title</h1>
+            <h5 class="card-text text-center">Rank: @Model.Rank</h5>
+            <h5 class="card-text text-center">Playtime: @Model.PlaytimeString</h5>
+        </a>
+    </div>
+</div>

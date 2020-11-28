@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RidePal.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -7,6 +8,22 @@ namespace RidePal.Service.DTO
 {
     public class UserDTO
     {
+        public UserDTO(User user)
+        {
+            this.Id = user.Id;
+            this.FirstName = user.FirstName;
+            this.LastName = user.LastName;
+            this.Email = user.Email;
+            this.UserName = user.UserName;
+            this.LockoutEnabled = user.LockoutEnabled;
+            this.IsBanned = user.IsBanned;
+            this.IsDeleted = user.IsDeleted;
+        }
+
+        public UserDTO()
+        {
+        }
+
         [DisplayName("ID")]
         public int Id { get; set; }
         [DisplayName("First name")]
@@ -20,5 +37,7 @@ namespace RidePal.Service.DTO
         [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
         public bool LockoutEnabled { get; set; }
+        public bool IsBanned { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

@@ -19,5 +19,9 @@ namespace RidePal.Data.Models
         public bool IsDeleted { get; set; } = false;
 
         public ICollection<Playlist> Playlists { get; set; }
+
+        public ICollection<PlaylistFavorite> Favorites { get; set; }
+
+        public string Token { get; set; }
     }
 }

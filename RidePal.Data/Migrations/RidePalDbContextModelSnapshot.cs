@@ -15,7 +15,7 @@ namespace RidePal.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .HasAnnotation("ProductVersion", "3.1.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -207,8 +207,14 @@ namespace RidePal.Data.Migrations
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Destination")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GenresCount")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -219,22 +225,68 @@ namespace RidePal.Data.Migrations
                     b.Property<double>("PlaylistPlaytime")
                         .HasColumnType("float");
 
-                    b.Property<double>("Rank")
-                        .HasColumnType("float");
+                    b.Property<string>("PlaytimeString")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rank")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RepeatArtist")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("StartLocation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<int>("TracksCount")
+                        .HasColumnType("int");
+
+                    b.Property<double>("TravelDuration")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("UseTopTracks")
+                        .HasColumnType("bit");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Title")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Playlists");
+                });
+
+            modelBuilder.Entity("RidePal.Data.Models.PlaylistFavorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool?>("IsFavorite")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PlaylistId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaylistId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("RidePal.Data.Models.PlaylistGenre", b =>
@@ -244,8 +296,20 @@ namespace RidePal.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<long>("GenreId")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("PlaylistId")
                         .HasColumnType("int");
@@ -313,14 +377,14 @@ namespace RidePal.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "8b991456-faa8-438b-9eae-77976963445a",
+                            ConcurrencyStamp = "38f3690d-1974-4e99-94dd-db53fbf3112b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "306dd2e1-818c-4883-a7b3-a9363aa11385",
+                            ConcurrencyStamp = "f455cede-e5e8-46ef-aceb-af0fbb2d741a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -439,6 +503,9 @@ namespace RidePal.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -463,41 +530,37 @@ namespace RidePal.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bc4aa514-2844-4fa9-8c63-2525429ce9c4",
-                            Email = "maria_topchieva@abv.bg",
+                            ConcurrencyStamp = "01945a2f-d107-4a54-b075-7d5625526a4b",
+                            Email = "admin@ridepal.com",
                             EmailConfirmed = false,
-                            FirstName = "Maria",
                             IsBanned = false,
                             IsDeleted = false,
-                            LastName = "Topchieva",
                             LockoutEnabled = false,
-                            NormalizedEmail = "MARIA_TOPCHIEVA@ABV.BG",
-                            NormalizedUserName = "MARIA",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKrSNwMoA6rYa/v9fB9keWQ3YYjKIq+wibKwaifu5luUatNjHIQBLaOEWzxY2ZVyAw==",
+                            NormalizedEmail = "ADMIN@RIDEPAL.COM",
+                            NormalizedUserName = "ADMIN@RIDEPAL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFkQ8/R4lT1zTcK5ncATT5evT0B2kesVct7R3nMJ2HmkfWRVBPiG6vS8WssJrWE4hw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "87783e1c-e7c1-465b-bd17-489a26d882af",
+                            SecurityStamp = "95b53340-505a-41ec-a556-50df56193654",
                             TwoFactorEnabled = false,
-                            UserName = "Maria"
+                            UserName = "admin"
                         },
                         new
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d2377572-a633-46bf-ae4c-eaa3261fa4eb",
-                            Email = "maria.topchieva@abv.bg",
+                            ConcurrencyStamp = "cd9dc912-0cfa-40b4-a676-3c04f96e8018",
+                            Email = "user@ridepal.com",
                             EmailConfirmed = false,
-                            FirstName = "Maria",
                             IsBanned = false,
                             IsDeleted = false,
-                            LastName = "Topchieva",
                             LockoutEnabled = false,
-                            NormalizedEmail = "MARIA.TOPCHIEVA@ABV.BG",
-                            NormalizedUserName = "MARIATOP",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJXVBp0e2D9lJoZRZ3/aJN97ys2q5t86zEgjpa7Jl2KJqJfXEyW5jmzlMjlzRbuEtA==",
+                            NormalizedEmail = "USER@RIDEPAL.COM",
+                            NormalizedUserName = "USER@RIDEPAL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAWNtHzHatbeEYSpoj6mSJP76bOtXYiR3zo2F9qTgXItP/9MFKBet2bV6vG5UocPGA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1c93507c-eb51-44e1-bf0b-0e4af195bde1",
+                            SecurityStamp = "ffd41e9d-d323-41e6-b81f-05f92470c5f7",
                             TwoFactorEnabled = false,
-                            UserName = "MariaTop"
+                            UserName = "user"
                         });
                 });
 
@@ -568,18 +631,33 @@ namespace RidePal.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RidePal.Data.Models.PlaylistFavorite", b =>
+                {
+                    b.HasOne("RidePal.Data.Models.Playlist", "Playlist")
+                        .WithMany("Favorites")
+                        .HasForeignKey("PlaylistId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RidePal.Data.Models.User", "User")
+                        .WithMany("Favorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("RidePal.Data.Models.PlaylistGenre", b =>
                 {
                     b.HasOne("RidePal.Data.Models.Genre", "Genre")
                         .WithMany("Playlists")
                         .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("RidePal.Data.Models.Playlist", "Playlist")
                         .WithMany("Genres")
                         .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -588,13 +666,13 @@ namespace RidePal.Data.Migrations
                     b.HasOne("RidePal.Data.Models.Playlist", "Playlist")
                         .WithMany("Tracks")
                         .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("RidePal.Data.Models.Track", "Track")
                         .WithMany("Playlists")
                         .HasForeignKey("TrackId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

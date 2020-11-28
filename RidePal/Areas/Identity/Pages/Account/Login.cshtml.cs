@@ -22,7 +22,7 @@ namespace RidePal.Areas.Identity.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<User> signInManager, 
+        public LoginModel(SignInManager<User> signInManager,
             ILogger<LoginModel> logger,
             UserManager<User> userManager)
         {
@@ -81,6 +81,14 @@ namespace RidePal.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+                var currentUser = _userManager.Users.FirstOrDefault(x => x.Email == Input.Email);
+                if (currentUser.IsDeleted == true)
+                {
+                    await _signInManager.SignOutAsync();
+                    _logger.LogWarning("User account locked out.");
+                    return RedirectToPage("./Lockout");
+                }
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

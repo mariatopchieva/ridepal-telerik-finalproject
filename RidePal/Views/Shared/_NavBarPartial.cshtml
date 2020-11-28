@@ -1,0 +1,62 @@
+﻿@{
+
+}
+
+<nav class="navbar navbar-expand-lg navbar-light text-capitalize">
+    <div class="container">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">RidePal</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#show-menu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="show-menu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                @if (User.IsInRole("User") || User.IsInRole("Admin"))
+                {
+                    <li class="drop-item">
+                        <div class="btn-group">
+                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Playlists
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="nav-link text-dark" asp-controller="Playlists" asp-action="Index">All playlists</a>
+                                <a class="nav-link text-dark" asp-controller="Playlists" asp-action="UserPlaylists">My playlists</a>
+                                <a class="nav-link text-dark" asp-controller="Playlists" asp-action="Favorites">Favorites</a>
+                            </div>
+                        </div>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Playlists" asp-action="Index">Playlists</a>
+                    </li>
+                }
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Playlists" asp-action="Create">New playlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Home" asp-action="AboutUs">About us</a>
+                </li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="drop-item">
+                        <div class="btn-group">
+                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                AdminPanel
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="nav-link" asp-controller="Admin" asp-action="DeletedPlaylists">DeletedPls</a>
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">Users</a>
+                            </div>
+                        </div>
+                    </li>
+                }
+                <partial name="_LoginPartial" />
+            </ul>
+        </div>
+    </div>
+</nav>

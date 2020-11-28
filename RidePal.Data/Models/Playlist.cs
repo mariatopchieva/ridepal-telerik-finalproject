@@ -19,15 +19,22 @@ namespace RidePal.Data.Models
         public string Title { get; set; }
 
         public double PlaylistPlaytime { get; set; }
+        public double TravelDuration { get; set; }
 
-        public double Rank { get; set; }
-
+        public int Rank { get; set; }
+        public string StartLocation { get; set; }
+        public string Destination { get; set; }
         public ICollection<PlaylistTrack> Tracks { get; set; }
 
         public ICollection<PlaylistGenre> Genres { get; set; }
 
-        //[Required]
-        //[Display(Name = "File")]
+        public ICollection<PlaylistFavorite> Favorites { get; set; }
+        public int TracksCount { get; set; }
+        public int GenresCount { get; set; }
+        public string PlaytimeString { get; set; }
+        public bool RepeatArtist { get; set; }
+        public bool UseTopTracks { get; set; }
+
         public string FilePath { get; set; }
 
     }

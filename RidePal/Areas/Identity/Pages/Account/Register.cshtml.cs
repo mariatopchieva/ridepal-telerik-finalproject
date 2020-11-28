@@ -89,8 +89,6 @@ namespace RidePal.Areas.Identity.Pages.Account
                 var user = new User { /*FirstName = Input.FirstName, LastName = Input.LastName,*/ UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
-                //await _userManager.UpdateSecurityStampAsync(user);
-
                 await _userManager.AddToRoleAsync(user, "User");
 
                 if (result.Succeeded)
@@ -110,7 +108,7 @@ namespace RidePal.Areas.Identity.Pages.Account
 
                     //if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     //{
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        //return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     //}
                     //else
                     //{

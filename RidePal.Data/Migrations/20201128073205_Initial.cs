@@ -59,7 +59,8 @@ namespace RidePal.Data.Migrations
                     FirstName = table.Column<string>(maxLength: 50, nullable: true),
                     LastName = table.Column<string>(maxLength: 50, nullable: true),
                     IsBanned = table.Column<bool>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false)
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Token = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -220,7 +221,15 @@ namespace RidePal.Data.Migrations
                     UserId = table.Column<int>(nullable: false),
                     Title = table.Column<string>(maxLength: 50, nullable: false),
                     PlaylistPlaytime = table.Column<double>(nullable: false),
-                    Rank = table.Column<double>(nullable: false),
+                    TravelDuration = table.Column<double>(nullable: false),
+                    Rank = table.Column<int>(nullable: false),
+                    StartLocation = table.Column<string>(nullable: true),
+                    Destination = table.Column<string>(nullable: true),
+                    TracksCount = table.Column<int>(nullable: false),
+                    GenresCount = table.Column<int>(nullable: false),
+                    PlaytimeString = table.Column<string>(nullable: true),
+                    RepeatArtist = table.Column<bool>(nullable: false),
+                    UseTopTracks = table.Column<bool>(nullable: false),
                     FilePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -276,11 +285,40 @@ namespace RidePal.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Favorites",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(nullable: false),
+                    PlaylistId = table.Column<int>(nullable: false),
+                    IsFavorite = table.Column<bool>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favorites", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Favorites_Playlists_PlaylistId",
+                        column: x => x.PlaylistId,
+                        principalTable: "Playlists",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Favorites_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PlaylistGenres",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
                     GenreId = table.Column<long>(nullable: false),
                     PlaylistId = table.Column<int>(nullable: false)
                 },
@@ -291,14 +329,12 @@ namespace RidePal.Data.Migrations
                         name: "FK_PlaylistGenres_Genres_GenreId",
                         column: x => x.GenreId,
                         principalTable: "Genres",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PlaylistGenres_Playlists_PlaylistId",
                         column: x => x.PlaylistId,
                         principalTable: "Playlists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -317,14 +353,12 @@ namespace RidePal.Data.Migrations
                         name: "FK_PlaylistTracks_Playlists_PlaylistId",
                         column: x => x.PlaylistId,
                         principalTable: "Playlists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PlaylistTracks_Tracks_TrackId",
                         column: x => x.TrackId,
                         principalTable: "Tracks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -332,17 +366,17 @@ namespace RidePal.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "8b991456-faa8-438b-9eae-77976963445a", "Admin", "ADMIN" },
-                    { 2, "306dd2e1-818c-4883-a7b3-a9363aa11385", "User", "USER" }
+                    { 1, "38f3690d-1974-4e99-94dd-db53fbf3112b", "Admin", "ADMIN" },
+                    { 2, "f455cede-e5e8-46ef-aceb-af0fbb2d741a", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsBanned", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsBanned", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Token", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "bc4aa514-2844-4fa9-8c63-2525429ce9c4", "maria_topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA_TOPCHIEVA@ABV.BG", "MARIA", "AQAAAAEAACcQAAAAEKrSNwMoA6rYa/v9fB9keWQ3YYjKIq+wibKwaifu5luUatNjHIQBLaOEWzxY2ZVyAw==", null, false, "87783e1c-e7c1-465b-bd17-489a26d882af", false, "Maria" },
-                    { 2, 0, "d2377572-a633-46bf-ae4c-eaa3261fa4eb", "maria.topchieva@abv.bg", false, "Maria", false, false, "Topchieva", false, null, "MARIA.TOPCHIEVA@ABV.BG", "MARIATOP", "AQAAAAEAACcQAAAAEJXVBp0e2D9lJoZRZ3/aJN97ys2q5t86zEgjpa7Jl2KJqJfXEyW5jmzlMjlzRbuEtA==", null, false, "1c93507c-eb51-44e1-bf0b-0e4af195bde1", false, "MariaTop" }
+                    { 1, 0, "01945a2f-d107-4a54-b075-7d5625526a4b", "admin@ridepal.com", false, null, false, false, null, false, null, "ADMIN@RIDEPAL.COM", "ADMIN@RIDEPAL.COM", "AQAAAAEAACcQAAAAEFkQ8/R4lT1zTcK5ncATT5evT0B2kesVct7R3nMJ2HmkfWRVBPiG6vS8WssJrWE4hw==", null, false, "95b53340-505a-41ec-a556-50df56193654", null, false, "admin" },
+                    { 2, 0, "cd9dc912-0cfa-40b4-a676-3c04f96e8018", "user@ridepal.com", false, null, false, false, null, false, null, "USER@RIDEPAL.COM", "USER@RIDEPAL.COM", "AQAAAAEAACcQAAAAEAWNtHzHatbeEYSpoj6mSJP76bOtXYiR3zo2F9qTgXItP/9MFKBet2bV6vG5UocPGA==", null, false, "ffd41e9d-d323-41e6-b81f-05f92470c5f7", null, false, "user" }
                 });
 
             migrationBuilder.InsertData(
@@ -400,6 +434,16 @@ namespace RidePal.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Favorites_PlaylistId",
+                table: "Favorites",
+                column: "PlaylistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Favorites_UserId",
+                table: "Favorites",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PlaylistGenres_GenreId",
                 table: "PlaylistGenres",
                 column: "GenreId");
@@ -408,6 +452,12 @@ namespace RidePal.Data.Migrations
                 name: "IX_PlaylistGenres_PlaylistId",
                 table: "PlaylistGenres",
                 column: "PlaylistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Playlists_Title",
+                table: "Playlists",
+                column: "Title",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Playlists_UserId",
@@ -456,6 +506,9 @@ namespace RidePal.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Favorites");
 
             migrationBuilder.DropTable(
                 name: "PlaylistGenres");

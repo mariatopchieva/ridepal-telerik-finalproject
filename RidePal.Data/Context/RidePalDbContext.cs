@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using RidePal.Data.Configurations;
 using RidePal.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -25,12 +26,16 @@ namespace RidePal.Data.Context
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
         public DbSet<Track> Tracks { get; set; }
-
+        public DbSet<PlaylistFavorite> Favorites { get; set; }
         public DbSet<PlaylistTrack> PlaylistTracks { get; set; }
         public DbSet<PlaylistGenre> PlaylistGenres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new PlaylistFavoriteConfig());
+            modelBuilder.ApplyConfiguration(new PlaylistGenreConfig());
+            modelBuilder.ApplyConfiguration(new PlaylistTrackConfig());
+
             modelBuilder. Entity<Role>().HasData(
                 new Role() { Id = 1, Name = "Admin", NormalizedName = "ADMIN" },
                 new Role() { Id = 2, Name = "User", NormalizedName = "USER" }
@@ -38,47 +43,61 @@ namespace RidePal.Data.Context
             
             var hasher = new PasswordHasher<User>();
 
-            var admin = new User
+            User admin = new User
             {
                 Id = 1,
-                FirstName = "Maria",
-                LastName = "Topchieva",
-                UserName = "Maria",
-                NormalizedUserName = "MARIA",
-                Email = "maria_topchieva@abv.bg",
-                NormalizedEmail = "MARIA_TOPCHIEVA@ABV.BG",
+                UserName = "admin",
+                NormalizedUserName = "ADMIN@RIDEPAL.COM",
+                Email = "admin@ridepal.com",
+                NormalizedEmail = "ADMIN@RIDEPAL.COM",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            admin.PasswordHash = hasher.HashPassword(admin, "Registration87!");
+
+            admin.PasswordHash = hasher.HashPassword(admin, "admin123");
+
             modelBuilder.Entity<User>().HasData(admin);
+
             modelBuilder.Entity<IdentityUserRole<int>>().HasData(
-                new IdentityUserRole<int>()
+                new IdentityUserRole<int>
                 {
                     RoleId = 1,
                     UserId = admin.Id
-                }
-                );
+                });
 
-            var user = new User
+            User user = new User
             {
                 Id = 2,
-                FirstName = "Maria",
-                LastName = "Topchieva",
-                UserName = "MariaTop",
-                NormalizedUserName = "MARIATOP",
-                Email = "maria.topchieva@abv.bg",
-                NormalizedEmail = "MARIA.TOPCHIEVA@ABV.BG",
+                UserName = "user",
+                NormalizedUserName = "USER@RIDEPAL.COM",
+                Email = "user@ridepal.com",
+                NormalizedEmail = "USER@RIDEPAL.COM",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            user.PasswordHash = hasher.HashPassword(user, "Registration87!");
+
+            user.PasswordHash = hasher.HashPassword(user, "user123");
+
             modelBuilder.Entity<User>().HasData(user);
+
             modelBuilder.Entity<IdentityUserRole<int>>().HasData(
-                new IdentityUserRole<int>()
+                new IdentityUserRole<int>
                 {
                     RoleId = 2,
                     UserId = user.Id
-                }
-                );
+                });
+
+            modelBuilder.Entity<Playlist>(entity => {
+                entity.HasIndex(e => e.Title).IsUnique(true);
+            });
+
+            //modelBuilder.Entity<PlaylistFavorite>().HasOne(pf => pf.Playlist)
+            //    .WithMany(playlist => playlist.Favorites)
+            //    .HasForeignKey(pf => pf.PlaylistId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            //modelBuilder.Entity<PlaylistFavorite>().HasOne(pf => pf.User)
+            //    .WithMany(User => User.Favorites)
+            //    .HasForeignKey(pf =>  pf.UserId)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
             base.OnModelCreating(modelBuilder);
         }
