@@ -54,7 +54,6 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
             var dateTimeProviderMock = new Mock<IDateTimeProvider>();
             var mockImageService = new Mock<IPixaBayImageService>();
 
-
             using (var arrangeContext = new RidePalDbContext(options))
             {
                 arrangeContext.Playlists.Add(firstPlaylist);

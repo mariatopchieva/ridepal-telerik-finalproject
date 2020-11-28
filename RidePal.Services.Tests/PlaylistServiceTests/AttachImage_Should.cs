@@ -43,57 +43,62 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
                 //Assert
                 await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.AttachImage(firstPlaylistDTO));
             }
+        }
 
 
-            //[TestMethod]
-            //public async Task ReturnPlaylistWithFilePath_WhenParamsAreValid()
-            //{
-            //    //Arrange
-            //    var options = Utils.GetOptions(nameof(ReturnPlaylistWithFilePath_WhenParamsAreValid));
+        [TestMethod]
+        public async Task ReturnPlaylistWithFilePath_WhenParamsAreValid()
+        {
+            //Arrange
+            var options = Utils.GetOptions(nameof(ReturnPlaylistWithFilePath_WhenParamsAreValid));
 
-            //    Playlist firstPlaylist = new Playlist
-            //    {
-            //        Id = 87,
-            //        Title = "Home",
-            //        PlaylistPlaytime = 5524,
-            //        UserId = 2,
-            //        Rank = 552348,
-            //        IsDeleted = false
-            //    };
+            Playlist firstPlaylist = new Playlist
+            {
+                Id = 87,
+                Title = "Home",
+                PlaylistPlaytime = 5524,
+                UserId = 2,
+                Rank = 552348,
+                IsDeleted = false
+            };
 
-            //    PlaylistDTO firstPlaylistDTO = new PlaylistDTO
-            //    {
-            //        Id = 87,
-            //        Title = "Home",
-            //        PlaylistPlaytime = 5524,
-            //        UserId = 2,
-            //        Rank = 552348,
-            //    };
+            PlaylistDTO firstPlaylistDTO = new PlaylistDTO
+            {
+                Id = 87,
+                Title = "Home",
+                PlaylistPlaytime = 5524,
+                UserId = 2,
+                Rank = 552348,
+            };
 
-            //    var dateTimeProviderMock = new Mock<IDateTimeProvider>();
-            //    var mockImageService = new Mock<IPixaBayImageService>();
-            //    string name = "name";
+            var dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            var mockImageService = new Mock<IPixaBayImageService>();
 
-            //    //mockImageService
-            //    //    .Setup(x => x.AssignImage(It.IsAny<PlaylistDTO>()))
-            //    //    .Returns(name); //cannot convert from string to System.ThreadingTasks.Task<string>
+            mockImageService
+                .Setup(x => x.AssignImage(It.IsAny<PlaylistDTO>()))
+                .Returns(GetString());
 
-            //    using (var arrangeContext = new RidePalDbContext(options))
-            //    {
-            //        arrangeContext.Playlists.Add(firstPlaylist);
-            //        arrangeContext.SaveChanges();
-            //    }
+            using (var arrangeContext = new RidePalDbContext(options))
+            {
+                arrangeContext.Playlists.Add(firstPlaylist);
+                arrangeContext.SaveChanges();
+            }
 
-            //    using (var assertContext = new RidePalDbContext(options))
-            //    {
-            //        //Act
-            //        var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
-            //        var result = await sut.AttachImage(firstPlaylistDTO);
+            using (var assertContext = new RidePalDbContext(options))
+            {
+                //Act
+                var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
+                var result = await sut.AttachImage(firstPlaylistDTO);
 
-            //        //Assert
-            //        Assert.IsNotNull(result.FilePath);
-            //    }
-            //}
+                //Assert
+                Assert.IsNotNull(result.FilePath);
+            }
+        }
+
+        public async Task<string> GetString()
+        {
+            System.Threading.Thread.Sleep(500);
+            return await Task.FromResult("Hello");
         }
     }
 }

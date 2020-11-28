@@ -127,7 +127,7 @@ namespace RidePal.Service
         /// <param name="genrePercentage">Percentage of the specified music genre from the whole playlist duration</param>
         /// <param name="repeatArtist">Bool, which states whether a repetition of songs of the same artist is allowed</param>
         /// <returns>Collection of tracks</returns>
-        public async Task<IEnumerable<Track>> GetTracks(string genre, double travelDuration, //ADD AWAIT
+        public async Task<IEnumerable<Track>> GetTracks(string genre, double travelDuration,
             Dictionary<string, int> genrePercentage, bool repeatArtist)
         {
             List<Track> tracksPerGenre = await context.Tracks.Where(x => x.Genre.Name == genre).ToListAsync();
