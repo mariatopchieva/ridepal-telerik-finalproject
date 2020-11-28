@@ -26,6 +26,7 @@ namespace RidePal.Service.DTO
             this.FilePath = playlist.FilePath;
             this.StartLocation = playlist.StartLocation;
             this.Destination = playlist.Destination;
+            this.IsDeleted = playlist.IsDeleted;
         }
 
         public PlaylistDTO()
@@ -72,5 +73,7 @@ namespace RidePal.Service.DTO
 
         [DisplayName("Number of genres")]
         public int GenresCount { get; set; }
+        public bool IsDeleted { get; set; }
+
     }
 }

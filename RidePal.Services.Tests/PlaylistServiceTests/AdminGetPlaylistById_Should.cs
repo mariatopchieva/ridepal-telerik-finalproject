@@ -8,23 +8,23 @@ using RidePal.Service.DTO;
 using RidePal.Service.Providers.Contracts;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace RidePal.Services.Tests.PlaylistServiceTests
 {
     [TestClass]
-    public class GetFavoritePlaylistsOfUser_Should
+    public class AdminGetPlaylistById_Should
     {
         [TestMethod]
-        public void ReturnTheCorrectPlaylists_WhenParamsAreValid()
+        public async Task ReturnCorrectPlaylist_WhenParamsAreValid()
         {
-            var options = Utils.GetOptions(nameof(ReturnTheCorrectPlaylists_WhenParamsAreValid));
+            //Arrange
+            var options = Utils.GetOptions(nameof(ReturnCorrectPlaylist_WhenParamsAreValid));
 
             Playlist firstPlaylist = new Playlist
             {
-                Id = 41,
+                Id = 3,
                 Title = "Home",
                 PlaylistPlaytime = 5524,
                 UserId = 2,
@@ -34,7 +34,7 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
 
             Playlist secondPlaylist = new Playlist
             {
-                Id = 42,
+                Id = 4,
                 Title = "Metal",
                 PlaylistPlaytime = 5024,
                 UserId = 2,
@@ -42,37 +42,23 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
                 IsDeleted = false
             };
 
-            User user = new User()
+            var playlistDTO = new PlaylistDTO
             {
-                Id = 11
-            };
-
-            PlaylistFavorite firstFavorite = new PlaylistFavorite()
-            {
-                Id = 10,
-                UserId = 11,
-                PlaylistId = 41,
-                IsFavorite = true
-            };
-
-            PlaylistFavorite secondFavorite = new PlaylistFavorite()
-            {
-                Id = 11,
-                UserId = 11,
-                PlaylistId = 42,
-                IsFavorite = true
+                Id = 4,
+                Title = "Metal",
+                PlaylistPlaytime = 5024,
+                UserId = 2,
+                Rank = 490258,
             };
 
             var dateTimeProviderMock = new Mock<IDateTimeProvider>();
             var mockImageService = new Mock<IPixaBayImageService>();
 
+
             using (var arrangeContext = new RidePalDbContext(options))
             {
                 arrangeContext.Playlists.Add(firstPlaylist);
                 arrangeContext.Playlists.Add(secondPlaylist);
-                arrangeContext.Users.Add(user);
-                arrangeContext.Favorites.Add(firstFavorite);
-                arrangeContext.Favorites.Add(secondFavorite);
                 arrangeContext.SaveChanges();
             }
 
@@ -80,14 +66,32 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
             {
                 //Act
                 var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
-                var result = sut.GetFavoritePlaylistsOfUser(11).Result.ToList();
+                var result = await sut.AdminGetPlaylistByIdAsync(4);
 
                 //Assert
-                Assert.AreEqual(result.Count, 2);
-                Assert.AreEqual(result[0].Id, firstPlaylist.Id);
-                Assert.AreEqual(result[0].Title, firstPlaylist.Title);
-                Assert.AreEqual(result[1].Id, secondPlaylist.Id);
-                Assert.AreEqual(result[1].Title, secondPlaylist.Title);
+                Assert.AreEqual(playlistDTO.Id, result.Id);
+                Assert.AreEqual(playlistDTO.Title, result.Title);
+                Assert.AreEqual(playlistDTO.Rank, result.Rank);
+                Assert.AreEqual(playlistDTO.UserId, result.UserId);
+                Assert.AreEqual(playlistDTO.PlaylistPlaytime, result.PlaylistPlaytime);
+            }
+        }
+
+        [TestMethod]
+        public async Task Throw_If_NoPlaylistsExist()
+        {
+            //Arrange
+            var options = Utils.GetOptions(nameof(Throw_If_NoPlaylistsExist));
+
+            var dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            var mockImageService = new Mock<IPixaBayImageService>();
+
+            //Act & Assert
+            using (var assertContext = new RidePalDbContext(options))
+            {
+                var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
+
+                await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.AdminGetPlaylistByIdAsync(1));
             }
         }
     }

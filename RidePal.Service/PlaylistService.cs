@@ -164,75 +164,6 @@ namespace RidePal.Service
             }
 
             return true;
-            //var playlist = await this.context.Playlists.FirstOrDefaultAsync(playlist => playlist.Id == editPlaylistDTO.Id);
-
-            //if (playlist == null)
-            //{
-            //    throw new ArgumentNullException("Playlist not found in the database.");
-            //}
-
-
-            //var oldPlaylistGenres = this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id).Where(x => x.IsDeleted == false);
-            //var oldGenresStringList = oldPlaylistGenres.Select(x => x.Genre.Name).ToList();
-
-            //var oldDeletedGenres = this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id).Where(x => x.IsDeleted == true);
-            //var oldDeletedGenresStringList = oldDeletedGenres.Select(x => x.Genre.Name).ToList();
-
-            //var newGenresStringList = editPlaylistDTO.GenrePercentage.Where(x => x.Value > 0).Select(y => y.Key).ToList();
-            //int newGenresCount = newGenresStringList.Count();
-
-            // create new PlaylistGenres for the new genres that have not been created yet 
-            //var genresToCreate = new List<string>();
-            //foreach (var newGenre in newGenresStringList)
-            //{
-            //    if (!oldGenresStringList.Contains(newGenre))
-            //    {
-            //        genresToCreate.Add(newGenre);
-            //    }
-            //}
-            //List<Genre> newGenres = this.context.Genres.Where(x => genresToCreate.Contains(x.Name)).ToList();
-            //List<PlaylistGenre> playlistGenres = newGenres.Select(x => new PlaylistGenre(x.Id, editPlaylistDTO.Id)).ToList();
-
-            // update IsDeleted = true if the new genres do not include the old genres
-            //var genresToDelete = new List<string>();
-            //foreach (var oldGenre in oldGenresStringList)
-            //{
-            //    if (!newGenresStringList.Contains(oldGenre))
-            //    {
-            //        genresToDelete.Add(oldGenre);
-            //    }
-            //}
-
-            //await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id)
-            //                                 .Where(x => genresToDelete.Contains(x.Genre.Name))
-            //                                 .ForEachAsync(x => x.IsDeleted = true);
-
-            // update IsDeleted = false if the new genres do not include the old genres but they were created and deleted before
-            //var genresToUndelete = new List<string>();
-            //foreach (var oldDeletedGenre in oldDeletedGenresStringList)
-            //{
-            //    if (newGenresStringList.Contains(oldDeletedGenre))
-            //    {
-            //        genresToUndelete.Add(oldDeletedGenre);
-            //    }
-            //}
-            //await this.context.PlaylistGenres.Where(x => x.PlaylistId == playlist.Id)
-            //                                 .Where(x => genresToUndelete.Contains(x.Genre.Name))
-            //                                 .ForEachAsync(x => x.IsDeleted = false);
-
-            //playlist.Title = editPlaylistDTO.Title;
-            //playlist.GenresCount = newGenresCount;
-            //playlist.ModifiedOn = this.dateTimeProvider.GetDateTime();
-
-            //await this.context.PlaylistGenres.AddRangeAsync(playlistGenres);
-            //await this.context.SaveChangesAsync();
-
-            //var plFromDB = context.Playlists
-            //                            .FirstOrDefaultAsync(pl => pl.Id == editPlaylistDTO.Id)
-            //                            ?? throw new ArgumentNullException("Playlist not found.");
-
-
-            //return new PlaylistDTO(playlist);
         }
 
         /// <summary>
@@ -302,7 +233,7 @@ namespace RidePal.Service
 
             if (playlistsDTO == null)
             {
-                return null; //OR throw new ArgumentNullException("This user has not created any playlists yet.");
+                return null;
             }
 
             return playlistsDTO;
@@ -338,7 +269,7 @@ namespace RidePal.Service
                                     .Select(genre => new GenreDTO(genre))
                                     .ToListAsync();
 
-            if (genresDTO == null)
+            if (genresDTO.Count == 0)
             {
                 throw new ArgumentNullException("No genres have been found.");
             }
@@ -357,7 +288,7 @@ namespace RidePal.Service
                                 .Where(x => x.IsDeleted == false)
                                 .Select(x => x.GenreId).ToListAsync();
 
-            if (genresId == null)
+            if (genresId.Count == 0)
             {
                 throw new ArgumentNullException("No genres have been found.");
             }
@@ -383,7 +314,7 @@ namespace RidePal.Service
                                 .Select(x => x.Track).Select(track => new TrackDTO(track))
                                 .ToListAsync();
 
-            if (tracksDTOs == null)
+            if (tracksDTOs.Count == 0)
             {
                 throw new ArgumentNullException("No tracks have been found.");
             }
@@ -397,7 +328,7 @@ namespace RidePal.Service
         }
 
         /// <summary>
-        /// Tags a certain playlist as "liked" by a certain user
+        /// Tags a certain playlist as "liked" by a certain user and adds it to his/her Favorites collection
         /// </summary>
         /// <param name="playlistId">ID of the playlist</param>
         /// <param name="userId">ID of the user</param>
@@ -434,58 +365,11 @@ namespace RidePal.Service
             await context.SaveChangesAsync();
 
             return true;
-            //var playlist = await this.context.Playlists
-            //                                    .FirstOrDefaultAsync(playlist => playlist.Id == playlistId 
-            //                                     && playlist.IsDeleted == false);
-
-            //var user = await this.context.Users
-            //                                .FirstOrDefaultAsync(u => u.Id == userId 
-            //                                && u.IsDeleted == false);
-
-            //if (playlist == null || user == null)
-            //{
-            //    throw new ArgumentNullException("The user or playlist were not found.");
-            //}
-
-            //var playlistsLiked = await this.context.Favorites.Where(pf => pf.UserId == userId)
-            //                        .Where(pf => pf.IsFavorite == true).ToListAsync();
-
-            //var playlistsLikedAndDisliked = await this.context.Favorites.Where(pf => pf.UserId == userId) //PlaylistFavorite item created with False property
-            //                        .Where(pf => pf.IsFavorite == false).ToListAsync();
-
-            //if (playlistsLiked.Any(pf => pf.PlaylistId == playlistId))
-            //{
-            //    return false; //the playlist has already been liked
-            //}
-            //else if (playlistsLikedAndDisliked.Any(pf => pf.PlaylistId == playlistId))
-            //{
-            //    var playlistToSetAsFavorite = await this.context.Favorites.Where(pf => pf.UserId == userId)
-            //                                        .Where(pf => pf.PlaylistId == playlistId).FirstOrDefaultAsync();
-
-            //    playlistToSetAsFavorite.IsFavorite = true;
-
-            //    await context.SaveChangesAsync();
-            //    return true;
-            //}
-            //else
-            //{
-            //    PlaylistFavorite item = new PlaylistFavorite
-            //    {
-            //        Playlist = playlist,
-            //        PlaylistId = playlist.Id,
-            //        IsFavorite = true,
-            //        UserId = user.Id,
-            //        User = user
-            //    };
-
-            //    await context.Favorites.AddAsync(item);
-            //    await context.SaveChangesAsync();
-            //    return true;
-            //}
         }
 
         /// <summary>
-        /// If a playlist has been previously tagged as "liked" by a certain user, the method removes that tag.
+        /// If a playlist has been previously tagged as "liked" by a certain user, 
+        /// the method removes that tag and removes it from his/her Favorites collection
         /// </summary>
         /// <param name="playlistId"></param>
         /// <param name="userId"></param>
@@ -522,7 +406,7 @@ namespace RidePal.Service
 
             if (playlistFavorites == null)
             {
-                return null; //or exception?
+                return null;
             }
 
             var playlistsDTO = new List<PlaylistDTO>();

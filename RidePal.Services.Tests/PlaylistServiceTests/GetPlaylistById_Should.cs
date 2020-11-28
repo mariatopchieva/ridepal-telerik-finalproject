@@ -1,92 +1,97 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using RidePal.Data.Context;
+using RidePal.Data.Models;
+using RidePal.Service;
+using RidePal.Service.Contracts;
+using RidePal.Service.DTO;
 using RidePal.Service.Providers.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RidePal.Services.Tests.PlaylistServiceTests
 {
     [TestClass]
     public class GetPlaylistById_Should
     {
-        //[TestMethod]
-        //public void ReturnCorrectPlaylist_WhenParamsAreValid()
-        //{
-        //    var options = Utils.GetOptions(nameof(ReturnCorrectPlaylist_WhenParamsAreValid));
+        [TestMethod]
+        public async Task ReturnCorrectPlaylist_WhenParamsAreValid()
+        {
+            //Arrange
+            var options = Utils.GetOptions(nameof(ReturnCorrectPlaylist_WhenParamsAreValid));
 
-        //    Beer firstBeer = new Beer
-        //    {
-        //        Id = 12,
-        //        Name = "Zagorka",
-        //        Description = "Awesome taste for people who love beer",
-        //        BreweryId = 1,
-        //        ABV = 4.2,
-        //        StyleId = 1,
-        //    };
-        //    Beer secondBeer = new Beer
-        //    {
-        //        Id = 13,
-        //        Name = "Amstel",
-        //        Description = "Unique beer with centuries of tradition from Amsterdam",
-        //        BreweryId = 2,
-        //        ABV = 4.7,
-        //        StyleId = 2,
-        //    };
+            Playlist firstPlaylist = new Playlist
+            {
+                Id = 1,
+                Title = "Home",
+                PlaylistPlaytime = 5524,
+                UserId = 2,
+                Rank = 552348,
+                IsDeleted = false
+            };
 
-        //    var beerDTO = new BeerDTO
-        //    {
-        //        Id = 13,
-        //        Name = "Amstel",
-        //        Description = "Unique beer with centuries of tradition from Amsterdam",
-        //        BreweryId = 2,
-        //        ABV = 4.7,
-        //        StyleId = 2,
-        //    };
+            Playlist secondPlaylist = new Playlist
+            {
+                Id = 2,
+                Title = "Metal",
+                PlaylistPlaytime = 5024,
+                UserId = 2,
+                Rank = 490258,
+                IsDeleted = false
+            };
 
-        //    var dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            var playlistDTO = new PlaylistDTO
+            {
+                Id = 2,
+                Title = "Metal",
+                PlaylistPlaytime = 5024,
+                UserId = 2,
+                Rank = 490258,
+            };
 
-        //    using (var arrangeContext = new RidePalDbContext(options))
-        //    {
-        //        arrangeContext.RemoveRange();
-        //        arrangeContext.SaveChanges();
-        //        arrangeContext.Beers.Add(firstBeer);
-        //        arrangeContext.Beers.Add(secondBeer);
-        //        arrangeContext.SaveChanges();
-        //    }
+            var dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            var mockImageService = new Mock<IPixaBayImageService>();
 
-        //    using (var assertContext = new BeerOverflowContext(options))
-        //    {
-        //        var sut = new BeerService(assertContext, dateTimeProviderMock.Object);
+            using (var arrangeContext = new RidePalDbContext(options))
+            {
+                arrangeContext.Playlists.Add(firstPlaylist);
+                arrangeContext.Playlists.Add(secondPlaylist);
+                arrangeContext.SaveChanges();
+            }
 
-        //        var result = sut.GetBeerByIdAsync(13).Result;
+            using (var assertContext = new RidePalDbContext(options))
+            {
+                //Act
+                var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
+                var result = await sut.GetPlaylistByIdAsync(2);
 
-        //        Assert.AreEqual(beerDTO.Id, result.Id);
-        //        Assert.AreEqual(beerDTO.Name, result.Name);
-        //        Assert.AreEqual(beerDTO.Description, result.Description);
-        //        Assert.AreEqual(beerDTO.BreweryId, result.BreweryId);
-        //        Assert.AreEqual(beerDTO.ABV, result.ABV);
-        //        Assert.AreEqual(beerDTO.StyleId, result.StyleId);
-        //    }
-        //}
+                //Assert
+                Assert.AreEqual(playlistDTO.Id, result.Id);
+                Assert.AreEqual(playlistDTO.Title, result.Title);
+                Assert.AreEqual(playlistDTO.Rank, result.Rank);
+                Assert.AreEqual(playlistDTO.UserId, result.UserId);
+                Assert.AreEqual(playlistDTO.PlaylistPlaytime, result.PlaylistPlaytime);
+            }
+        }
 
+        [TestMethod]
+        public async Task Throw_If_NoPlaylistsExist()
+        {
+            //Arrange
+            var options = Utils.GetOptions(nameof(Throw_If_NoPlaylistsExist));
 
+            var dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            var mockImageService = new Mock<IPixaBayImageService>();
 
-        //public async Task<PlaylistDTO> GetPlaylistByIdAsync(int id)
-        //{
-        //    var playlist = await this.context.Playlists
-        //                        .Where(playlist => playlist.IsDeleted == false)
-        //                        .FirstOrDefaultAsync(playlist => playlist.Id == id);
+            //Act & Assert
+            using (var assertContext = new RidePalDbContext(options))
+            {
+                var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
 
-        //    if (playlist == null)
-        //    {
-        //        throw new ArgumentNullException("No such playlist was found in the database.");
-        //    }
-
-        //    var playlistDTO = new PlaylistDTO(playlist);
-
-        //    return playlistDTO;
-        //}
+                await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.GetPlaylistByIdAsync(1));
+            }
+        }
     }
 }

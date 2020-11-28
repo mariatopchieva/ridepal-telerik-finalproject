@@ -51,6 +51,7 @@ namespace RidePal
         }
 
         //GET api/playlistsapi/:id
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public IActionResult GetPlaylistById(int id)
         {

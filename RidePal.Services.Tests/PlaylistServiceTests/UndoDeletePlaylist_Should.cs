@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace RidePal.Services.Tests.PlaylistServiceTests
 {
     [TestClass]
-    public class DeletePlaylist_Should
+    public class UndoDeletePlaylist_Should
     {
         [TestMethod]
         public async Task ReturnTrue_WhenParamsAreValid()
@@ -24,17 +24,17 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
 
             Playlist firstPlaylist = new Playlist
             {
-                Id = 8,
+                Id = 12,
                 Title = "Home",
                 PlaylistPlaytime = 5524,
                 UserId = 2,
                 Rank = 552348,
-                IsDeleted = false
+                IsDeleted = true
             };
 
             Playlist secondPlaylist = new Playlist
             {
-                Id = 9,
+                Id = 13,
                 Title = "Metal",
                 PlaylistPlaytime = 5024,
                 UserId = 2,
@@ -56,7 +56,7 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
             {
                 //Act
                 var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
-                var result = await sut.DeletePlaylistAsync(8);
+                var result = await sut.UndoDeletePlaylistAsync(12);
 
                 //Assert
                 Assert.IsTrue(result);
@@ -64,10 +64,45 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
         }
 
         [TestMethod]
-        public async Task Throw_If_NoPlaylistsExist()
+        public async Task ReturnFalse_WhenPlaylistIsAlreadyUndeleted()
+        {
+            var options = Utils.GetOptions(nameof(ReturnFalse_WhenPlaylistIsAlreadyUndeleted));
+
+            Playlist firstPlaylist = new Playlist
+            {
+                Id = 11,
+                Title = "Home",
+                PlaylistPlaytime = 5524,
+                UserId = 2,
+                Rank = 552348,
+                IsDeleted = false
+            };
+
+            var dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            var mockImageService = new Mock<IPixaBayImageService>();
+
+            using (var arrangeContext = new RidePalDbContext(options))
+            {
+                arrangeContext.Playlists.Add(firstPlaylist);
+                arrangeContext.SaveChanges();
+            }
+
+            using (var assertContext = new RidePalDbContext(options))
+            {
+                //Act
+                var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
+                var result = await sut.UndoDeletePlaylistAsync(11);
+
+                //Assert
+                Assert.IsFalse(result);
+            }
+        }
+
+        [TestMethod]
+        public async Task ReturnFalse_IfNoPlaylistsExist()
         {
             //Arrange
-            var options = Utils.GetOptions(nameof(Throw_If_NoPlaylistsExist));
+            var options = Utils.GetOptions(nameof(ReturnFalse_IfNoPlaylistsExist));
 
             var dateTimeProviderMock = new Mock<IDateTimeProvider>();
             var mockImageService = new Mock<IPixaBayImageService>();
@@ -76,7 +111,7 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
             using (var assertContext = new RidePalDbContext(options))
             {
                 var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
-                var result = await sut.DeletePlaylistAsync(8);
+                var result = await sut.UndoDeletePlaylistAsync(10);
 
                 Assert.IsFalse(result);
             }
