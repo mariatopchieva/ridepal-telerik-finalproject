@@ -8,7 +8,6 @@ variables:
     testProjectDir: "RidePal.Services.Tests"
 
 before_script:
-    - 'cd /'
     - "dotnet restore"
 
 build:
