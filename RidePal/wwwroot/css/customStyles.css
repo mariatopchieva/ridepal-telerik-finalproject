@@ -1,5 +1,6 @@
 ﻿body {
-    background-image: url('../img/bg-images/light-dark.jpg');
+    /*background-image: url('../img/bg-images/light-dark.jpg');*/
+    background-image: url('../img/bg-images/blue-black.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     height: 100%;
@@ -16,25 +17,47 @@ nav.navbar {
 }
 
     nav.navbar a, nav.navbar ul li a {
-        color: black !important;
+        color: #3F3F3F !important;
         font-size: 18px;
     }
 
     nav.navbar ul li {
-        padding: 0 15px;
+        padding: 0 10px;
     }
 
-dropdown-menu-content {
+        nav.navbar ul li:hover {
+            background: rgba(58, 64, 64, 0.4);
+        }
+
+.dropdown-menu-content {
+    background: none;
     display: none;
     position: absolute;
     background: none;
-    min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
-dropdown:focus{
-    border: none;
+
+.dropdown-menu a:hover {
+    background: rgba(58, 64, 64, 0.4);
 }
+
+.dropbtn {
+    font-family: 'Open Sans', sans-serif;
+    border: none;
+    font-size: 18px;
+    box-shadow: none;
+    text-align: center;
+    outline: none;
+    max-width: 120px;
+}
+
+    .dropbtn:focus, .dropbtn:active, .dropbtn.hover, .dropbtn.active {
+        border: none;
+        box-shadow: none;
+        outline: none;
+    }
+
 
 /*carousel*/
 .carousel {
@@ -43,13 +66,24 @@ dropdown:focus{
 
 .carousel-inner {
     height: 500px;
+    margin-bottom: 10%;
 }
 
 .carousel-caption {
-    color: black;
+    color: darkcyan;
     top: 200%;
     text-align: left;
-    font-size: 48px;
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+}
+
+    .carousel-caption h1 {
+        font-size: 80px;
+    }
+
+.bottomCaption {
+    margin-left: 10%;
+    color: darkcyan;
 }
 
 /*users table*/
@@ -198,14 +232,24 @@ table.table td i {
 }
 
 /*featured */
+.featured h2, h3 {
+    text-decoration-color: black;
+}
+
+
+/*top playlists*/
+.topHeading h2 {
+    text-decoration-color: black;
+}
 
 
 /*statistics style*/
 .counter {
-    background: rgba(58, 64, 64, 0.4);
+    /*background: rgba(58, 64, 64, 0.4);*/
     text-align: center;
     border-radius: 0.5rem;
     margin-bottom: 100px;
+    margin-top: 120px;
 }
 
 .tracks, .artists, .playlists, .users {
@@ -233,7 +277,7 @@ table.table td i {
 
 .tracks-p, .artists-p, .users-p, .playlists-p {
     font-size: 24px;
-    color: wheat;
+    color: white;
     line-height: 34px;
 }
 
@@ -361,8 +405,8 @@ table.table td i {
     background: rgba(58, 64, 64, 0.6);
     position: relative;
     border-radius: .5rem;
-    margin-top: 20%;
-    margin-bottom: 20%;
+    margin-top: 10%;
+    margin-bottom: 30%;
     align-items: center;
     z-index: 1;
     color: white;
@@ -372,35 +416,13 @@ table.table td i {
     margin: auto;
 }
 
-/*Playlist Index form*/
-#filterFormContainer {
-    display: flex;
-    justify-content: center;
-    height: 100%;
-}
-
-#filterForm {
-    background: rgba(58, 64, 64, 0.80);
-    position: relative;
-    border-radius: .5rem;
-    margin-top: 20%;
-    margin-bottom: 20%;
-    align-items: center;
-    z-index: 1;
-    color: white;
-}
-
-#filterCenterField {
-    margin: auto;
-}
-
 /*home page items*/
-#topPl {
-    margin-top: 50px;
+.topPl {
+    /*margin-top: 50px;*/
 }
 
-#featured {
-    margin-top: 50px;
+.featured {
+    margin-top: 120px;
 }
 
 /*create playlist form*/
@@ -516,3 +538,62 @@ i.unfav {
     .myButton a:hover {
         color: #ffffff;
     }
+
+/*Playlists Filter form*/
+.filterFormWrap {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+.filterForm {
+    background: rgba(58, 64, 64, 0.80);
+    position: relative;
+    border-radius: .5rem;
+    align-items: center;
+    z-index: 1;
+    color: white;
+    width: 100%;
+    margin: 20px;
+    padding: 20px;
+}
+
+.genreFilterWrap {
+    margin: auto
+}
+
+durationFilter {
+    margin: auto;
+}
+
+.searchFilter {
+    margin: auto;
+}
+
+#amount {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+#name {
+    margin-bottom: 8%;
+    border-radius: .5rem;
+}
+
+.checkboxWrap {
+    width: 100%;
+    margin: auto;
+}
+
+.singleCheckbox {
+    margin: auto;
+}
+
+/*Playlists pages track card container*/
+.trackContainer {
+    margin-bottom: 10%;
+}
+
+.pageHeader {
+    margin-top: 8%;
+}

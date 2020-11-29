@@ -8,20 +8,17 @@
     <div class="carousel-inner">
         <div class="carousel-item active">
             <div class="carousel-caption">
-                <h1><span>Enjoy</span></h1>
-                <h3>your favorite tracks.</h3>
+                <h1><span>Enjoy</span><br><span class="bottomCaption">favorite tracks</span></h1>
             </div>
         </div>
         <div class="carousel-item">
             <div class="carousel-caption">
-                <h1><span>Pass</span></h1>
-                <h3>the time while waiting</h3>
+                <h1><span>Discover</span><br><span class="bottomCaption">new artists</span></h1>
             </div>
         </div>
         <div class="carousel-item">
             <div class="carousel-caption">
-                <h1><span>Pick</span></h1>
-                <h3>a start and an end point and create your own playlist</h3>
+                <h1><span>Create</span><br><span class="bottomCaption">your own playlists</span></h1>
             </div>
         </div>
     </div>
@@ -31,7 +28,7 @@
 @if (Model.TopPlaylists != null)
 {
     <div class="container">
-        <div class="page-header" id="topPl">
+        <div class="page-header topPl">
             <h2 class="text-center">Top playlists</h2>
             <br />
         </div>
@@ -46,7 +43,7 @@
 
 <!--featured artists-->
 <div class="artistContainer">
-    <div class="page-header" id="featured">
+    <div class="page-header featured">
         <h2 class="text-center">Featured artists</h2>
         <br />
     </div>
