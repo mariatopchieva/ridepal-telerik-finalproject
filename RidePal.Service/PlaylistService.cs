@@ -512,6 +512,76 @@ namespace RidePal.Service
         }
 
         /// <summary>
+        /// A parent method, which receives the filtration parameters of the user and calls the respective methods to filter the collection
+        /// </summary>
+        /// <param name="name">The string, which must be contained in the filtered playlists' titles</param>
+        /// <param name="genres">Collection of the genres</param>
+        /// <param name="durationLimits">Upper and lower limit for the filtered playlists' duration</param>
+        /// <returns>Filtered collection of DTOs of playlists</returns>
+        public async Task<int> FilterPlaylistsAndReturnCountAsync(string name, List<string> genres, List<int> durationLimits)
+        {
+            var filteredPlaylistsDTO = await GetAllPlaylistsAsync();
+
+            if (name != null)
+            {
+                filteredPlaylistsDTO = FilterPlaylistsByName(name, filteredPlaylistsDTO).ToList();
+            }
+
+            if (genres.Count > 0)
+            {
+                filteredPlaylistsDTO = await FilterPlaylistsByGenreAsync(genres, filteredPlaylistsDTO);
+            }
+
+            if (durationLimits.Count > 1) //check default values
+            {
+                filteredPlaylistsDTO = FilterPlaylistsByDuration(durationLimits, filteredPlaylistsDTO).ToList();
+            }
+
+            if (filteredPlaylistsDTO == null) //къде да проверявам за Null => тук или при всеки от 3те метода?
+            {
+                throw new ArgumentNullException("No playlists meet the filter criteria."); //or no exception???
+            }
+
+            return filteredPlaylistsDTO.Count();
+        }
+
+        /// <summary>
+        /// A parent method, which receives the filtration parameters of the user and calls the respective methods to filter the collection
+        /// </summary>
+        /// <param name="name">The string, which must be contained in the filtered playlists' titles</param>
+        /// <param name="genres">Collection of the genres</param>
+        /// <param name="durationLimits">Upper and lower limit for the filtered playlists' duration</param>
+        /// <returns>Filtered collection of DTOs of playlists</returns>
+        public async Task<IEnumerable<PlaylistDTO>> FilterAndReturnPlaylistsPerPageAsync(string name, List<string> genres, List<int> durationLimits, int currentPage)
+        {
+            var filteredPlaylistsDTO = await GetAllPlaylistsAsync();
+
+            if (name != null)
+            {
+                filteredPlaylistsDTO = FilterPlaylistsByName(name, filteredPlaylistsDTO).ToList();
+            }
+
+            if (genres.Count > 0)
+            {
+                filteredPlaylistsDTO = await FilterPlaylistsByGenreAsync(genres, filteredPlaylistsDTO);
+            }
+
+            if (durationLimits.Count > 1) //check default values
+            {
+                filteredPlaylistsDTO = FilterPlaylistsByDuration(durationLimits, filteredPlaylistsDTO).ToList();
+            }
+
+            if (filteredPlaylistsDTO == null) //къде да проверявам за Null => тук или при всеки от 3те метода?
+            {
+                throw new ArgumentNullException("No playlists meet the filter criteria."); //or no exception???
+            }
+
+            var playlists = GetFilteredPlaylistsPerPage(currentPage, filteredPlaylistsDTO);
+
+            return filteredPlaylistsDTO;
+        }
+
+        /// <summary>
         /// Calculates the total number of pages for the Playlists' Index page
         /// </summary>
         /// <returns>Total number of pages</returns>
@@ -520,6 +590,17 @@ namespace RidePal.Service
             var count = this.context.Playlists.Count();
 
             var totalPages = Math.Ceiling((double)count / pageSize);
+
+            return (int)totalPages;
+        }
+
+        /// <summary>
+        /// Calculates the total number of pages for the filtered Playlists' Index page
+        /// </summary>
+        /// <returns>Total number of pages</returns>
+        public int GetPageCountOfFilteredCollection(int filteredPlaylistsCount)
+        {
+            var totalPages = Math.Ceiling((double)filteredPlaylistsCount / pageSize);
 
             return (int)totalPages;
         }
@@ -559,6 +640,18 @@ namespace RidePal.Service
             var playlists = GetAllPlaylistsAsync();
 
             var resultPlaylistsDTO = currentPage == 1 ? playlists.Result.Take(pageSize) : playlists.Result.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+            return resultPlaylistsDTO;
+        }
+
+        /// <summary>
+        /// Prepares a collection of the exact number of playlists to load on the current page of the filtered Playlists' Index view
+        /// </summary>
+        /// <param name="currentPage"></param>
+        /// <returns>Collection of DTOs of playlists to load on the current page</returns>
+        public IEnumerable<PlaylistDTO> GetFilteredPlaylistsPerPage(int currentPage, IEnumerable<PlaylistDTO> playlists)
+        {
+            var resultPlaylistsDTO = currentPage == 1 ? playlists.Take(pageSize) : playlists.Skip((currentPage - 1) * pageSize).Take(pageSize);
 
             return resultPlaylistsDTO;
         }

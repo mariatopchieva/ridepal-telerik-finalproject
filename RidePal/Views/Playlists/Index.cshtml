@@ -41,7 +41,7 @@
         <div class="form-group">
             <label class="col" for="customRange3">Duration</label>
             <input id="rangeInput" type="range" min="0" max="@Model.MaxDuration" oninput="amount.value=rangeInput.value" asp-for="FilterCriteria.DurationLimits" />
-            <input id="amount" type="number" value="@(Model.MaxDuration / 2)" min="0" max="@Model.MaxDuration" oninput="rangeInput.value=amount.value" />
+            <input id="amount" type="number" value="@(Model.MaxDuration)" min="0" max="@Model.MaxDuration" oninput="rangeInput.value=amount.value" />
         </div>
         <div class="form-group searchFilter">
             @*<label>Search:</label>*@
