@@ -222,6 +222,6 @@ namespace RidePal.Services.Tests.GeneratePlaylistServiceTests
         //        Assert.AreEqual(result.GenresCount, 2);
 
         //    }
-        }
+        //}
     }
 }
