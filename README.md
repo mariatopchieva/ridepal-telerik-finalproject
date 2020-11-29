@@ -94,7 +94,7 @@ Best programming practices and principles used: OOP, SOLID, KISS and DRY princip
 
 <br />
 
-## **To build and run the project, one needs to:**
+### **To build and run the project, one needs to:**
 
 1. Clone the project's repository locally
 
