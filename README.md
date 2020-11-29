@@ -104,7 +104,9 @@ Best programming practices and principles used: OOP, SOLID, KISS and DRY princip
 
 4. Run the RidePal application
 
-5. Explore the web app, register an account, create a playlist upon your preferences and enjoy your music
+5. Go to https://localhost:5001/home/seeddatabase
+
+6. Explore the web app, register an account, create a playlist upon your preferences and enjoy your music
 
 <br />
 
