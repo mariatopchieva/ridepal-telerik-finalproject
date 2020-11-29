@@ -68,7 +68,7 @@ namespace RidePal.Controllers
         // POST: PlaylistsController
         //[HttpPost("/Index")]
         [HttpPost]
-        public async Task<IActionResult> Index([Bind("Name,GenresNames,DurationLimits")] FilterCriteria filterCriteria)
+        public async Task<IActionResult> Index([Bind("Name,GenresNames,DurationLimits")] FilterCriteria filterCriteria, int currentPage = 1)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +100,11 @@ namespace RidePal.Controllers
                 //temporary until the slider range gets two values
                 filteredDuration.Insert(0, 0);
 
-                var playlistsDTO = await service.FilterPlaylistsMasterAsync(filteredName, genres, filteredDuration);
+                //var playlistsDTO = await service.FilterPlaylistsMasterAsync(filteredName, genres, filteredDuration);
+
+                var playlistsDTO = await service.FilterAndReturnPlaylistsPerPageAsync(filteredName, genres, filteredDuration, currentPage);
+
+                var playlistsCount = await service.FilterPlaylistsAndReturnCountAsync(filteredName, genres, filteredDuration);
 
                 if (playlistsDTO == null)
                 {
@@ -114,11 +118,15 @@ namespace RidePal.Controllers
                     playlistsViewModels.Add(currentPlaylistViewModel);
                 }
 
+                var totalPages = service.GetPageCountOfFilteredCollection(playlistsCount);
+
                 FilteredPlaylistsViewModel filteredPlaylistList = new FilteredPlaylistsViewModel()
                 {
                     Playlists = playlistsViewModels,
                     AllGenres = service.GetAllGenresAsync().Result.OrderBy(x => x.Name).ToList(),
-                    MaxDuration = service.GetHighestPlaytimeAsync().Result //what is the default max value?
+                    MaxDuration = service.GetHighestPlaytimeAsync().Result, //what is the default max value?
+                    TotalPages = totalPages,
+                    CurrentPage = currentPage
                 };
 
                 return View(filteredPlaylistList);
