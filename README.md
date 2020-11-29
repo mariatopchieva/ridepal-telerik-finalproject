@@ -12,6 +12,8 @@
 ##### **The RidePal web application enables users to create playlists for specific travel duration periods based on their preferred music genres.**
 ##### **The _mission_ of RidePal is to help users have great trips in the company of their favorite artists and tracks.** 
 
+<br />
+
 ## **Functionalities of the RidePal web application**
 
 #### **Each unauthenticated _visitor_ of the RidePal web app can**:
@@ -92,4 +94,4 @@ Best programming practices and principles used: OOP, SOLID, KISS and DRY princip
 
 <br />
 
-## Views from the BeerOverflow web application
+## Views from the RidePal web application
