@@ -10,7 +10,7 @@
 
 ##### **The RidePal project consists of web application and REST API.**
 ##### **The RidePal web application enables users to create playlists for specific travel duration periods based on their preferred music genres.**
-##### **The _mission_ of RidePal is to help users have great trips in the company of their favorite artists and tracks.** 
+##### **The _mission_ of RidePal is to help users have great trips in the company of their favorite music artists and tracks.** 
 
 <br />
 
