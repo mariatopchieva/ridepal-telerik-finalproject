@@ -62,7 +62,7 @@
 
 - User can **edit or delete** his/her own **existing playlists** through user authentication
 
-- API documentation through **Swagger**
+- API documentation through **Swagger** at https://localhost:5001/swagger
 
 <br />
 
