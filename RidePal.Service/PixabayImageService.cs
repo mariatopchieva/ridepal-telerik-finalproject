@@ -32,20 +32,15 @@ namespace RidePal.Service
         {
             this._env = env;
             this.fileCheck = fileCheck;
-            //this
         }
 
         public (string, string) GetFilePathForImage(PlaylistDTO PlaylistDTO)
         {
-            //POST: GeneratePlaylist(GeneratePlaylistViewModel model) https://pastebin.com/QmduCCAm
-            //we've received model as a parameter
             var playlistImagesUploadFolder = Path.Combine(_env.WebRootPath, "assets\\img\\playlist");
 
             this.fileCheck.CreateFolder(playlistImagesUploadFolder);
 
             var newFileName = $"{Guid.NewGuid()}_{PlaylistDTO.Title.Trim().Replace(" ", "_")}";
-
-            //string fullFilePath = Path.Combine(playlistImagesUploadFolder, newFileName)
 
             string playlistDBImageLocationPath = $"/assets/img/playlist/{newFileName}.jpg";
 

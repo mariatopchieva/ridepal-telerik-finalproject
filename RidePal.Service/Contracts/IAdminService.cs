@@ -9,7 +9,7 @@ namespace RidePal.Service.Contracts
 {
     public interface IAdminService
     {
-        Task<IList<UserDTO>> GetAllRegularUsers();
+        Task<IList<UserDTO>> GetAllUsers();
         Task<bool> BanUserById(int id);
         Task<bool> UnbanUserById(int id);
         Task<bool> DeleteUser(int id);

@@ -17,33 +17,25 @@ namespace RidePal.Service
     public class AdminService : IAdminService
     {
         private readonly RidePalDbContext context;
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
 
-        public AdminService(RidePalDbContext context, UserManager<User> userManager, SignInManager<User> signInManager)
+        public AdminService(RidePalDbContext context)
         {
             this.context = context;
-            this._userManager = userManager;
-            this._signInManager = signInManager;
         }
 
-        public async Task<IList<UserDTO>> GetAllRegularUsers()
+        public async Task<IList<UserDTO>> GetAllUsers()
         {
             var users = await this.context.Users
                                         .Select(u => new UserDTO(u))
                                         .ToListAsync();
-
-            if (users == null)
-            {
-                throw new ArgumentNullException("Something went wrong, no users wore found.");
-            }
-
             return users;
         }
 
         public async Task<UserDTO> GetUserById(int userId)
         {
-            var user = await this.context.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            var user = await this.context.Users
+                .FirstOrDefaultAsync(user => user.Id == userId)
+                ?? throw new ArgumentNullException("User was not found.");
 
             var userDto = new UserDTO(user);
 
@@ -52,6 +44,11 @@ namespace RidePal.Service
 
         public async Task<IList<UserDTO>> SearchByEmail(string email)
         {
+            if (email == null || email.Length == 0)
+            {
+                throw new ArgumentNullException("No search parameters submited.");
+            }
+
             var userDTOs = await this.context.Users
                                             .Where(user => user.Email.Contains(email))
                                             .Select(u => new UserDTO(u))

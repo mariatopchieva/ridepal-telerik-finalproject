@@ -33,7 +33,7 @@ namespace RidePal.Controllers
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
-            var users = await this.adminService.GetAllRegularUsers();
+            var users = await this.adminService.GetAllUsers();
 
             var currentAdmin = users.FirstOrDefault(user => user.UserName == HttpContext.User.Identity.Name);
 
