@@ -66,7 +66,7 @@
 
 <br />
 
-## **Technologies used in the RidePal project**:
+### **Technologies used in the RidePal project**:
 
 ASP.NET Core 3.1 and Visual Studio 2019
 
@@ -91,6 +91,20 @@ Frontend: HTML, CSS, Bootstrap, DataTables, JavaScript
 Team work: Git (GitLab) with separate branches, Trello, MS Teams
 
 Best programming practices and principles used: OOP, SOLID, KISS and DRY principles, client-side and server-side data validation, exception handling, unit testing of the "business" functionality, etc.
+
+<br />
+
+## **To build and run the project, one needs to:**
+
+1. Clone the project's repository locally
+
+2. Open the project's RidePal.sln with Visual Studio
+
+3. Go to Package Manager Console, choose RidePal.Data as Default Project and add PM> update-database
+
+4. Run the RidePal application
+
+5. Explore the web app, register an account, create a playlist upon your preferences and enjoy your music
 
 <br />
 
