@@ -46,7 +46,7 @@
 
 <br />
 
-#### **Further to the functionalities available for registered users, the _admin_ user on the BeerOverflow web application can**:
+#### **Further to the functionalities available for registered users, the _admin_ user on the RidePal web application can**:
 
 ✅ Create, edit and delete any **playlist** on the app’s database
 
