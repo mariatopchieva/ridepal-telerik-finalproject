@@ -23,6 +23,10 @@ namespace RidePal.Service
             this.context = context;
         }
 
+        /// <summary>
+        /// Provides a list of all users in the database including the admins
+        /// </summary>
+        /// <returns>Collection of all users in the database</returns>
         public async Task<IList<UserDTO>> GetAllUsers()
         {
             var users = await this.context.Users
@@ -31,6 +35,11 @@ namespace RidePal.Service
             return users;
         }
 
+        /// <summary>
+        /// Performs search for a user by a given ID in the database 
+        /// </summary>
+        /// <param name="id">The ID of the user to search for</param>
+        /// <returns>Returns the UserDTO entry that matches the provided id</returns>
         public async Task<UserDTO> GetUserById(int userId)
         {
             var user = await this.context.Users
@@ -42,6 +51,11 @@ namespace RidePal.Service
             return userDto;
         }
 
+        /// <summary>
+        /// Performs search for a user in the database that matches partialy the input string
+        /// </summary>
+        /// <param name="email">The Email of the user to search for</param>
+        /// <returns>Returns a collection of UserDTOs with email that matches the partial string input</returns>
         public async Task<IList<UserDTO>> SearchByEmail(string email)
         {
             if (email == null || email.Length == 0)
@@ -57,6 +71,11 @@ namespace RidePal.Service
             return userDTOs;
         }
 
+        /// <summary>
+        /// Performs an edit operation on a user entry by a given UserDTO 
+        /// </summary>
+        /// <param name="userDTO">The ID of the playlist to search for</param>
+        /// <returns>Returns the edited userDTO</returns>
         public async Task<UserDTO> EditUser(UserDTO userDto)
         {
             if (userDto == null)
@@ -84,6 +103,11 @@ namespace RidePal.Service
             return userDto;
         }
 
+        /// <summary>
+        /// Changes the LockoutEnabled status to true and LockoutEnd to the desired time of a user entry in the database
+        /// </summary>
+        /// <param name="id">The ID of the user to search for</param>
+        /// <returns>If successful, returns true else returns false</returns>
         public async Task<bool> BanUserById(int id)
         {
             var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
@@ -100,6 +124,11 @@ namespace RidePal.Service
             return true;
         }
 
+        /// <summary>
+        /// Changes the LockoutEnabled status to false and removes the ramaining time of the LockoutEnd of a user entry in the database
+        /// </summary>
+        /// <param name="id">The ID of the user to search for</param>
+        /// <returns>If successful, returns true else returns false</returns>
         public async Task<bool> UnbanUserById(int id)
         {
             var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
@@ -117,6 +146,11 @@ namespace RidePal.Service
             return true;
         }
 
+        /// <summary>
+        /// Changes the IsDeleted status to true of a user entry in the database
+        /// </summary>
+        /// <param name="id">The ID of the user to search for</param>
+        /// <returns>If successful, returns true else returns false</returns>
         public async Task<bool> DeleteUser(int id)
         {
             var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
@@ -133,6 +167,11 @@ namespace RidePal.Service
             return true;
         }
 
+        /// <summary>
+        /// Changes the IsDeleted status to false of a user entry in the database
+        /// </summary>
+        /// <param name="id">The ID of the user to search for</param>
+        /// <returns>If successful, returns true else returns false</returns>
         public async Task<bool> RevertDeleteUser(int id)
         {
             var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);

@@ -21,6 +21,11 @@ nav.navbar {
         font-size: 18px;
     }
 
+        nav.navbar a img {
+            height: 55px;
+            background: none;
+        }
+
     nav.navbar ul li {
         padding: 0 10px;
     }
@@ -432,7 +437,6 @@ table.table td i {
 
 /*Details player*/
 .wrapper {
-    /*width: 800px;*/
     margin: 20px 0 20px 0;
     width: 100%;
 }
@@ -460,7 +464,6 @@ table.table td i {
 
     .track-list li {
         display: block;
-        /*background-color: #f4f4f4;*/
         border: solid 0px #f6eccd;
         margin-bottom: 5px;
         -webkit-box-shadow: 0 2px 1px -1px rgba(0,0,0,0.1);
@@ -507,8 +510,6 @@ i.unfav {
 
 .myButton {
     box-shadow: inset 0px 1px 3px 0px #91b8b3;
-    /*background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
-    background-color: #768d87;*/
     background-color: transparent;
     border-radius: 5px;
     border: 1px solid #566963;
@@ -528,15 +529,18 @@ i.unfav {
     .myButton:hover {
         background: linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
         background-color: #6c7c7c;
+        text-decoration: none;
     }
 
     .myButton:active {
         position: relative;
         top: 1px;
+        text-decoration: none;
     }
 
     .myButton a:hover {
         color: #ffffff;
+        text-decoration: none;
     }
 
 /*Playlists Filter form*/
