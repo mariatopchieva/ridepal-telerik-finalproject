@@ -578,7 +578,7 @@ namespace RidePal.Service
 
             var playlists = GetFilteredPlaylistsPerPage(currentPage, filteredPlaylistsDTO);
 
-            return filteredPlaylistsDTO;
+            return playlists;
         }
 
         /// <summary>
