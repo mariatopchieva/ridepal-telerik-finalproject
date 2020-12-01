@@ -3,6 +3,16 @@
     ViewData["Title"] = "Create Playlist";
 }
 
+@if (TempData["Error"] != null)
+{
+<div class="alert alert-danger alert-dismissible fade show justify-content-center text-center" role="alert">
+    @TempData["Error"].ToString()
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+}
+
 <div class="container justify-content-center" id="formcontainer">
     <form id="customForm" class="text-center p-5 col-sm-8" method="post" asp-action="Create" asp-controller="Playlists">
         <!--destination-->
@@ -43,7 +53,7 @@
                 <label class="custom-control-label float-left" for="inputMetal">Metal</label>
             </div>
             <div class="col-xs-6 m-auto">
-                <input disabled type="range" min="0" max="100" step="10" onchange="updateTextInput(this.value);" class="form-control custom-range" id="inputMetalSlider" name="MetalPercentage">
+                <input disabled type="range" min="0" max="100" step="10" class="form-control custom-range" id="inputMetalSlider" name="MetalPercentage">
                 <span class="font-weight-bold text-white ml-2 mt-1" id="metalSpan"></span>
             </div>
         </div>

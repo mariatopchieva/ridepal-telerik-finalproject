@@ -181,6 +181,12 @@ namespace RidePal.Controllers
                                                     "MetalPercentage, RockPercentage, PopPercentage, JazzPercentage")]
                                                     GeneratePlaylistViewModel genPlView)
         {
+            if ((genPlView.MetalPercentage + genPlView.RockPercentage +
+                        genPlView.PopPercentage + genPlView.JazzPercentage) > 100)
+            {
+                return RedirectToAction("Create","Playlists", new { error = TempData["Error"] = "Combined genre percentage must not exceed 100%" });
+            }
+
             var userId = int.Parse(userManager.GetUserId(HttpContext.User));
 
             var genres = new Dictionary<string, int>();

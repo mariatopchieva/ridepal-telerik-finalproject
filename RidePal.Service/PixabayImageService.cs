@@ -34,6 +34,11 @@ namespace RidePal.Service
             this.fileCheck = fileCheck;
         }
 
+        /// <summary>
+        /// Provides a physical and local file path to an image
+        /// </summary>
+        /// <param name="PlaylistDTO">The DTO of the playlist the image will be assigned to</param>
+        /// <returns>Returns the physical and local path to an image</returns>
         public (string, string) GetFilePathForImage(PlaylistDTO PlaylistDTO)
         {
             var playlistImagesUploadFolder = Path.Combine(_env.WebRootPath, "assets\\img\\playlist");
@@ -48,6 +53,11 @@ namespace RidePal.Service
 
         }
 
+        /// <summary>
+        /// Provides an image from an external API to be attached to a playlist
+        /// </summary>
+        /// <param name="PlaylistDTO">The DTO of the playlist the image will be assigned to</param>
+        /// <returns>Returns the local file path the image was saved to</returns>
         public async Task<string> AssignImage(PlaylistDTO PlaylistDTO)
         {
             var jsonString = await client.GetAsync(startUrl).Result.Content.ReadAsStringAsync();
@@ -73,11 +83,21 @@ namespace RidePal.Service
             return filePath;
         }
 
+        /// <summary>
+        /// Determens whether the specific file exists
+        /// </summary>
+        /// <param name="filePath">The file path to the file</param>
+        /// <returns>Returns true if the file exists else returns false</returns>
         public bool FileExists(string filePath)
         {
             return System.IO.File.Exists(filePath.Trim());
         }
 
+        /// <summary>
+        /// Checks if a folder exists and creates one if it does not
+        /// </summary>
+        /// <param name="filePath">The file path to the folder to be chacked</param>
+        /// <returns>Returns true if the file path exists else tries to create a new folder or throws exeption on failed folder creation</returns>
         public (bool result, string message) CreateFolder(string filePath)
         {
             if (FileExists(filePath.Trim()))
