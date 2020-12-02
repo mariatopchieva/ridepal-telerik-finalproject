@@ -112,4 +112,4 @@ Best programming practices and principles used: OOP, SOLID, KISS and DRY princip
 
 ## Views from the RidePal web application
 
-![Text that reveals a missing image](Images/Home.png)
+![Text that reveals a missing image](/Images/Home.PNG)
