@@ -9,8 +9,15 @@
 
 @if (TempData["Msg"] != null)
 {
-    <div class="alert alert-danger" role="alert">
-        @TempData["Msg"].ToString();
+    <div class="alert alert-success" role="alert">
+        @TempData["Msg"].ToString()
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Error"].ToString()
     </div>
 }
 
@@ -55,7 +62,7 @@
 
                             <td class="col-sm justify-content-center">
                                 <a class="btn btn-outline-primary waves-effect m-auto" asp-controller="Admin" asp-action="EditUser" asp-route-id="@item.Id">
-                                <i class="material-icons">edit</i>
+                                    <i class="material-icons">edit</i>
                                 </a>
                             </td>
                             <!--Ban buttons-->
