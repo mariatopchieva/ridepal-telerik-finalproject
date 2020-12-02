@@ -33,7 +33,7 @@
                 {
                     <div class="singleCheckbox">
                         <input type="checkbox" class="form-control m-auto" asp-for="FilterCriteria.GenresNames[i]" />
-                        <label class="float-left">@Model.AllGenres.ElementAt(i).Name </label>
+                        <label class="float-left genreLabel" for="FilterCriteria.GenresNames[i]">@Model.AllGenres.ElementAt(i).Name </label>
                     </div>
                 }
             </div>
@@ -54,7 +54,7 @@
             <input type="text" id="name" placeholder="Search&hellip;" asp-for="FilterCriteria.Name"><br><br>
         </div>
         <div class="form-group">
-            <input type="submit" value="Submit">
+            <input type="submit" value="Submit" class="btn btn-primary">
         </div>
     </form>
 </div>

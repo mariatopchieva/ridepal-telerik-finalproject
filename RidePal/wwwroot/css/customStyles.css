@@ -592,6 +592,9 @@ durationFilter {
 .singleCheckbox {
     margin: auto;
 }
+.genreLabel{
+    margin: 6px;
+}
 
 /*Playlists pages track card container*/
 .trackContainer {
