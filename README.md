@@ -140,4 +140,8 @@ Best programming practices and principles used: OOP, SOLID, KISS and DRY princip
 
 ![Text that reveals a missing image](/Images/About_us.PNG)
 
+#### Swagger documentation for the REST API
+
+![Text that reveals a missing image](/Images/Swagger.PNG)
+
 ##### Additional views are available in the Images folder above
