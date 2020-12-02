@@ -1,5 +1,4 @@
 ﻿body {
-    /*background-image: url('../img/bg-images/light-dark.jpg');*/
     background-image: url('../img/bg-images/blue-black.jpg');
     background-repeat: no-repeat;
     background-size: cover;
@@ -13,11 +12,11 @@ nav.navbar {
     left: 0;
     background-color: transparent;
     width: 100%;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Audiowide', sans-serif;
 }
 
     nav.navbar a, nav.navbar ul li a {
-        color: #3F3F3F !important;
+        color: #172e45 !important;
         font-size: 18px;
     }
 
@@ -48,7 +47,7 @@ nav.navbar {
 }
 
 .dropbtn {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Audiowide', sans-serif;
     border: none;
     font-size: 18px;
     box-shadow: none;
@@ -79,11 +78,12 @@ nav.navbar {
     top: 200%;
     text-align: left;
     position: relative;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Audiowide', sans-serif;
 }
 
-    .carousel-caption h1 {
+    .carousel-caption h1  span {
         font-size: 80px;
+        color: #172e45;
     }
 
 .bottomCaption {
