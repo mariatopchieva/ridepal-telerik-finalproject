@@ -100,11 +100,9 @@ namespace RidePal.Controllers
                 //temporary until the slider range gets two values
                 filteredDuration.Insert(0, 0);
 
-                //var playlistsDTO = await service.FilterPlaylistsMasterAsync(filteredName, genres, filteredDuration);
+                var playlistsCount = service.ReturnFilteredPlaylistsAndCountAsync(filteredName, genres, filteredDuration, currentPage).Result.Item1;
 
-                var playlistsDTO = await service.FilterAndReturnPlaylistsPerPageAsync(filteredName, genres, filteredDuration, currentPage);
-
-                var playlistsCount = await service.FilterPlaylistsAndReturnCountAsync(filteredName, genres, filteredDuration);
+                var playlistsDTO = service.ReturnFilteredPlaylistsAndCountAsync(filteredName, genres, filteredDuration, currentPage).Result.Item2;
 
                 if (playlistsDTO == null)
                 {

@@ -13,7 +13,7 @@ using System.Linq;
 namespace RidePal.Services.Tests.PlaylistServiceTests
 {
     [TestClass]
-    public class FilterPlaylistsMaster_Should
+    public class ReturnFilteredPlaylistsAndCount_Should
     {
         [TestMethod]
         public void ReturnOneFilteredPlaylist_WhenParamsAreValid()
@@ -109,13 +109,45 @@ namespace RidePal.Services.Tests.PlaylistServiceTests
             {
                 //Act
                 var sut = new PlaylistService(assertContext, dateTimeProviderMock.Object, mockImageService.Object);
-                var result = sut.FilterPlaylistsMasterAsync(name, genres, durationLimits).Result.ToList();
+                var count = sut.ReturnFilteredPlaylistsAndCountAsync(name, genres, durationLimits, 1).Result.Item1;
+                var playlists = sut.ReturnFilteredPlaylistsAndCountAsync(name, genres, durationLimits, 1).Result.Item2.ToList();
 
                 //Assert
-                Assert.AreEqual(result.Count, 1);
-                Assert.AreEqual(result[0].Id, firstPlaylist.Id);
-                Assert.AreEqual(result[0].Title, firstPlaylist.Title);
+                Assert.AreEqual(playlists.Count, count);
+                Assert.AreEqual(playlists[0].Id, firstPlaylist.Id);
+                Assert.AreEqual(playlists[0].Title, firstPlaylist.Title);
             }
         }
+
+        //public async Task<Tuple<int, IEnumerable<PlaylistDTO>>> ReturnFilteredPlaylistsAndCountAsync(string name, List<string> genres,
+        //    List<int> durationLimits, int currentPage)
+        //{
+        //    var filteredPlaylistsDTO = await GetAllPlaylistsAsync();
+
+        //    if (name != null)
+        //    {
+        //        filteredPlaylistsDTO = FilterPlaylistsByName(name, filteredPlaylistsDTO).ToList();
+        //    }
+
+        //    if (genres.Count > 0)
+        //    {
+        //        filteredPlaylistsDTO = await FilterPlaylistsByGenreAsync(genres, filteredPlaylistsDTO);
+        //    }
+
+        //    if (durationLimits.Count > 1) //check default values
+        //    {
+        //        filteredPlaylistsDTO = FilterPlaylistsByDuration(durationLimits, filteredPlaylistsDTO).ToList();
+        //    }
+
+        //    if (filteredPlaylistsDTO == null) //къде да проверявам за Null => тук или при всеки от 3те метода?
+        //    {
+        //        throw new ArgumentNullException("No playlists meet the filter criteria."); //or no exception???
+        //    }
+
+        //    var playlists = GetFilteredPlaylistsPerPage(currentPage, filteredPlaylistsDTO);
+
+        //    return new Tuple<int, IEnumerable<PlaylistDTO>>(filteredPlaylistsDTO.Count(), playlists);
+        //}
+
     }
 }
