@@ -140,4 +140,4 @@ Best programming practices and principles used: OOP, SOLID, KISS and DRY princip
 
 ![Text that reveals a missing image](/Images/About_us.PNG)
 
-## Other views are available in Images folder above
+##### Additional views are available in the Images folder above
