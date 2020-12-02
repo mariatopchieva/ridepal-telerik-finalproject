@@ -97,10 +97,10 @@ namespace RidePal.Controllers
 
             if (banned == true)
             {
-                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User banned!" });
+                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User account banned!" });
             }
 
-            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User ban failed!" });
+            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User account ban status update failed!" });
         }
 
         [HttpPost]
@@ -110,10 +110,10 @@ namespace RidePal.Controllers
 
             if (banned == true)
             {
-                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User unbanned!" });
+                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User account ban removed!" });
             }
 
-            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User unban failed!" });
+            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User account ban status update failed!" });
         }
 
         [HttpPost]
@@ -123,10 +123,10 @@ namespace RidePal.Controllers
 
             if (deleted == true)
             {
-                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User unbanned!" });
+                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User account delete status set to true!" });
             }
 
-            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User unban failed!" });
+            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User account delete status update failed." });
         }
 
         [HttpPost]
@@ -136,10 +136,10 @@ namespace RidePal.Controllers
 
             if (reverted == true)
             {
-                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User unbanned!" });
+                return RedirectToAction("Index", "Admin", new { msg = TempData["Msg"] = "User account delete status set to false!" });
             }
 
-            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User unban failed!" });
+            return RedirectToAction("Index", "Admin", new { error = TempData["Error"] = "User account delete status update failed." });
         }
 
         [HttpGet]
