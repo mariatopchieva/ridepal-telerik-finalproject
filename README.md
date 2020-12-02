@@ -112,4 +112,32 @@ Best programming practices and principles used: OOP, SOLID, KISS and DRY princip
 
 ## Views from the RidePal web application
 
+#### Home page 
+
 ![Text that reveals a missing image](/Images/Home.PNG)
+
+#### Home page Featured and App Statistics
+
+![Text that reveals a missing image](/Images/Statistics.PNG)
+
+#### All Playlists
+
+![Text that reveals a missing image](/Images/AllPlaylists.PNG)
+
+#### Create New Playlist form
+
+![Text that reveals a missing image](/Images/Create.PNG)
+
+#### Playlist's details view
+
+![Text that reveals a missing image](/Images/Details.PNG)
+
+#### Admin's Users panel
+
+![Text that reveals a missing image](/Images/AdminUsers.PNG)
+
+#### About us
+
+![Text that reveals a missing image](/Images/About_us.PNG)
+
+## Other views are available in Images folder above
