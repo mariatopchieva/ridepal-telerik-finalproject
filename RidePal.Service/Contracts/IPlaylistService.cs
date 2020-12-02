@@ -43,11 +43,7 @@ namespace RidePal.Service.Contracts
 
         IEnumerable<PlaylistDTO> FilterPlaylistsByDuration(List<int> durationLimits, IEnumerable<PlaylistDTO> filteredPlaylists);
 
-        Task<IEnumerable<PlaylistDTO>> FilterPlaylistsMasterAsync(string name, List<string> genres, List<int> durationLimits);
-
-        Task<IEnumerable<PlaylistDTO>> FilterAndReturnPlaylistsPerPageAsync(string name, List<string> genres, List<int> durationLimits, int currentPage);
-
-        Task<int> FilterPlaylistsAndReturnCountAsync(string name, List<string> genres, List<int> durationLimits);
+        Task<Tuple<int, IEnumerable<PlaylistDTO>>> ReturnFilteredPlaylistsAndCountAsync(string name, List<string> genres, List<int> durationLimits, int currentPage);
 
         int GetPageCount();
 
