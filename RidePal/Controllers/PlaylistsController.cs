@@ -100,21 +100,18 @@ namespace RidePal.Controllers
                 //temporary until the slider range gets two values
                 filteredDuration.Insert(0, 0);
 
-                var playlistsCount = service.ReturnFilteredPlaylistsAndCountAsync(filteredName, genres, filteredDuration, currentPage).Result.Item1;
+                var tuple = service.ReturnFilteredPlaylistsAndCountAsync(filteredName, genres, filteredDuration, currentPage).Result;
+                
+                var playlistsCount = tuple.Item1;
 
-                var playlistsDTO = service.ReturnFilteredPlaylistsAndCountAsync(filteredName, genres, filteredDuration, currentPage).Result.Item2;
+                var playlistsDTO = tuple.Item2;
 
                 if (playlistsDTO == null)
                 {
                     return NotFound();
                 }
 
-                var playlistsViewModels = new List<PlaylistViewModel>();
-                foreach (var playlist in playlistsDTO)
-                {
-                    var currentPlaylistViewModel = new PlaylistViewModel(playlist);
-                    playlistsViewModels.Add(currentPlaylistViewModel);
-                }
+                var playlistsViewModels = playlistsDTO.Select(plDTO => new PlaylistViewModel(plDTO));
 
                 var totalPages = service.GetPageCountOfFilteredCollection(playlistsCount);
 
@@ -130,7 +127,7 @@ namespace RidePal.Controllers
                 return View(filteredPlaylistList);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { error = TempData["Error"] = "Playlist filtration failed." });
         }
 
         // GET: PlaylistsController/Details/5
