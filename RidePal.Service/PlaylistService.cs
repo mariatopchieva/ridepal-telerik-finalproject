@@ -487,7 +487,7 @@ namespace RidePal.Service
         public async Task<Tuple<int, IEnumerable<PlaylistDTO>>> ReturnFilteredPlaylistsAndCountAsync(string name, List<string> genres, 
             List<int> durationLimits, int currentPage)
         {
-            var filteredPlaylistsDTO = await GetAllPlaylistsAsync();
+            var filteredPlaylistsDTO = await GetAllPlaylistsAsync();                                                                               //нов метод GetAllPlaylistsWithGenres + Include + Where / Stored Procedure => Dapper
 
             if (name != null)
             {
